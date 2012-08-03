@@ -18,7 +18,23 @@
 
 package uk.ac.ebi.centres;
 
-/** @author John May */
-public class LigandOrder {
+import java.util.List;
+
+/**
+ * An injectable sorter for ligands.
+ *
+ * @author John May
+ */
+public interface LigandSorter<A> {
+
+    /**
+     * Sorts the provided ligands and indicates if all the ligands are different
+     * (i.e. unique).
+     *
+     * @param ligands the ligands that will be sorted
+     *
+     * @return whether the ligands are all different
+     */
+    public Boolean sort(List<Ligand<A>> ligands);
 
 }

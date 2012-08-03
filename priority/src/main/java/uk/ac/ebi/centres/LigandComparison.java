@@ -16,34 +16,30 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package uk.ac.ebi.centres.priority;
-
-import uk.ac.ebi.centres.Comparison;
-import uk.ac.ebi.centres.Descriptor;
-import uk.ac.ebi.centres.Ligand;
-import uk.ac.ebi.centres.LigandComparator;
-import uk.ac.ebi.centres.LigandOrder;
+package uk.ac.ebi.centres;
 
 /**
  * @author John May
  */
-public abstract class AbstractLigandComparator<A>
-        implements LigandComparator<A> {
+public final class LigandComparison
+        implements Comparison {
 
-    private final Descriptor.Type type;
+    private Integer         rank;
+    private Descriptor.Type type;
 
-    public AbstractLigandComparator() {
-        this(Descriptor.Type.ASYMMETRIC);
-    }
 
-    public AbstractLigandComparator(Descriptor.Type type) {
+    public LigandComparison(Integer rank, Descriptor.Type type) {
+        this.rank = rank;
         this.type = type;
     }
 
     @Override
-    public final Comparison compareLigands(Ligand<A> o1, Ligand<A> o2) {
-        return new LigandOrder(compare(o1, o2), type);
+    public Integer getOrder() {
+        return rank;
     }
 
-
+    @Override
+    public Descriptor.Type getType() {
+        return type;
+    }
 }

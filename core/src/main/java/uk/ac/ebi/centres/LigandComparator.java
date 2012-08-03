@@ -33,6 +33,16 @@ public interface LigandComparator<A>
         extends Comparator<Ligand<A>> {
 
     /**
+     * Allows injection of a ligand sorter. The ligand sort is used when two
+     * compared ligands are ranked equally. The sorter needs to be injected for
+     * as when combination of priority rules is required the sorting must be
+     * done all proceeding rules.
+     *
+     * @param sorter the ligand sorter to use
+     */
+    public void setSorter(LigandSorter<A> sorter);
+
+    /**
      * Analogous to {@link #compare(Object, Object)} the prioritise method
      * combines the {@link Descriptor.Type} to the order and can indicate what
      * comparison method was used. The single comparison cases the type doesn't
