@@ -19,25 +19,42 @@
 package uk.ac.ebi.centres;
 
 /**
+ * Simple holder for a ligand comparison. The comparison holds the value
+ * produced in the comparison as well as the type of the comparison.
+ *
  * @author John May
  */
 public final class LigandComparison
         implements Comparison {
 
-    private Integer         rank;
+    private Integer         order;
     private Descriptor.Type type;
 
-
-    public LigandComparison(Integer rank, Descriptor.Type type) {
-        this.rank = rank;
+    /**
+     * Construct a new ligand comparison with order and type.
+     *
+     * @param order the order of two ligands
+     * @param type  the type of the comparison
+     *
+     * @see LigandComparator
+     * @see java.util.Comparator
+     */
+    public LigandComparison(Integer order, Descriptor.Type type) {
+        this.order = order;
         this.type = type;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Integer getOrder() {
-        return rank;
+        return order;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Descriptor.Type getType() {
         return type;
