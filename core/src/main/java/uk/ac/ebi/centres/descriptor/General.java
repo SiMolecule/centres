@@ -18,6 +18,8 @@
 
 package uk.ac.ebi.centres.descriptor;
 
+import uk.ac.ebi.centres.Descriptor;
+
 /**
  * Enumeration of general descriptors. These general descriptors are not
  * specific to any particular stereo-centre (tetrahedral, planar or trigonal)

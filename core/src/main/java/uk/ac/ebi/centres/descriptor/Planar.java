@@ -18,6 +18,8 @@
 
 package uk.ac.ebi.centres.descriptor;
 
+import uk.ac.ebi.centres.Descriptor;
+
 /**
  * Enumeration of asymmetric and pseudo-asymmetric planar descriptors. Planar
  * descriptors are generally found around double bonds which cannot rotate. The

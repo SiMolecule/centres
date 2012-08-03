@@ -18,6 +18,8 @@
 
 package uk.ac.ebi.centres.descriptor;
 
+import uk.ac.ebi.centres.Descriptor;
+
 /**
  * Enumeration of asymmetric and pseudo-asymmetric tetrahedral descriptors.
  * Lower case indicates a descriptor are pseudo-asymmetric.

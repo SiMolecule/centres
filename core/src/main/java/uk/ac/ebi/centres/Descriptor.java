@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package uk.ac.ebi.centres.descriptor;
+package uk.ac.ebi.centres;
 
 /**
  * Defines a descriptor which can be assigned to an atom to indicate the type
@@ -24,9 +24,9 @@ package uk.ac.ebi.centres.descriptor;
  * Type} which can be useful when comparing centres of different geometry.
  *
  * @author John May
- * @see Tetrahedral
- * @see Trigonal
- * @see Planar
+ * @see uk.ac.ebi.centres.descriptor.Tetrahedral
+ * @see uk.ac.ebi.centres.descriptor.Trigonal
+ * @see uk.ac.ebi.centres.descriptor.Planar
  */
 public interface Descriptor {
 

@@ -18,6 +18,8 @@
 
 package uk.ac.ebi.centres.descriptor;
 
+import uk.ac.ebi.centres.Descriptor;
+
 /**
  * Enumeration of asymmetric and pseudo-asymmetric trigonal planar descriptors.
  * These descriptors are generally found on prochiral centres. The pseudo-
