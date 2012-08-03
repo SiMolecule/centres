@@ -20,14 +20,24 @@ package uk.ac.ebi.centres;
 
 import java.util.Comparator;
 
-/** @author John May */
+/**
+ * Defines a comparator for ligands. The default {@link Comparator} can be used
+ * to sort ligands however the {@link #compareLigands(Ligand, Ligand)} also adds
+ * meta data about the type of the descriptor via the {@link Comparison}
+ *
+ * @author John May
+ * @see Comparison
+ * @see Comparator
+ */
 public interface LigandComparator<A>
         extends Comparator<Ligand<A>> {
 
     /**
-     * Analogous to {@link #compare(Object, Object)} the prioritise method will
-     * add the {@link Descriptor.Type} to the order and can indicate what
-     * comparison method was used.
+     * Analogous to {@link #compare(Object, Object)} the prioritise method
+     * combines the {@link Descriptor.Type} to the order and can indicate what
+     * comparison method was used. The single comparison cases the type doesn't
+     * change however when using a combined comparator the type may change
+     * depending on which comparator was used.
      *
      * @param o1 first ligand
      * @param o2 second ligand

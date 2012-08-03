@@ -18,11 +18,38 @@
 
 package uk.ac.ebi.centres;
 
-/** @author John May */
+/**
+ * Wrapper for a comparison between two ligands. The comparison hold the value
+ * (order) from the {@link java.util.Comparator} and the type of the comparison
+ * {@link uk.ac.ebi.centres.Descriptor.Type}
+ *
+ * @author John May
+ */
 public interface Comparison {
 
-    public Integer getRank();
+    /**
+     * Access the order of the comparison between two ligands. The order is the
+     * value returned by the {@link java.util.Comparator}. Negative value
+     * indicates the first ligand ranks lower then second whilst a positive
+     * value indicated the second ligand ranks lower then the first. A value of
+     * 0 indicates the ligands order equally.
+     *
+     * @return the order of two compared ligands
+     *
+     * @see java.util.Comparator
+     */
+    public Integer getOrder();
 
+    /**
+     * Access the type of the comparison. The type is defined by the method used
+     * to prioritise. The main reason for the type inclusion is some comparisons
+     * indicate pseudo-asymmetry. Normally the only rule used to define
+     * pseudo-asymmetry is R proceeds S but integrating the type in the
+     * comparison makes for a consistent API and allows the the same rule to be
+     * use across multiple threads.
+     *
+     * @return the inferred type that this comparison produces
+     */
     public Descriptor.Type getType();
 
 }
