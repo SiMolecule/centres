@@ -41,6 +41,7 @@ public abstract class AtomicNumberComparator<A>
         return value != 0 ? value : compare(o1.getLigands(), o2.getLigands());
     }
 
+
     /**
      * Access the atomic number of the atom type
      *

@@ -34,9 +34,9 @@ public enum General
         implements Descriptor {
 
     /**
-     * A centre which is asymmetric but is lacking information
-     * to define a dull descriptor. An example could be a 2D tetrahedral
-     * centre that does not have a up/down bond.
+     * A centre which is asymmetric but is lacking information to define a dull
+     * descriptor. An example could be a 2D tetrahedral centre that does not
+     * have a up/down bond.
      */
     UNSPECIFIED(Type.NON_STEREOGENIC),
 
@@ -53,9 +53,11 @@ public enum General
 
     private Type type;
 
+
     private General(Type type) {
         this.type = type;
     }
+
 
     /**
      * @inheritDoc

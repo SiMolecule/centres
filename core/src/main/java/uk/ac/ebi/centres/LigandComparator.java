@@ -29,8 +29,7 @@ import java.util.Comparator;
  * @see Comparison
  * @see Comparator
  */
-public interface LigandComparator<A>
-        extends Comparator<Ligand<A>> {
+public interface LigandComparator<A> extends Comparator<Ligand<A>> {
 
     /**
      * Allows injection of a ligand sorter. The ligand sort is used when two

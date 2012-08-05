@@ -35,8 +35,8 @@ public enum Planar
 
 
     /**
-     * The two highest priority ligands are on the opposite (entgegen) side of
-     * a double bond. Also refereed to as 'trans' isomerism.
+     * The two highest priority ligands are on the opposite (entgegen) side of a
+     * double bond. Also refereed to as 'trans' isomerism.
      */
     E(Type.ASYMMETRIC),
 
@@ -47,9 +47,9 @@ public enum Planar
     Z(Type.ASYMMETRIC),
 
     /**
-     * The two highest priority ligands are on the opposite (entgegen) side of
-     * a double bond. This centres is pseudo-asymmetric and indicates the
-     * priority is only defined by opposite tetrahedral centres.
+     * The two highest priority ligands are on the opposite (entgegen) side of a
+     * double bond. This centres is pseudo-asymmetric and indicates the priority
+     * is only defined by opposite tetrahedral centres.
      */
     e(Type.PSEUDO_ASYMMETRIC),
 
@@ -62,9 +62,11 @@ public enum Planar
 
     private Type type;
 
+
     private Planar(Type type) {
         this.type = type;
     }
+
 
     /**
      * @inheritDoc

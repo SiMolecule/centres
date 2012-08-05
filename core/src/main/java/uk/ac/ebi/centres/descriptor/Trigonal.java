@@ -69,9 +69,11 @@ public enum Trigonal
 
     private Type type;
 
+
     private Trigonal(Type type) {
         this.type = type;
     }
+
 
     /**
      * @inheritDoc

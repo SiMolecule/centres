@@ -30,8 +30,7 @@ import java.util.Set;
  * @author John May
  * @see Digraph
  */
-public interface Ligand<A>
-        extends Centre {
+public interface Ligand<A> extends Centre {
 
     /**
      * Access the atom that this ligand is representing. Due to cyclic

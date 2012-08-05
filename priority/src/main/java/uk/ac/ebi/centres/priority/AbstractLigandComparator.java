@@ -45,6 +45,7 @@ public abstract class AbstractLigandComparator<A>
      */
     private final Descriptor.Type type;
 
+
     /**
      * Default constructor creates an {@link Descriptor.Type#ASYMMETRIC}
      * comparator.
@@ -53,12 +54,14 @@ public abstract class AbstractLigandComparator<A>
         this(Descriptor.Type.ASYMMETRIC);
     }
 
+
     /**
      * Constructor creates a comparator with the specified type.
      */
     public AbstractLigandComparator(Descriptor.Type type) {
         this.type = type;
     }
+
 
     /**
      * @inheritDoc
@@ -68,12 +71,14 @@ public abstract class AbstractLigandComparator<A>
         return new LigandComparison(compare(o1, o2), type);
     }
 
+
     /**
      * @inheritDoc
      */
     public void setSorter(LigandSorter<A> sorter) {
         this.sorter = sorter;
     }
+
 
     /**
      * Uses the injected ligand sorter to order the ligands.
@@ -85,6 +90,7 @@ public abstract class AbstractLigandComparator<A>
     public boolean sort(List<Ligand<A>> ligands) {
         return this.sort(ligands);
     }
+
 
     /**
      * Compares two lists of ligands. The ligands are first sorted and then

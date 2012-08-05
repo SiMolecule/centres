@@ -19,8 +19,8 @@
 package uk.ac.ebi.centres;
 
 /**
- * Defines a descriptor which can be assigned to an atom to indicate the type
- * of chirality (if there is any). Each descriptor defines it's general @{link
+ * Defines a descriptor which can be assigned to an atom to indicate the type of
+ * chirality (if there is any). Each descriptor defines it's general @{link
  * Type} which can be useful when comparing centres of different geometry.
  *
  * @author John May

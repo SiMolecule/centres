@@ -24,11 +24,11 @@ package uk.ac.ebi.centres;
  *
  * @author John May
  */
-public final class LigandComparison
-        implements Comparison {
+public final class LigandComparison implements Comparison {
 
     private Integer         order;
     private Descriptor.Type type;
+
 
     /**
      * Construct a new ligand comparison with order and type.
@@ -44,6 +44,7 @@ public final class LigandComparison
         this.type = type;
     }
 
+
     /**
      * @inheritDoc
      */
@@ -51,6 +52,7 @@ public final class LigandComparison
     public Integer getOrder() {
         return order;
     }
+
 
     /**
      * @inheritDoc

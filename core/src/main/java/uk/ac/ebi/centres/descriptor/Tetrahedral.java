@@ -33,21 +33,21 @@ public enum Tetrahedral
         implements Descriptor {
 
     /**
-     * Indicates the priority of ligands around the chiral atoms proceeds in
-     * a clockwise rotation.
+     * Indicates the priority of ligands around the chiral atoms proceeds in a
+     * clockwise rotation.
      */
     R(Type.ASYMMETRIC),
 
     /**
-     * Indicates the priority of ligands around the chiral atoms proceeds in
-     * a anti-clockwise rotation.
+     * Indicates the priority of ligands around the chiral atoms proceeds in a
+     * anti-clockwise rotation.
      */
     S(Type.ASYMMETRIC),
 
     /**
-     * Indicates the priority of ligands around the chiral atoms proceeds in
-     * a clockwise rotation. The priority is pseudo-asymmetric if the centre
-     * is only defined by opposing stereo descriptors.
+     * Indicates the priority of ligands around the chiral atoms proceeds in a
+     * clockwise rotation. The priority is pseudo-asymmetric if the centre is
+     * only defined by opposing stereo descriptors.
      *
      * @see <a href="http://goldbook.iupac.org/P04921.html">pseudo-asymmetric
      *      carbon atom</a>
@@ -55,9 +55,9 @@ public enum Tetrahedral
     r(Type.PSEUDO_ASYMMETRIC),
 
     /**
-     * Indicates the priority of ligands around the chiral atoms proceeds in
-     * a anti-clockwise rotation. The priority is pseudo-asymmetric if the
-     * centre is only defined by opposing stereo descriptors.
+     * Indicates the priority of ligands around the chiral atoms proceeds in a
+     * anti-clockwise rotation. The priority is pseudo-asymmetric if the centre
+     * is only defined by opposing stereo descriptors.
      *
      * @see <a href="http://goldbook.iupac.org/P04921.html">pseudo-asymmetric
      *      carbon atom</a>
@@ -66,9 +66,11 @@ public enum Tetrahedral
 
     private Type type;
 
+
     private Tetrahedral(Type type) {
         this.type = type;
     }
+
 
     /**
      * @inheritDoc
