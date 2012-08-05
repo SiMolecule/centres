@@ -47,7 +47,7 @@ public class InsertionSorter<A> implements LigandSorter<A> {
     @Override
     public Boolean prioritise(List<Ligand<A>> ligands) {
 
-        Boolean duplicates = Boolean.FALSE;
+        Boolean unique = Boolean.TRUE;
 
         for (int i = 0; i < ligands.size(); i++)
             for (int j = i; j > 0; j--) {
@@ -58,12 +58,14 @@ public class InsertionSorter<A> implements LigandSorter<A> {
 
                 } else {
                     if (value == 0)
-                        duplicates = Boolean.TRUE;
+                        unique = Boolean.FALSE;
                     break;
                 }
 
             }
-        return duplicates;
+
+        return unique;
+
     }
 
 

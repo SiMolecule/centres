@@ -62,7 +62,7 @@ public class AtomicNumberComparatorTest {
         Ligand<TestAtom> carbon2 = new TestLigand(new TestAtom("C", 6));
 
         assertEquals(0, comparator.compare(carbon1, carbon2));
-        assertTrue(comparator.prioritise(Arrays.asList(carbon1, carbon2)));
+        assertFalse(comparator.prioritise(Arrays.asList(carbon1, carbon2)));
 
     }
 
@@ -107,7 +107,7 @@ public class AtomicNumberComparatorTest {
             List<Ligand<TestAtom>> actual = Arrays.asList(nitrogen, oxygen, carbon);
             assertThat("Lists were equal before sorting",
                        actual, not(expected));
-            assertFalse("Non-unique items detected whilst sorting",
+            assertTrue("Non-unique items detected whilst sorting",
                         comparator.prioritise(actual));
             assertThat("Lists were not equal",
                        actual, equalTo(expected));
@@ -118,7 +118,7 @@ public class AtomicNumberComparatorTest {
             List<Ligand<TestAtom>> actual = Arrays.asList(nitrogen, carbon, oxygen);
             assertThat("Lists were equal before sorting",
                        actual, not(expected));
-            assertFalse("Non-unique items detected whilst sorting",
+            assertTrue("Non-unique items detected whilst sorting",
                         comparator.prioritise(actual));
             assertThat("Lists were not equal",
                        actual, equalTo(expected));
@@ -129,7 +129,7 @@ public class AtomicNumberComparatorTest {
             List<Ligand<TestAtom>> actual = Arrays.asList(carbon, nitrogen, oxygen);
             assertThat("Lists were equal before sorting",
                        actual, not(expected));
-            assertFalse("Non-unique items detected whilst sorting",
+            assertTrue("Non-unique items detected whilst sorting",
                         comparator.prioritise(actual));
             assertThat("Lists were not equal",
                        actual, equalTo(expected));
@@ -140,7 +140,7 @@ public class AtomicNumberComparatorTest {
             List<Ligand<TestAtom>> actual = Arrays.asList(carbon, oxygen, nitrogen);
             assertThat("Lists were equal before sorting",
                        actual, not(expected));
-            assertFalse("Non-unique items detected whilst sorting",
+            assertTrue("Non-unique items detected whilst sorting",
                         comparator.prioritise(actual));
             assertThat("Lists were not equal",
                        actual, equalTo(expected));
