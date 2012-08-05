@@ -41,7 +41,7 @@ public class AtomicNumberComparator<A>
      * Constructs an atomic number comparator that uses the provided accessor to
      * fetch the atomic number for a given atom.
      *
-     * @param accessor
+     * @param accessor an accessor for the atom's atomic number
      */
     public AtomicNumberComparator(AtomicNumberAccessor<A> accessor) {
         this.accessor = accessor;

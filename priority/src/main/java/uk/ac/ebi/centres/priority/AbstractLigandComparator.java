@@ -81,16 +81,15 @@ public abstract class AbstractLigandComparator<A>
 
 
     /**
-     * Access the sort of the ligand sorter, if the sorter is null a default
-     * insertion sorter ({@link InsertionSorter}) is created using this rule as
-     * the comparator.
+     * Access the ligand sorter, if the sorter is null a default  insertion
+     * sorter ({@link InsertionSorter}) is created using 'this; rule as the
+     * comparator.
      *
-     * @return
+     * @return a set ligand sorter or a newly created insertion sorter
      */
     public final LigandSorter<A> getSorter() {
-        if (sorter != null)
-            return sorter;
-        sorter = new InsertionSorter<A>(this);
+        if (sorter == null)
+            sorter = new InsertionSorter<A>(this);
         return sorter;
     }
 
@@ -120,7 +119,7 @@ public abstract class AbstractLigandComparator<A>
      */
     public int compare(List<Ligand<A>> first, List<Ligand<A>> second) {
 
-        // prioritise the ligands (to b
+        // prioritise the ligands, unique isn't required
         prioritise(first);
         prioritise(second);
 
@@ -128,11 +127,14 @@ public abstract class AbstractLigandComparator<A>
         Iterator<Ligand<A>> firstIt = first.iterator();
         Iterator<Ligand<A>> secondIt = second.iterator();
 
+        // compare each element - at the first difference that ligand
+        // has priority
         while (firstIt.hasNext() && secondIt.hasNext()) {
             int value = compare(firstIt.next(), secondIt.next());
             if (value != 0) return value;
         }
 
+        // no difference found yet, check for different size
         return first.size() - second.size();
 
     }
