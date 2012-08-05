@@ -28,7 +28,7 @@ import uk.ac.ebi.centres.priority.access.AtomicNumberAccessor;
  *
  * @author John May
  */
-public abstract class AtomicNumberComparator<A>
+public class AtomicNumberComparator<A>
         extends AbstractLigandComparator<A> {
 
     /**
