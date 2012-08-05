@@ -19,16 +19,34 @@
 package uk.ac.ebi.centres.priority;
 
 import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.priority.access.AtomicNumberAccessor;
 
 /**
- * An abstract class for constitutional priority based on atomic number.
- * Sub-classes should implement {@link #getAtomicNumber(A)} which allows the
- * comparator to determine the rank of the ligands.
+ * An abstract class for constitutional priority based on atomic number. An
+ * atomic number accessor ({@link AtomicNumberAccessor}) can be provided to
+ * allow the comparator to work on a custom atom type.
  *
  * @author John May
  */
 public abstract class AtomicNumberComparator<A>
         extends AbstractLigandComparator<A> {
+
+    /**
+     * Accessor used to get the atomic number from an atom.
+     */
+    private final AtomicNumberAccessor<A> accessor;
+
+
+    /**
+     * Constructs an atomic number comparator that uses the provided accessor to
+     * fetch the atomic number for a given atom.
+     *
+     * @param accessor
+     */
+    public AtomicNumberComparator(AtomicNumberAccessor<A> accessor) {
+        this.accessor = accessor;
+    }
+
 
     /**
      * Compares the ligands by their atoms atomic numbers.
@@ -37,18 +55,8 @@ public abstract class AtomicNumberComparator<A>
      */
     @Override
     public int compare(Ligand<A> o1, Ligand<A> o2) {
-        int value = getAtomicNumber(o1.getAtom()) - getAtomicNumber(o2.getAtom());
+        int value = accessor.getAtomicNumber(o1.getAtom()) - accessor.getAtomicNumber(o2.getAtom());
         return value != 0 ? value : compare(o1.getLigands(), o2.getLigands());
     }
-
-
-    /**
-     * Access the atomic number of the atom type
-     *
-     * @param atom
-     *
-     * @return
-     */
-    public abstract int getAtomicNumber(A atom);
 
 }
