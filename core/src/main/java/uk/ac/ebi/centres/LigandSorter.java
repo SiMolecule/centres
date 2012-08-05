@@ -29,12 +29,15 @@ public interface LigandSorter<A> {
 
     /**
      * Sorts the provided ligands and indicates if all the ligands are different
-     * (i.e. unique).
+     * (i.e. unique). The method is named prioritise to emphasise that ligands
+     * are sorting in descending order (i.e. ranked highest to lowest). The
+     * default {@link java.util.Collections#sort(java.util.List)} performs an
+     * ascending order sort.
      *
      * @param ligands the ligands that will be sorted
      *
      * @return whether the ligands are all different
      */
-    public Boolean sort(List<Ligand<A>> ligands);
+    public Boolean prioritise(List<Ligand<A>> ligands);
 
 }

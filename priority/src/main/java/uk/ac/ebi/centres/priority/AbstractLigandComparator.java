@@ -81,14 +81,29 @@ public abstract class AbstractLigandComparator<A>
 
 
     /**
+     * Access the sort of the ligand sorter, if the sorter is null a default
+     * insertion sorter ({@link InsertionSorter}) is created using this rule as
+     * the comparator.
+     *
+     * @return
+     */
+    public final LigandSorter<A> getSorter() {
+        if (sorter != null)
+            return sorter;
+        sorter = new InsertionSorter<A>(this);
+        return sorter;
+    }
+
+
+    /**
      * Uses the injected ligand sorter to order the ligands.
      *
      * @param ligands the ligands that are to be sorted
      *
      * @return whether the ligands are unique
      */
-    public boolean sort(List<Ligand<A>> ligands) {
-        return this.sort(ligands);
+    public boolean prioritise(List<Ligand<A>> ligands) {
+        return getSorter().prioritise(ligands);
     }
 
 
@@ -105,9 +120,9 @@ public abstract class AbstractLigandComparator<A>
      */
     public int compare(List<Ligand<A>> first, List<Ligand<A>> second) {
 
-        // sort the ligands (to b
-        sort(first);
-        sort(second);
+        // prioritise the ligands (to b
+        prioritise(first);
+        prioritise(second);
 
         // the iterators allow us iterate over the list
         Iterator<Ligand<A>> firstIt = first.iterator();

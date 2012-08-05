@@ -25,6 +25,8 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
+ * A simple sorter that uses the insertion sort.
+ *
  * @author John May
  */
 public class InsertionSorter<A> implements LigandSorter<A> {
@@ -37,9 +39,38 @@ public class InsertionSorter<A> implements LigandSorter<A> {
     }
 
 
+    /**
+     * Sorts in descending order. Currently always returns false.
+     *
+     * @inheritDoc
+     */
     @Override
     public Boolean prioritise(List<Ligand<A>> ligands) {
-        return Boolean.FALSE;
+
+        Boolean duplicates = Boolean.FALSE;
+
+        for (int i = 0; i < ligands.size(); i++)
+            for (int j = i; j > 0; j--) {
+                int value = comparator.compare(ligands.get(j - 1),
+                                               ligands.get(j));
+                if (value < 0) {
+                    swap(ligands, j, j - 1);
+
+                } else {
+                    if (value == 0)
+                        duplicates = Boolean.TRUE;
+                    break;
+                }
+
+            }
+        return duplicates;
+    }
+
+
+    public void swap(List list, int i, int j) {
+        Object tmp = list.get(i);
+        list.set(i, list.get(j));
+        list.set(j, tmp);
     }
 
 
