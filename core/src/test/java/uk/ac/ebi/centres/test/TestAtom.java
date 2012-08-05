@@ -71,4 +71,11 @@ public class TestAtom {
     public void setMassNumber(int massNumber) {
         this.massNumber = massNumber;
     }
+
+
+    @Override
+    public String toString() {
+        return symbol + "" + (massNumber != 0 ? Integer.toString(massNumber)
+                                              : "");
+    }
 }

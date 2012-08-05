@@ -21,6 +21,7 @@ package uk.ac.ebi.centres.test;
 import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Ligand;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -45,25 +46,25 @@ public class TestLigand implements Ligand<TestAtom> {
 
     @Override
     public List<Ligand<TestAtom>> getLigands() {
-        return null;
+        return Collections.EMPTY_LIST;
     }
 
 
     @Override
     public Set<TestAtom> getVisited() {
-        return null;
+        return Collections.EMPTY_SET;
     }
 
 
     @Override
     public Boolean isParent(TestAtom atom) {
-        return null;
+        return Boolean.FALSE;
     }
 
 
     @Override
     public Boolean isVisited(TestAtom atom) {
-        return null;
+        return Boolean.FALSE;
     }
 
 
@@ -88,5 +89,11 @@ public class TestLigand implements Ligand<TestAtom> {
     @Override
     public Descriptor getDescriptor() {
         return null;
+    }
+
+
+    @Override
+    public String toString() {
+        return atom.toString();
     }
 }
