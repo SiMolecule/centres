@@ -22,7 +22,7 @@ import java.util.Comparator;
 
 /**
  * Defines a comparator for ligands. The default {@link Comparator} can be used
- * to sort ligands however the {@link #compareLigands(Ligand, Ligand)} also adds
+ * to prioritise ligands however the {@link #compareLigands(Ligand, Ligand)} also adds
  * meta data about the type of the descriptor via the {@link Comparison}
  *
  * @author John May
