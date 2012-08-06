@@ -41,7 +41,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author John May
  */
-public class AtomicNumberComparatorTest {
+public class AtomicNumberRuleTest {
 
     private AtomicNumberAccessor<TestAtom> accessor = new AtomicNumberAccessor<TestAtom>() {
         @Override
@@ -50,19 +50,19 @@ public class AtomicNumberComparatorTest {
         }
     };
 
-    private AtomicNumberComparator<TestAtom> comparator = new AtomicNumberComparator<TestAtom>(accessor);
+    private AtomicNumberRule<TestAtom> rule = new AtomicNumberRule<TestAtom>(accessor);
 
 
     @Test
     public void testCompare_Equal() throws Exception {
 
-        comparator.setSorter(new InsertionSorter<TestAtom>(comparator));
+        rule.setSorter(new InsertionSorter<TestAtom>(rule));
 
         Ligand<TestAtom> carbon1 = new TestLigand(new TestAtom("C", 6));
         Ligand<TestAtom> carbon2 = new TestLigand(new TestAtom("C", 6));
 
-        assertEquals(0, comparator.compare(carbon1, carbon2));
-        assertFalse(comparator.prioritise(Arrays.asList(carbon1, carbon2)));
+        assertEquals(0, rule.compare(carbon1, carbon2));
+        assertFalse(rule.prioritise(Arrays.asList(carbon1, carbon2)));
 
     }
 
@@ -70,16 +70,16 @@ public class AtomicNumberComparatorTest {
     @Test
     public void testCompare_Different() throws Exception {
 
-        comparator.setSorter(new InsertionSorter<TestAtom>(comparator));
+        rule.setSorter(new InsertionSorter<TestAtom>(rule));
 
         Ligand<TestAtom> carbon = new TestLigand(new TestAtom("C", 6));
         Ligand<TestAtom> nitrogen = new TestLigand(new TestAtom("N", 7));
 
         assertThat("Higher priority in second argument should return < 0",
-                   comparator.compare(carbon, nitrogen),
+                   rule.compare(carbon, nitrogen),
                    is(lessThan(0)));
         assertThat("Higher priority in second argument should return > 0",
-                   comparator.compare(nitrogen, carbon),
+                   rule.compare(nitrogen, carbon),
                    is(greaterThan(0)));
 
     }
@@ -93,7 +93,7 @@ public class AtomicNumberComparatorTest {
     @Test
     public void testPrioritise() throws Exception {
 
-        comparator.setSorter(new InsertionSorter<TestAtom>(comparator));
+        rule.setSorter(new InsertionSorter<TestAtom>(rule));
 
         Ligand<TestAtom> carbon = new TestLigand(new TestAtom("C", 6));
         Ligand<TestAtom> nitrogen = new TestLigand(new TestAtom("N", 7));
@@ -108,7 +108,7 @@ public class AtomicNumberComparatorTest {
             assertThat("Lists were equal before sorting",
                        actual, not(expected));
             assertTrue("Non-unique items detected whilst sorting",
-                        comparator.prioritise(actual));
+                        rule.prioritise(actual));
             assertThat("Lists were not equal",
                        actual, equalTo(expected));
         }
@@ -119,7 +119,7 @@ public class AtomicNumberComparatorTest {
             assertThat("Lists were equal before sorting",
                        actual, not(expected));
             assertTrue("Non-unique items detected whilst sorting",
-                        comparator.prioritise(actual));
+                        rule.prioritise(actual));
             assertThat("Lists were not equal",
                        actual, equalTo(expected));
         }
@@ -130,7 +130,7 @@ public class AtomicNumberComparatorTest {
             assertThat("Lists were equal before sorting",
                        actual, not(expected));
             assertTrue("Non-unique items detected whilst sorting",
-                        comparator.prioritise(actual));
+                        rule.prioritise(actual));
             assertThat("Lists were not equal",
                        actual, equalTo(expected));
         }
@@ -141,7 +141,7 @@ public class AtomicNumberComparatorTest {
             assertThat("Lists were equal before sorting",
                        actual, not(expected));
             assertTrue("Non-unique items detected whilst sorting",
-                        comparator.prioritise(actual));
+                        rule.prioritise(actual));
             assertThat("Lists were not equal",
                        actual, equalTo(expected));
         }

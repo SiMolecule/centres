@@ -37,7 +37,7 @@ import static org.junit.Assert.assertThat;
 /**
  * @author John May
  */
-public class MassNumberComparatorTest {
+public class MassNumberRuleTest {
 
     private MassNumberAccessor<TestAtom> accessor = new MassNumberAccessor<TestAtom>() {
         @Override
@@ -46,19 +46,19 @@ public class MassNumberComparatorTest {
         }
     };
 
-    private MassNumberComparator<TestAtom> comparator = new MassNumberComparator<TestAtom>(accessor);
+    private MassNumberRule<TestAtom> rule = new MassNumberRule<TestAtom>(accessor);
 
 
     @Test
     public void testCompare_Equal() throws Exception {
 
-        comparator.setSorter(new InsertionSorter<TestAtom>(comparator));
+        rule.setSorter(new InsertionSorter<TestAtom>(rule));
 
         Ligand<TestAtom> carbon1 = new TestLigand(new TestAtom("C", 6, 12));
         Ligand<TestAtom> carbon2 = new TestLigand(new TestAtom("C", 6, 12));
 
-        assertEquals(0, comparator.compare(carbon1, carbon2));
-        assertFalse(comparator.prioritise(Arrays.asList(carbon1, carbon2)));
+        assertEquals(0, rule.compare(carbon1, carbon2));
+        assertFalse(rule.prioritise(Arrays.asList(carbon1, carbon2)));
 
     }
 
@@ -66,16 +66,16 @@ public class MassNumberComparatorTest {
     @Test
     public void testCompare_Different() throws Exception {
 
-        comparator.setSorter(new InsertionSorter<TestAtom>(comparator));
+        rule.setSorter(new InsertionSorter<TestAtom>(rule));
 
         Ligand<TestAtom> carbon12 = new TestLigand(new TestAtom("C", 6, 12));
         Ligand<TestAtom> carbon13 = new TestLigand(new TestAtom("C", 6, 13));
 
         assertThat("Higher priority in second argument should return < 0",
-                   comparator.compare(carbon12, carbon13),
+                   rule.compare(carbon12, carbon13),
                    is(lessThan(0)));
         assertThat("Higher priority in second argument should return > 0",
-                   comparator.compare(carbon13, carbon12),
+                   rule.compare(carbon13, carbon12),
                    is(greaterThan(0)));
 
     }

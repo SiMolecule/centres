@@ -28,7 +28,7 @@ import uk.ac.ebi.centres.priority.access.AtomicNumberAccessor;
  *
  * @author John May
  */
-public class AtomicNumberComparator<A>
+public class AtomicNumberRule<A>
         extends AbstractLigandComparator<A> {
 
     /**
@@ -43,7 +43,7 @@ public class AtomicNumberComparator<A>
      *
      * @param accessor an accessor for the atom's atomic number
      */
-    public AtomicNumberComparator(AtomicNumberAccessor<A> accessor) {
+    public AtomicNumberRule(AtomicNumberAccessor<A> accessor) {
         this.accessor = accessor;
     }
 

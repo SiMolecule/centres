@@ -28,7 +28,7 @@ import uk.ac.ebi.centres.priority.access.MassNumberAccessor;
  *
  * @author John May
  */
-public class MassNumberComparator<A>
+public class MassNumberRule<A>
         extends AbstractLigandComparator<A> {
 
     /**
@@ -43,7 +43,7 @@ public class MassNumberComparator<A>
      *
      * @param accessor an accessor for the atom's mass number
      */
-    public MassNumberComparator(MassNumberAccessor<A> accessor) {
+    public MassNumberRule(MassNumberAccessor<A> accessor) {
         this.accessor = accessor;
     }
 
