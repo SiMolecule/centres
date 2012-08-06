@@ -19,7 +19,7 @@
 package uk.ac.ebi.centres.priority.access;
 
 /**
- * Wrapper provides access to a given an atom's atomic number (of type A) to
+ * Wrapper provides access to a given an atom's mass number (of type A) to
  * priority rules that require it. The method can be injected into a priority to
  * rule too allow that rule to act on the any given atom class type.
  *
@@ -27,17 +27,17 @@ package uk.ac.ebi.centres.priority.access;
  *
  * @author John May
  */
-public interface AtomicNumberAccessor<A> {
+public interface MassNumberAccessor<A> {
 
     /**
-     * Access the atomic number for a provided atom. The atomic can be 0 to
-     * allow for cases such as 'R' or '*' but should never be negative.
+     * Access the mass number for a provided atom. The mass can be 0 but should
+     * never be negative.
      *
-     * @param atom the atom to access the atomic number for
+     * @param atom the atom to access the mass number for
      *
-     * @return a positive integer value that is the atomic number for the given
+     * @return a positive integer value that is the mass number for the given
      *         atom
      */
-    public int getAtomicNumber(A atom);
+    public int getMassNumber(A atom);
 
 }
