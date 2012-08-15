@@ -21,7 +21,7 @@ package uk.ac.ebi.centres.priority;
 import uk.ac.ebi.centres.Comparison;
 import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Ligand;
-import uk.ac.ebi.centres.LigandComparator;
+import uk.ac.ebi.centres.PriorityRule;
 import uk.ac.ebi.centres.LigandComparison;
 import uk.ac.ebi.centres.LigandSorter;
 
@@ -34,8 +34,8 @@ import java.util.List;
  *
  * @author John May
  */
-public abstract class AbstractLigandComparator<A>
-        implements LigandComparator<A> {
+public abstract class AbstractPriorityRule<A>
+        implements PriorityRule<A> {
 
     private LigandSorter<A> sorter;
 
@@ -50,7 +50,7 @@ public abstract class AbstractLigandComparator<A>
      * Default constructor creates an {@link Descriptor.Type#ASYMMETRIC}
      * comparator.
      */
-    public AbstractLigandComparator() {
+    public AbstractPriorityRule() {
         this(Descriptor.Type.ASYMMETRIC);
     }
 
@@ -58,7 +58,7 @@ public abstract class AbstractLigandComparator<A>
     /**
      * Constructor creates a comparator with the specified type.
      */
-    public AbstractLigandComparator(Descriptor.Type type) {
+    public AbstractPriorityRule(Descriptor.Type type) {
         this.type = type;
     }
 

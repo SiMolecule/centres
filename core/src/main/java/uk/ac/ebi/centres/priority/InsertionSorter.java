@@ -25,7 +25,8 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * A simple sorter that uses the insertion sort.
+ * A simple insertion sort for ligands. The number of ligands is not likely to
+ * be very larger as such doing a merge sort would have little benefit.
  *
  * @author John May
  */

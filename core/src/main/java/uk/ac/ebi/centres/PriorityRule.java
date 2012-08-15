@@ -19,17 +19,21 @@
 package uk.ac.ebi.centres;
 
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Defines a comparator for ligands. The default {@link Comparator} can be used
- * to prioritise ligands however the {@link #compareLigands(Ligand, Ligand)} also adds
- * meta data about the type of the descriptor via the {@link Comparison}
+ * to prioritise ligands however the {@link #compareLigands(Ligand, Ligand)}
+ * also adds meta data about the type of the descriptor via the {@link
+ * Comparison}
  *
  * @author John May
  * @see Comparison
  * @see Comparator
  */
-public interface LigandComparator<A> extends Comparator<Ligand<A>> {
+public interface PriorityRule<A> extends Comparator<Ligand<A>> {
+
+    public Boolean prioritise(List<Ligand<A>> ligands);
 
     /**
      * Allows injection of a ligand sorter. The ligand sort is used when two

@@ -19,46 +19,35 @@
 package uk.ac.ebi.centres;
 
 /**
- * Simple holder for a ligand comparison. The comparison holds the value
- * produced in the comparison as well as the type of the comparison.
- *
  * @author John May
  */
-public final class LigandComparison implements Comparison {
-
-    private Integer         order;
-    private Descriptor.Type type;
-
+public interface SignCalculator<A> {
 
     /**
-     * Construct a new ligand comparison with order and type.
+     * When wedge and hatch bonds are involed
      *
-     * @param order the order of two ligands
-     * @param type  the type of the comparison
+     * @param a1
+     * @param o1
+     * @param a2
+     * @param o2
+     * @param a3
+     * @param o3
+     * @param a4
+     * @param o4
      *
-     * @see PriorityRule
-     * @see java.util.Comparator
+     * @return
      */
-    public LigandComparison(Integer order, Descriptor.Type type) {
-        this.order = order;
-        this.type = type;
-    }
-
+    public int getSign(A a1, int o1, A a2, int o2, A a3, int o3, A a4, int o4);
 
     /**
-     * @inheritDoc
+     * For a simple triangle of atoms
+     *
+     * @param a1
+     * @param a2
+     * @param a3
+     *
+     * @return
      */
-    @Override
-    public Integer getOrder() {
-        return order;
-    }
+    public int getSign(A a1, A a2, A a3);
 
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public Descriptor.Type getType() {
-        return type;
-    }
 }

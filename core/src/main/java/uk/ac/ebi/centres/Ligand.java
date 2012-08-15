@@ -30,17 +30,42 @@ import java.util.Set;
  * @author John May
  * @see Digraph
  */
-public interface Ligand<A> extends Centre {
+public interface Ligand<A> {
+
+
+
+    public A getAtom();
+
 
     /**
-     * Access the atom that this ligand is representing. Due to cyclic
-     * structures and double bonds an atom can be represented by more then one
-     * ligand. All ligands for a given atom can be determined using the {@link
-     * Digraph#getLigands(A)}
+     * Sets the descriptor for this centre. This method will throw an illegal
+     * argument exception if the descriptor is set to null.
      *
-     * @return the atom that this ligand is representing
+     * @param descriptor the new descriptor for this centre
+     *
+     * @see uk.ac.ebi.centres.descriptor.General
+     * @see uk.ac.ebi.centres.descriptor.Tetrahedral
+     * @see uk.ac.ebi.centres.descriptor.Planar
+     * @see uk.ac.ebi.centres.descriptor.Trigonal
      */
-    public A getAtom();
+    public void setDescriptor(Descriptor descriptor);
+
+    /**
+     * Access the descriptor for this centre. This descriptor is the primary
+     * descriptor for this centre and not an auxiliary descriptor. Auxiliary
+     * descriptors should be set on a per ligand basis. This method should not
+     * return null and instead return {@link uk.ac.ebi.centres.descriptor.General#UNKNOWN}
+     * for unknown/not yet determined centres.
+     *
+     * @return descriptor for this centre
+     *
+     * @see uk.ac.ebi.centres.descriptor.General
+     * @see uk.ac.ebi.centres.descriptor.Tetrahedral
+     * @see uk.ac.ebi.centres.descriptor.Planar
+     * @see uk.ac.ebi.centres.descriptor.Trigonal
+     */
+    public Descriptor getDescriptor();
+
 
     /**
      * Access the child ligands. Child ligands are ligands that are further away

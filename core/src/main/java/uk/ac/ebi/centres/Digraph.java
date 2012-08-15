@@ -36,26 +36,7 @@ import java.util.List;
  */
 public interface Digraph<A> {
 
-    /**
-     * Access the centre for the given atom. There is a one-to-one mapping of
-     * centres to atoms and the no centres are created for 'ghost' ligands.
-     *
-     * @param atom the atom to access the centre for
-     *
-     * @return the centre for provided atom
-     */
-    public Centre getCentre(A atom);
 
-    /**
-     * Access the centre for the bond defined by the first and second atoms.
-     * This centre is not dependant on the order of the atoms provided.
-     *
-     * @param first  the first atom in a bond
-     * @param second the second atom in a bond
-     *
-     * @return the centre for the inferred bond
-     */
-    public Centre getCentre(A first, A second);
 
     /**
      * Access the root ligand of this digraph. The root is normally the chiral

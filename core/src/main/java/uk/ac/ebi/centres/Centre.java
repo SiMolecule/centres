@@ -18,6 +18,8 @@
 
 package uk.ac.ebi.centres;
 
+import java.util.Set;
+
 /**
  * Defines a stereo centre (normally on an atom or bond) that provides access
  * and mutation of the centres descriptor. This centre could plug directly into
@@ -32,35 +34,31 @@ package uk.ac.ebi.centres;
  * @see uk.ac.ebi.centres.descriptor.Planar
  * @see uk.ac.ebi.centres.descriptor.Trigonal
  */
-public interface Centre {
+public interface Centre<A> extends Ligand<A> {
+
 
     /**
-     * Sets the descriptor for this centre. This method will throw an illegal
-     * argument exception if the descriptor is set to null.
+     * Access the centre atoms that define this centre. In tetrahedral and
+     * trigonal centres this is a set of length one whilst in planar centres
+     * this is a set of length two.
      *
-     * @param descriptor the new descriptor for this centre
-     *
-     * @see uk.ac.ebi.centres.descriptor.General
-     * @see uk.ac.ebi.centres.descriptor.Tetrahedral
-     * @see uk.ac.ebi.centres.descriptor.Planar
-     * @see uk.ac.ebi.centres.descriptor.Trigonal
+     * @return the atoms of this centre
      */
-    public void setDescriptor(Descriptor descriptor);
+    public Set<A> getAtoms();
 
     /**
-     * Access the descriptor for this centre. This descriptor is the primary
-     * descriptor for this centre and not an auxiliary descriptor. Auxiliary
-     * descriptors should be set on a per ligand basis. This method should not
-     * return null and instead return {@link uk.ac.ebi.centres.descriptor.General#UNKNOWN}
-     * for unknown/not yet determined centres.
+     * Perceives the descriptor for this centre given a priority rule and a
+     * calculator for the sign of the space. The descriptor is not set directly
+     * as descriptors are used in rules and should be exhaustively perceived
+     * before being assigned. This allows descriptor calculation to be order
+     * independent.
      *
-     * @return descriptor for this centre
+     * @param rule       the rule by which this centre's proximal ligands are
+     *                   sorted
+     * @param calculator the sign calculator to use (normally 2D or 3D).
      *
-     * @see uk.ac.ebi.centres.descriptor.General
-     * @see uk.ac.ebi.centres.descriptor.Tetrahedral
-     * @see uk.ac.ebi.centres.descriptor.Planar
-     * @see uk.ac.ebi.centres.descriptor.Trigonal
+     * @return a perceived descriptor for this centre.
      */
-    public Descriptor getDescriptor();
+    public Descriptor perceive(PriorityRule<A> rule, SignCalculator<A> calculator);
 
 }

@@ -29,7 +29,7 @@ import uk.ac.ebi.centres.priority.access.MassNumberAccessor;
  * @author John May
  */
 public class MassNumberRule<A>
-        extends AbstractLigandComparator<A> {
+        extends AbstractPriorityRule<A> {
 
     /**
      * Accessor used to get the atomic number from an atom.
