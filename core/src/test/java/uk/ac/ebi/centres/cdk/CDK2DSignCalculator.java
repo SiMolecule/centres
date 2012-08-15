@@ -16,44 +16,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-package uk.ac.ebi.centres.graph;
+package uk.ac.ebi.centres.cdk;
 
-import uk.ac.ebi.centres.ConnectionProvider;
-import uk.ac.ebi.centres.ConnectionTable;
-
-import java.util.Collection;
+import org.openscience.cdk.interfaces.IAtom;
+import uk.ac.ebi.centres.Abstract2DSignCalculator;
 
 /**
  * @author John May
  */
-public class ConnectionTableDigraph<A>
-        extends AbstractMutableDigraph<A>  {
+public class CDK2DSignCalculator extends Abstract2DSignCalculator<IAtom> {
 
-
-    private final ConnectionTable<A> table;
-
-
-    public ConnectionTableDigraph(DefaultDescriptorManager<A> manager,
-                                  ConnectionTable<A> table) {
-        super(manager);
-        this.table = table;
+    @Override
+    public double getX(IAtom atom) {
+        return atom.getPoint2d().x;
     }
 
 
     @Override
-    public int getOrder(A first, A second) {
-        return table.getOrder(first, second);
-    }
-
-
-    @Override
-    public int getDepth(A first, A second) {
-        return table.getDepth(first, second);
-    }
-
-
-    @Override
-    public Collection<A> getConnected(A atom) {
-        return table.getConnected(atom);
+    public double getY(IAtom atom) {
+        return atom.getPoint2d().y;
     }
 }

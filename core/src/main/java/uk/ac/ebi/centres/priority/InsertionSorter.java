@@ -20,8 +20,8 @@ package uk.ac.ebi.centres.priority;
 
 import uk.ac.ebi.centres.Ligand;
 import uk.ac.ebi.centres.LigandSorter;
+import uk.ac.ebi.centres.PriorityRule;
 
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -32,11 +32,11 @@ import java.util.List;
  */
 public class InsertionSorter<A> implements LigandSorter<A> {
 
-    private final Comparator<Ligand<A>> comparator;
+    private final PriorityRule<A> rule;
 
 
-    public InsertionSorter(Comparator<Ligand<A>> comparator) {
-        this.comparator = comparator;
+    public InsertionSorter(PriorityRule<A> comparator) {
+        this.rule = comparator;
     }
 
 
@@ -52,11 +52,10 @@ public class InsertionSorter<A> implements LigandSorter<A> {
 
         for (int i = 0; i < ligands.size(); i++)
             for (int j = i; j > 0; j--) {
-                int value = comparator.compare(ligands.get(j - 1),
-                                               ligands.get(j));
+                int value = rule.compare(ligands.get(j - 1),
+                                         ligands.get(j));
                 if (value < 0) {
                     swap(ligands, j, j - 1);
-
                 } else {
                     if (value == 0)
                         unique = Boolean.FALSE;

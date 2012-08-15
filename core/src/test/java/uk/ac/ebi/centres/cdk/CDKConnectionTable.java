@@ -52,6 +52,9 @@ public class CDKConnectionTable extends BasicConnectionTable<IAtom> {
 
 
     public CDKConnectionTable(IAtomContainer container) {
+        for (int i = 0; i < container.getAtomCount(); i++) {
+            container.getAtom(i).setProperty("number", i + 1);
+        }
         for (IBond bond : container.bonds()) {
             addConnection(bond.getAtom(0),
                           bond.getAtom(1),

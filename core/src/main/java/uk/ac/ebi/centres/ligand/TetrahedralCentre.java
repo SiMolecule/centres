@@ -21,11 +21,15 @@ package uk.ac.ebi.centres.ligand;
 import uk.ac.ebi.centres.Centre;
 import uk.ac.ebi.centres.ConnectionProvider;
 import uk.ac.ebi.centres.Descriptor;
+import uk.ac.ebi.centres.Ligand;
 import uk.ac.ebi.centres.MutableDescriptor;
 import uk.ac.ebi.centres.PriorityRule;
 import uk.ac.ebi.centres.SignCalculator;
+import uk.ac.ebi.centres.descriptor.General;
+import uk.ac.ebi.centres.descriptor.Tetrahedral;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -60,7 +64,28 @@ public class TetrahedralCentre<A>
 
     @Override
     public Descriptor perceive(PriorityRule<A> rule, SignCalculator<A> calculator) {
-        return null;
+
+        List<Ligand<A>> ligands = getLigands();
+
+        boolean unique = rule.prioritise(ligands);
+
+
+        if (unique) {
+
+            if (ligands.size() < 4) ligands.add(this);
+
+            int sign = calculator.getSign(ligands.get(0),
+                                          ligands.get(1),
+                                          ligands.get(2),
+                                          ligands.get(3));
+
+            return sign > 0 ? Tetrahedral.S : sign < 0
+                            ? Tetrahedral.R : General.UNSPECIFIED;
+
+
+        }
+
+        return General.UNKNOWN;
     }
 
 

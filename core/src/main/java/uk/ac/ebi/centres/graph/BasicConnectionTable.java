@@ -43,12 +43,13 @@ public class BasicConnectionTable<A> implements ConnectionTable<A> {
     public void addConnection(A first, A second, int order, int sign) {
         newConnection(first, second, order,
                       sign >= 1 ? 1 : sign <= -1 ? -1 : 0);
-        newConnection(second, first, order, sign >= -1 ? 1 : sign <= 1 ? -1
-                                                                       : 0); // note the sign is inverted
+        newConnection(second, first, order,
+                      sign >= 1 ? -1 : sign <= -1 ? 1
+                                                  : 0); // note the sign is inverted
     }
 
 
-    private void newConnection(A first, A second, int order, Integer sign) {
+    private void newConnection(A first, A second, int order, int sign) {
         if (!connections.containsKey(first)) {
             connections.put(first, new HashMap<A, Map.Entry<Integer, Integer>>());
         }

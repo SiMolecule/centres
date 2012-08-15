@@ -103,6 +103,18 @@ public abstract class RootedDigraph<A> implements Digraph<A>,
 
 
     @Override
+    public List<Arc<A>> getArcs(Ligand<A> ligand) {
+        return arcs.getForTail(ligand);
+    }
+
+
+    @Override
+    public Arc<A> getParentArc(Ligand<A> ligand) {
+        return arcs.getForHead(ligand);
+    }
+
+
+    @Override
     public List<Ligand<A>> getLigands(Ligand<A> ligand) {
 
         List<Ligand<A>> ligands = arcs.getHeads(ligand);
@@ -118,7 +130,6 @@ public abstract class RootedDigraph<A> implements Digraph<A>,
                 continue;
 
 
-            // collection creation...
             MutableDescriptor descriptor = manager.getDescriptor(atom);
 
             // create the new ligand - terminal ligands are created in cases of cyclic molecules
@@ -140,7 +151,7 @@ public abstract class RootedDigraph<A> implements Digraph<A>,
                 arcs.add(newArc(ligand, ghost));
                 ligandMap.put(atom, ghost);
                 ligands.add(ghost);
-                Ligand<A> terminalGhost = new TerminalLigand<A>(this, descriptor, ligand.getVisited(), atom, ligand.getAtom());
+                Ligand<A> terminalGhost = new TerminalLigand<A>(this, descriptor, ligand.getVisited(), ligand.getAtom(), atom);
                 arcs.add(newArc(ghost, terminalGhost));
                 ligandMap.put(ghost.getAtom(), terminalGhost);
             }

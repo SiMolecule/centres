@@ -19,6 +19,7 @@
 package uk.ac.ebi.centres.graph;
 
 import uk.ac.ebi.centres.Centre;
+import uk.ac.ebi.centres.ConnectionProvider;
 import uk.ac.ebi.centres.DescriptorManager;
 import uk.ac.ebi.centres.Digraph;
 import uk.ac.ebi.centres.Ligand;
@@ -33,7 +34,9 @@ import java.util.Map;
  *
  * @author John May
  */
-public abstract class AbstractMutableDigraph<A> implements Digraph<A> {
+public abstract class AbstractMutableDigraph<A>
+        implements Digraph<A>,
+                   ConnectionProvider<A> {
 
     public Map<Centre<A>, RootedDigraph<A>> graphs = new HashMap<Centre<A>, RootedDigraph<A>>();
     private final DescriptorManager<A> manager;
@@ -75,11 +78,18 @@ public abstract class AbstractMutableDigraph<A> implements Digraph<A> {
 
     }
 
+
     public abstract int getOrder(A first, A second);
 
     public abstract int getDepth(A first, A second);
 
     public abstract Collection<A> getConnected(A atom);
+
+
+    @Override
+    public List<Ligand<A>> getLigands(Ligand<A> ligand) {
+        return active.getLigands(ligand);
+    }
 
 
     @Override
@@ -97,6 +107,18 @@ public abstract class AbstractMutableDigraph<A> implements Digraph<A> {
     @Override
     public List<Ligand<A>> getLigands(A atom) {
         return active.getLigands(atom);
+    }
+
+
+    @Override
+    public List<Arc<A>> getArcs(Ligand<A> ligand) {
+        return active.getArcs(ligand);
+    }
+
+
+    @Override
+    public Arc<A> getParentArc(Ligand<A> ligand) {
+        return active.getParentArc(ligand);
     }
 
 

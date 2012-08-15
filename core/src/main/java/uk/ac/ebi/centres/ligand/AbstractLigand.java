@@ -19,11 +19,13 @@
 package uk.ac.ebi.centres.ligand;
 
 import com.google.common.collect.Sets;
+import org.openscience.cdk.interfaces.IAtom;
 import uk.ac.ebi.centres.ConnectionProvider;
 import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Ligand;
 import uk.ac.ebi.centres.MutableDescriptor;
 import uk.ac.ebi.centres.descriptor.General;
+import uk.ac.ebi.centres.graph.Arc;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +36,7 @@ import java.util.Set;
  */
 public abstract class AbstractLigand<A> implements Ligand<A> {
 
-    private      Descriptor auxiliary = General.UNKNOWN;
+    private Descriptor auxiliary = General.UNKNOWN;
     private final ConnectionProvider<A> provider;
     private final Set<A>                visited;
     private final MutableDescriptor     descriptor;
@@ -98,6 +100,28 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
     }
 
 
+    @Override
+    public String toString() {
+        A atom = getAtom();
+        if (atom instanceof IAtom) {
+            return ((IAtom) atom).getSymbol() + "" + ((IAtom) atom).getProperty("number");
+        }
+        return "Non CDK Atom";
+    }
+
+
+    @Override
+    public List<Arc<A>> getArcs() {
+        return provider.getArcs(this);
+    }
+
+
+    @Override
+    public Arc<A> getParentArc() {
+        return provider.getParentArc(this);
+    }
+
+
     /**
      * @inheritDoc
      */
@@ -116,4 +140,9 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
     }
 
 
+    @Override
+    public int getDepth() {
+        Arc<A> arc = getParentArc();
+        return arc == null ? 0 : arc.getDepth();
+    }
 }

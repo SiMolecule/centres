@@ -26,6 +26,7 @@ import uk.ac.ebi.centres.Ligand;
 import uk.ac.ebi.centres.MutableDescriptor;
 import uk.ac.ebi.centres.PriorityRule;
 import uk.ac.ebi.centres.SignCalculator;
+import uk.ac.ebi.centres.descriptor.Planar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,18 +94,20 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
         List<Ligand<A>> firstLigands = first.getLigands();
         List<Ligand<A>> secondLigands = second.getLigands();
 
+        // check for pseudo
         rule.prioritise(firstLigands);
         rule.prioritise(secondLigands);
 
         int firstSign = calculator.getSign(firstLigands.iterator().next().getAtom(),
                                            first.getAtom(),
                                            second.getAtom());
-        int secondSign = calculator.getSign(firstLigands.iterator().next().getAtom(),
-                                            first.getAtom(),
-                                            second.getAtom());
+        int secondSign = calculator.getSign(secondLigands.iterator().next().getAtom(),
+                                            second.getAtom(),
+                                            first.getAtom());
 
 
-        return null; // NONE/UNKNOWN?
+        // also check for psuedo (from prioritise)
+        return firstSign == secondSign ? Planar.E : Planar.Z;
 
     }
 }

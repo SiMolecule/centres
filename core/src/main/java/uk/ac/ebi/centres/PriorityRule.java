@@ -33,7 +33,7 @@ import java.util.List;
  */
 public interface PriorityRule<A> extends Comparator<Ligand<A>> {
 
-    public Boolean prioritise(List<Ligand<A>> ligands);
+    public boolean prioritise(List<Ligand<A>> ligands);
 
     /**
      * Allows injection of a ligand sorter. The ligand sort is used when two

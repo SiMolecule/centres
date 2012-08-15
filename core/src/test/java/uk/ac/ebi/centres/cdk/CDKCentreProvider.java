@@ -54,7 +54,8 @@ public class CDKCentreProvider implements CentreProvider<IAtom> {
         // tetrahedral centres
         for (IAtom atom : container.atoms()) {
             // might need refinement
-            if (IAtomType.Hybridization.SP3.equals(atom.getHybridization())) {
+            if (IAtomType.Hybridization.SP3.equals(atom.getHybridization())
+                    && container.getConnectedAtomsCount(atom) > 2) {
                 centres.add(new TetrahedralCentre<IAtom>(provider, manager.getDescriptor(atom), atom));
             }
         }

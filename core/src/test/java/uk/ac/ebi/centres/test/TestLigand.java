@@ -20,6 +20,7 @@ package uk.ac.ebi.centres.test;
 
 import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.graph.Arc;
 
 import java.util.Collections;
 import java.util.List;
@@ -89,6 +90,24 @@ public class TestLigand implements Ligand<TestAtom> {
     @Override
     public Descriptor getDescriptor() {
         return null;
+    }
+
+
+    @Override
+    public List<Arc<TestAtom>> getArcs() {
+        return null;
+    }
+
+
+    @Override
+    public Arc<TestAtom> getParentArc() {
+        return null;
+    }
+
+
+    @Override
+    public int getDepth() {
+        return 0;
     }
 
 

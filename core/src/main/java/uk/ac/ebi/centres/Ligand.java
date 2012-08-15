@@ -18,6 +18,8 @@
 
 package uk.ac.ebi.centres;
 
+import uk.ac.ebi.centres.graph.Arc;
+
 import java.util.List;
 import java.util.Set;
 
@@ -31,7 +33,6 @@ import java.util.Set;
  * @see Digraph
  */
 public interface Ligand<A> {
-
 
 
     public A getAtom();
@@ -119,5 +120,13 @@ public interface Ligand<A> {
      * @return the auxiliary descriptor
      */
     public Descriptor getAuxiliary();
+
+
+    public List<Arc<A>> getArcs();
+
+    public Arc<A> getParentArc();
+
+
+    public int getDepth();
 
 }
