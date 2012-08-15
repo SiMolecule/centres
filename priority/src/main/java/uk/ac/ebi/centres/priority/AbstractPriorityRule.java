@@ -21,9 +21,9 @@ package uk.ac.ebi.centres.priority;
 import uk.ac.ebi.centres.Comparison;
 import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Ligand;
-import uk.ac.ebi.centres.PriorityRule;
 import uk.ac.ebi.centres.LigandComparison;
 import uk.ac.ebi.centres.LigandSorter;
+import uk.ac.ebi.centres.PriorityRule;
 
 import java.util.Iterator;
 import java.util.List;
@@ -67,7 +67,7 @@ public abstract class AbstractPriorityRule<A>
      * @inheritDoc
      */
     @Override
-    public final Comparison compareLigands(Ligand<A> o1, Ligand<A> o2) {
+    public Comparison compareLigands(Ligand<A> o1, Ligand<A> o2) {
         return new LigandComparison(compare(o1, o2), type);
     }
 
@@ -140,4 +140,11 @@ public abstract class AbstractPriorityRule<A>
     }
 
 
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public Descriptor.Type getType() {
+        return type;
+    }
 }

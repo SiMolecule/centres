@@ -33,6 +33,14 @@ import java.util.List;
  */
 public interface PriorityRule<A> extends Comparator<Ligand<A>> {
 
+    /**
+     * Prioritises ligands using the provided sorter and indicates whether the
+     * ligands were unique.
+     *
+     * @param ligands a list of ligands to prioritise
+     *
+     * @return whether the ligands were unique
+     */
     public boolean prioritise(List<Ligand<A>> ligands);
 
     /**
@@ -61,4 +69,11 @@ public interface PriorityRule<A> extends Comparator<Ligand<A>> {
      */
     public Comparison compareLigands(Ligand<A> o1, Ligand<A> o2);
 
+    /**
+     * Access the descriptor type this rule indicates. Normally rules will
+     * indicate. In rare cases a rule produce a pseudo-asymmetric centre.
+     *
+     * @return the type of rule
+     */
+    public Descriptor.Type getType();
 }
