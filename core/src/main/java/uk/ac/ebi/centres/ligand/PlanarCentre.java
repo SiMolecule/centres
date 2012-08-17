@@ -19,6 +19,7 @@
 package uk.ac.ebi.centres.ligand;
 
 import com.google.common.collect.Sets;
+import org.openscience.cdk.interfaces.IAtom;
 import uk.ac.ebi.centres.Centre;
 import uk.ac.ebi.centres.ConnectionProvider;
 import uk.ac.ebi.centres.Descriptor;
@@ -26,6 +27,7 @@ import uk.ac.ebi.centres.Ligand;
 import uk.ac.ebi.centres.MutableDescriptor;
 import uk.ac.ebi.centres.PriorityRule;
 import uk.ac.ebi.centres.SignCalculator;
+import uk.ac.ebi.centres.descriptor.General;
 import uk.ac.ebi.centres.descriptor.Planar;
 
 import java.util.ArrayList;
@@ -77,6 +79,16 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
 
 
     @Override
+    public String toString() {
+        if (first.getAtom() instanceof IAtom) {
+            return ((IAtom) first.getAtom()).getSymbol() + "" + ((IAtom) first.getAtom()).getProperty("number") + "=" +
+                    ((IAtom) second.getAtom()).getSymbol() + "" + ((IAtom) second.getAtom()).getProperty("number");
+        }
+        return "eh?";
+    }
+
+
+    @Override
     public Boolean isParent(Object atom) {
         return atoms.contains(atom);
     }
@@ -95,8 +107,11 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
         List<Ligand<A>> secondLigands = second.getLigands();
 
         // check for pseudo
-        rule.prioritise(firstLigands);
-        rule.prioritise(secondLigands);
+        boolean unique = rule.prioritise(firstLigands) && rule.prioritise(secondLigands);
+
+        if (!unique) {
+            return General.UNKNOWN;
+        }
 
         int firstSign = calculator.getSign(firstLigands.iterator().next().getAtom(),
                                            first.getAtom(),
