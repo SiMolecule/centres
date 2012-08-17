@@ -1,0 +1,102 @@
+<?xml version="1.0" ?>
+<cml>
+    <MDocument>
+        <MChemicalStruct>
+            <molecule molID="m1">
+                <atomArray>
+                    <atom id="a1" elementType="C"
+                          x2="-1.014241518472783" y2="2.9421569903563523" />
+                    <atom id="a2" elementType="C"
+                          x2="-1.8321317126776893" y2="1.496237612393873" />
+                    <atom id="a3" elementType="C"
+                          x2="-1.016486576364334" y2="0.0823731495192983" />
+                    <atom id="a4" elementType="O"
+                          x2="-3.3953120348144856" y2="1.0882292103104025" />
+                    <atom id="a5" elementType="C"
+                          x2="0.46399996999121995" y2="0.7878838620370288" />
+                    <atom id="a6" elementType="C"
+                          x2="-1.6487553543665876" y2="-1.423520155830392" />
+                    <atom id="a7" elementType="C"
+                          x2="-2.4531130804036834" y2="3.8198738951798883" />
+                    <atom id="a8" elementType="C"
+                          x2="0.7305395240684732" y2="3.567997307371109" />
+                    <atom id="a9" elementType="C"
+                          x2="-2.5844644048113934" y2="5.402382364368718" />
+                    <atom id="a10" elementType="C"
+                          x2="2.2193856842098247" y2="2.492644937242676" />
+                    <atom id="a11" elementType="C"
+                          x2="-3.1068566189954976" y2="-2.0688837930284123" />
+                    <atom id="a12" elementType="C"
+                          x2="0.6341589232163222" y2="2.4926449372426767" />
+                    <atom id="a13" elementType="O"
+                          x2="-4.350756211222321" y2="-1.1609665035917907" />
+                    <atom id="a14" elementType="C"
+                          x2="-0.3073214689221567" y2="4.066202431256098" />
+                    <atom id="a15" elementType="C"
+                          x2="-3.271186260069310" y2="-3.600091084372256" />
+                    <atom id="a16" elementType="O"
+                          x2="1.9866154330792924" y2="3.6451370590592633" />
+                    <atom id="a17" elementType="C"
+                          x2="1.1041640527268473" y2="5.260824599487984" />
+                    <atom id="a18" elementType="C"
+                          x2="-4.100724068451135" y2="3.9446071894316863" />
+                    <atom id="a19" elementType="C"
+                          x2="1.4878374854767802" y2="-0.6097557168477463" />
+                    <atom id="a20" elementType="C"
+                          x2="-1.106711151583505" y2="-2.9764992257248686" />
+                    <atom id="a21" elementType="C"
+                          x2="-3.9772655488252915" y2="6.059424960578111" />
+                    <atom id="a22" elementType="O"
+                          x2="-1.319048253118630" y2="6.2800622394000865" />
+                    <atom id="a23" elementType="C"
+                          x2="2.7287176921796026" y2="0.9358707878740922" />
+                    <atom id="a24" elementType="O"
+                          x2="3.9056192962382856" y2="2.3092445737207825" />
+                </atomArray>
+                <bondArray>
+                    <bond atomRefs2="a1 a2" order="1" />
+                    <bond atomRefs2="a2 a3" order="1" />
+                    <bond atomRefs2="a2 a4" order="1">
+                        <bondStereo dictRef="cml:H">H</bondStereo>
+                    </bond>
+                    <bond atomRefs2="a3 a5" order="1" />
+                    <bond atomRefs2="a3 a6" order="1" />
+                    <bond atomRefs2="a1 a7" order="1" />
+                    <bond atomRefs2="a1 a8" order="1" />
+                    <bond atomRefs2="a7 a9" order="1" />
+                    <bond atomRefs2="a8 a10" order="1" />
+                    <bond atomRefs2="a6 a11" order="1" />
+                    <bond atomRefs2="a5 a12" order="1" />
+                    <bond atomRefs2="a11 a13" order="1">
+                        <bondStereo dictRef="cml:W">W</bondStereo>
+                    </bond>
+                    <bond atomRefs2="a12 a14" order="1" />
+                    <bond atomRefs2="a11 a15" order="1" />
+                    <bond atomRefs2="a12 a16" order="1">
+                        <bondStereo dictRef="cml:W">W</bondStereo>
+                    </bond>
+                    <bond atomRefs2="a8 a17" order="1">
+                        <bondStereo dictRef="cml:W">W</bondStereo>
+                    </bond>
+                    <bond atomRefs2="a7 a18" order="1">
+                        <bondStereo dictRef="cml:H">H</bondStereo>
+                    </bond>
+                    <bond atomRefs2="a5 a19" order="1">
+                        <bondStereo dictRef="cml:H">H</bondStereo>
+                    </bond>
+                    <bond atomRefs2="a6 a20" order="1">
+                        <bondStereo dictRef="cml:W">W</bondStereo>
+                    </bond>
+                    <bond atomRefs2="a9 a21" order="1" />
+                    <bond atomRefs2="a9 a22" order="1">
+                        <bondStereo dictRef="cml:W">W</bondStereo>
+                    </bond>
+                    <bond atomRefs2="a10 a23" order="1" />
+                    <bond atomRefs2="a10 a24" order="1">
+                        <bondStereo dictRef="cml:H">H</bondStereo>
+                    </bond>
+                </bondArray>
+            </molecule>
+        </MChemicalStruct>
+    </MDocument>
+</cml>
