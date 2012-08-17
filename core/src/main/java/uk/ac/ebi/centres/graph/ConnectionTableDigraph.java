@@ -20,6 +20,7 @@ package uk.ac.ebi.centres.graph;
 
 import uk.ac.ebi.centres.ConnectionProvider;
 import uk.ac.ebi.centres.ConnectionTable;
+import uk.ac.ebi.centres.DescriptorManager;
 
 import java.util.Collection;
 
@@ -33,7 +34,7 @@ public class ConnectionTableDigraph<A>
     private final ConnectionTable<A> table;
 
 
-    public ConnectionTableDigraph(DefaultDescriptorManager<A> manager,
+    public ConnectionTableDigraph(DescriptorManager<A> manager,
                                   ConnectionTable<A> table) {
         super(manager);
         this.table = table;
