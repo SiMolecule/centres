@@ -22,6 +22,8 @@ import uk.ac.ebi.centres.Ligand;
 import uk.ac.ebi.centres.LigandSorter;
 import uk.ac.ebi.centres.PriorityRule;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -73,6 +75,28 @@ public class InsertionSorter<A> implements LigandSorter<A> {
         Object tmp = list.get(i);
         list.set(i, list.get(j));
         list.set(j, tmp);
+    }
+
+
+    public List<List<Ligand<A>>> getGroups(List<Ligand<A>> sorted) {
+
+        // would be nice to have this integrated whilst sorting - may provide a small speed increase
+        // but as most of our lists are small we take use ugly sort then group approach
+        LinkedList<List<Ligand<A>>> groups = new LinkedList<List<Ligand<A>>>();
+
+        for (Ligand<A> ligand : sorted) {
+
+            if (groups.isEmpty()
+                    || rule.compare(groups.getLast().iterator().next(),
+                                    ligand) != 0)
+                groups.add(new ArrayList<Ligand<A>>());
+
+            groups.getLast().add(ligand);
+
+        }
+
+        return groups;
+
     }
 
 

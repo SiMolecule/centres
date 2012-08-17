@@ -40,4 +40,6 @@ public interface LigandSorter<A> {
      */
     public Boolean prioritise(List<Ligand<A>> ligands);
 
+    public List<List<Ligand<A>>> getGroups(List<Ligand<A>> sorted);
+
 }
