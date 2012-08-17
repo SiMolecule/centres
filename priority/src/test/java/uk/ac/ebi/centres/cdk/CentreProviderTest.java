@@ -19,6 +19,7 @@
 package uk.ac.ebi.centres.cdk;
 
 import org.junit.Test;
+import org.openscience.cdk.config.IsotopeFactory;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -37,7 +38,9 @@ import uk.ac.ebi.centres.io.CytoscapeWriter;
 import uk.ac.ebi.centres.ligand.AbstractLigand;
 import uk.ac.ebi.centres.priority.AtomicNumberRule;
 import uk.ac.ebi.centres.priority.CombinedRule;
+import uk.ac.ebi.centres.priority.MassNumberRule;
 import uk.ac.ebi.centres.priority.access.AtomicNumberAccessor;
+import uk.ac.ebi.centres.priority.access.MassNumberAccessor;
 import uk.ac.ebi.centres.priority.access.descriptor.AuxiliaryDescriptor;
 import uk.ac.ebi.centres.priority.access.descriptor.PrimaryDescriptor;
 import uk.ac.ebi.centres.priority.descriptor.PairRule;
@@ -61,11 +64,15 @@ public class CentreProviderTest {
     @Test
     public void testGetCentres() throws CDKException, IOException {
 
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream("(2R,3r,4S)-pentane-2,3,4-triol.xml"));
+        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream("myo-inositol.xml"));
 
-        AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(container);
-        for (IAtom atom : container.atoms())
+        // setting correct properties :/
+        for (IAtom atom : container.atoms()) {
             atom.setAtomicNumber(PeriodicTable.getAtomicNumber(atom.getSymbol()));
+            atom.setMassNumber(IsotopeFactory.getInstance(atom.getBuilder()).getMajorIsotope(atom.getSymbol()).getMassNumber());
+        }
+        AtomContainerManipulator.percieveAtomTypesAndConfigureUnsetProperties(container);
+
         DescriptorManager<IAtom> manager = new DefaultDescriptorManager<IAtom>();
 
         CentreProvider<IAtom> provider = new CDKCentreProvider(container);
@@ -79,9 +86,16 @@ public class CentreProviderTest {
                         return atom.getAtomicNumber();
                     }
                 }),
+                new MassNumberRule<IAtom>(new MassNumberAccessor<IAtom>() {
+                    @Override
+                    public int getMassNumber(IAtom atom) {
+                        return atom.getMassNumber();
+                    }
+                }),
                 new ZERule<IAtom>(),
                 new PairRule<IAtom>(new PrimaryDescriptor<IAtom>()),
                 new RSRule<IAtom>(new PrimaryDescriptor<IAtom>()));
+
         PriorityRule<IAtom> auxrule = new CombinedRule<IAtom>(
                 new AtomicNumberRule<IAtom>(new AtomicNumberAccessor<IAtom>() {
                     @Override
@@ -89,42 +103,26 @@ public class CentreProviderTest {
                         return atom.getAtomicNumber();
                     }
                 }),
+                new MassNumberRule<IAtom>(new MassNumberAccessor<IAtom>() {
+                    @Override
+                    public int getMassNumber(IAtom atom) {
+                        return atom.getMassNumber();
+                    }
+                }),
                 new ZERule<IAtom>(),
-                new PairRule<IAtom>(new AuxiliaryDescriptor<IAtom>()));
+                new PairRule<IAtom>(new AuxiliaryDescriptor<IAtom>()),
+                new RSRule<IAtom>(new AuxiliaryDescriptor<IAtom>()));
 
+        // maintain two lists so that all unperceived centres can be set to
+        // 'NONE' at the end.
         List<Centre<IAtom>> unperceived = new LinkedList<Centre<IAtom>>();
-
         List<Centre<IAtom>> perceived = new LinkedList<Centre<IAtom>>();
+
         unperceived.addAll(centres);
+
         SignCalculator<IAtom> calc = new CDK2DSignCalculator();
 
-//        Centre<IAtom> centre = unperceived.iterator().next();
-//        System.out.println(centre);
-//        AbstractLigand<IAtom> ligand = ((AbstractLigand<IAtom>) centre);
-//        ligand.getProvider().build();
-//
-//        System.out.println("graphing");
-//        List<Ligand<IAtom>> ligandList = ligand.getProvider().getLigands(container.getAtom(2));
-//        int index = 0;
-//        for (Ligand<IAtom> aux : ligandList) {
-//            ligand.getProvider().reroot(aux);
-//            Digraph digraph = (Digraph) ((AbstractLigand) centre).getProvider();
-//
-//            CytoscapeWriter<IAtom> writer = new CytoscapeWriter<IAtom>(new File(centre.toString() + "-aux-digraph" + "-" + ++index),
-//                                                                       digraph) {
-//                @Override
-//                public void mapAttributes(IAtom atom, Map<String, String> map) {
-//                    map.put("symbol", atom.getSymbol());
-//                    map.put("number", atom.getProperty("number").toString());
-//                }
-//            };
-//            writer.writeSif();
-//            writer.writeAttributes();
-//            writer.close();
-//        }
-
-
-//        if (true) return;
+        long start = System.currentTimeMillis();
 
         Boolean found = Boolean.FALSE;
         do {
@@ -152,14 +150,13 @@ public class CentreProviderTest {
 
         } while (found);
 
-        long start = System.currentTimeMillis();
 
         // check for aux calculations otherwise these don't have stereo
         if (perceived.isEmpty()) {
-            System.out.println("Performing auxiliary perception");
+
+            System.out.println("[AUXILIARY]");
 
             Map<Centre<IAtom>, Descriptor> map = new HashMap<Centre<IAtom>, Descriptor>();
-
 
             for (Centre<IAtom> centre : unperceived) {
 
@@ -196,7 +193,16 @@ public class CentreProviderTest {
     }
 
 
+    /**
+     * Simple method to dump the graph to a cytoscape file
+     *
+     * @param name
+     * @param centre
+     *
+     * @throws IOException
+     */
     public void write(String name, Centre centre) throws IOException {
+
         AbstractLigand<IAtom> ligand = ((AbstractLigand<IAtom>) centre);
         ligand.getProvider().build();
 
