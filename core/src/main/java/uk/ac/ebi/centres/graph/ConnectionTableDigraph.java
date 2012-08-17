@@ -28,7 +28,7 @@ import java.util.Collection;
  * @author John May
  */
 public class ConnectionTableDigraph<A>
-        extends RootedDigraph<A> {
+        extends AbstractDigraph<A> {
 
 
     private final ConnectionTable<A> table;

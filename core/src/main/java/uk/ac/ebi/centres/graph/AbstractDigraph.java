@@ -43,7 +43,7 @@ import java.util.Queue;
  * @author John May
  */
 public abstract class AbstractDigraph<A> implements Digraph<A>,
-                                                  ConnectionProvider<A> {
+                                                    ConnectionProvider<A> {
 
     private final Ligand<A> root;
     private final ArcMap                     arcs      = new ArcMap(); // Could set expected size
@@ -79,6 +79,22 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
     @Override
     public List<Ligand<A>> getLigands(A atom) {
         return ligandMap.get(atom);
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public void reroot(Ligand<A> ligand) {
+
+        // get parent arcs
+        Arc<A> arc = arcs.getForHead(ligand);
+        while (arc != null) {
+            arcs.transpose(arc);
+            arc = arcs.getForHead(arc.getHead());
+        }
+
     }
 
 
@@ -184,6 +200,14 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
 
         private final ListMultimap<Ligand<A>, Arc<A>> tails = ArrayListMultimap.create();
         private final Map<Ligand<A>, Arc<A>>          heads = new HashMap<Ligand<A>, Arc<A>>();
+
+
+        public void transpose(Arc<A> arc) {
+            tails.removeAll(arc.getTail());
+            heads.remove(arc.getHead());
+            arc.transpose();
+            add(arc);
+        }
 
 
         public void add(Arc<A> arc) {

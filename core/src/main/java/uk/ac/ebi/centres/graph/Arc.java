@@ -79,4 +79,11 @@ public class Arc<A> {
         return this.tail;
     }
 
+
+    public void transpose() {
+        Ligand<A> tmp = tail;
+        tail = head;
+        head = tmp;
+    }
+
 }

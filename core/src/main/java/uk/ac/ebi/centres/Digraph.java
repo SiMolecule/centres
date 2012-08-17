@@ -37,7 +37,6 @@ import java.util.List;
 public interface Digraph<A> {
 
 
-
     /**
      * Access the root ligand of this digraph. The root is normally the chiral
      * atom that is being determined. When determining ligands around double
@@ -90,5 +89,14 @@ public interface Digraph<A> {
      */
     public void build();
 
-
+    /**
+     * Reroot the digraph on the provided ligand. This does not recalculate the
+     * whole graph (each centre should have it's own graph) but instead
+     * transforms the directions of the the edges to point away from the new
+     * root. This method is primarily used for generating auxiliary
+     * descriptors.
+     *
+     * @param ligand the ligand which will be the new root
+     */
+    public void reroot(Ligand<A> ligand);
 }
