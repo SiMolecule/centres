@@ -42,7 +42,7 @@ import java.util.Queue;
  *
  * @author John May
  */
-public abstract class RootedDigraph<A> implements Digraph<A>,
+public abstract class AbstractDigraph<A> implements Digraph<A>,
                                                   ConnectionProvider<A> {
 
     private final Ligand<A> root;
@@ -51,12 +51,12 @@ public abstract class RootedDigraph<A> implements Digraph<A>,
     private final DescriptorManager<A> manager;
 
 
-    public RootedDigraph(Ligand<A> root) {
+    public AbstractDigraph(Ligand<A> root) {
         this(root, new DefaultDescriptorManager<A>());
     }
 
 
-    public RootedDigraph(Ligand<A> root, DescriptorManager<A> manager) {
+    public AbstractDigraph(Ligand<A> root, DescriptorManager<A> manager) {
         if (root == null)
             throw new IllegalArgumentException("Root cannot be null!");
         this.root = root;
