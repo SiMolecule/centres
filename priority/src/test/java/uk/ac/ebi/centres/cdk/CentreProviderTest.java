@@ -27,19 +27,23 @@ import org.openscience.cdk.tools.periodictable.PeriodicTable;
 import uk.ac.ebi.centres.Centre;
 import uk.ac.ebi.centres.CentreProvider;
 import uk.ac.ebi.centres.Descriptor;
+import uk.ac.ebi.centres.DescriptorManager;
 import uk.ac.ebi.centres.PriorityRule;
 import uk.ac.ebi.centres.SignCalculator;
 import uk.ac.ebi.centres.descriptor.General;
 import uk.ac.ebi.centres.graph.ConnectionTableDigraph;
 import uk.ac.ebi.centres.graph.DefaultDescriptorManager;
 import uk.ac.ebi.centres.priority.AtomicNumberRule;
+import uk.ac.ebi.centres.priority.CombinedRule;
 import uk.ac.ebi.centres.priority.access.AtomicNumberAccessor;
+import uk.ac.ebi.centres.priority.descriptor.ZERule;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author John May
@@ -54,20 +58,23 @@ public class CentreProviderTest {
         AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(container);
         for (IAtom atom : container.atoms())
             atom.setAtomicNumber(PeriodicTable.getAtomicNumber(atom.getSymbol()));
+        DescriptorManager<IAtom> manager = new DefaultDescriptorManager<IAtom>();
 
-        ConnectionTableDigraph<IAtom> digraph = new ConnectionTableDigraph<IAtom>(new DefaultDescriptorManager<IAtom>(),
+        ConnectionTableDigraph<IAtom> digraph = new ConnectionTableDigraph<IAtom>(manager,
                                                                                   new CDKConnectionTable(container));
 
         CentreProvider<IAtom> provider = new CDKCentreProvider(container);
-        Collection<Centre<IAtom>> centres = provider.getCentres(digraph, new DefaultDescriptorManager<IAtom>());
+        Collection<Centre<IAtom>> centres = provider.getCentres(digraph, manager);
 
 
-        PriorityRule<IAtom> rule = new AtomicNumberRule<IAtom>(new AtomicNumberAccessor<IAtom>() {
-            @Override
-            public int getAtomicNumber(IAtom atom) {
-                return atom.getAtomicNumber();
-            }
-        });
+        PriorityRule<IAtom> rule = new CombinedRule<IAtom>(
+                new AtomicNumberRule<IAtom>(new AtomicNumberAccessor<IAtom>() {
+                    @Override
+                    public int getAtomicNumber(IAtom atom) {
+                        return atom.getAtomicNumber();
+                    }
+                }),
+                new ZERule<IAtom>());
 
         List<Centre<IAtom>> unperceived = new LinkedList<Centre<IAtom>>();
 
@@ -77,6 +84,8 @@ public class CentreProviderTest {
 
         Boolean found = Boolean.FALSE;
         do {
+
+            System.out.println("Doing the perception...");
 
             Map<Centre<IAtom>, Descriptor> map = new HashMap<Centre<IAtom>, Descriptor>();
 
@@ -109,6 +118,7 @@ public class CentreProviderTest {
         }
         for (Centre<IAtom> centre : perceived) {
             System.out.println(centre + ": " + centre.getDescriptor());
+            Set<IAtom> atoms = centre.getAtoms();
         }
 
     }
