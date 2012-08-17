@@ -34,6 +34,10 @@ public interface Descriptor {
      * Defines the type of the descriptor.
      */
     public enum Type {
+        /**
+         * A non-stereogenic descriptor
+         */
+        NON_STEREOGENIC,
 
         /**
          * An asymmetric stereo descriptor
@@ -43,12 +47,8 @@ public interface Descriptor {
         /**
          * A pseudo-asymmetric descriptor
          */
-        PSEUDO_ASYMMETRIC,
+        PSEUDO_ASYMMETRIC
 
-        /**
-         * A non-stereogenic descriptor
-         */
-        NON_STEREOGENIC
 
     }
 

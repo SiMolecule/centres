@@ -41,6 +41,7 @@ import uk.ac.ebi.centres.priority.access.AtomicNumberAccessor;
 import uk.ac.ebi.centres.priority.access.descriptor.AuxiliaryDescriptor;
 import uk.ac.ebi.centres.priority.access.descriptor.PrimaryDescriptor;
 import uk.ac.ebi.centres.priority.descriptor.PairRule;
+import uk.ac.ebi.centres.priority.descriptor.RSRule;
 import uk.ac.ebi.centres.priority.descriptor.ZERule;
 
 import java.io.File;
@@ -60,7 +61,7 @@ public class CentreProviderTest {
     @Test
     public void testGetCentres() throws CDKException, IOException {
 
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream("(2R,3S,5R,7R,8R)-4,6-bis[(2R,3R)-3-hydroxybutan-2-yl]-3,7-dimethylnonane-2,5,8-triol.xml"));
+        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream("(2R,3r,4S)-pentane-2,3,4-triol.xml"));
 
         AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(container);
         for (IAtom atom : container.atoms())
@@ -79,7 +80,8 @@ public class CentreProviderTest {
                     }
                 }),
                 new ZERule<IAtom>(),
-                new PairRule<IAtom>(new PrimaryDescriptor<IAtom>()));
+                new PairRule<IAtom>(new PrimaryDescriptor<IAtom>()),
+                new RSRule<IAtom>(new PrimaryDescriptor<IAtom>()));
         PriorityRule<IAtom> auxrule = new CombinedRule<IAtom>(
                 new AtomicNumberRule<IAtom>(new AtomicNumberAccessor<IAtom>() {
                     @Override

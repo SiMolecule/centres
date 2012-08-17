@@ -18,8 +18,11 @@
 
 package uk.ac.ebi.centres.priority;
 
+import uk.ac.ebi.centres.Comparison;
+import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Ligand;
 import uk.ac.ebi.centres.LigandSorter;
+import uk.ac.ebi.centres.Priority;
 import uk.ac.ebi.centres.PriorityRule;
 
 import java.util.ArrayList;
@@ -43,30 +46,36 @@ public class InsertionSorter<A> implements LigandSorter<A> {
 
 
     /**
-     * Sorts in descending order. Currently always returns false.
+     * Sorts in descending order and indicates whether all elements are unique
+     * and the type of descriptor used.
      *
      * @inheritDoc
      */
     @Override
-    public Boolean prioritise(List<Ligand<A>> ligands) {
+    public Priority prioritise(List<Ligand<A>> ligands) {
 
         Boolean unique = Boolean.TRUE;
+        Descriptor.Type type = Descriptor.Type.NON_STEREOGENIC;
 
         for (int i = 0; i < ligands.size(); i++)
             for (int j = i; j > 0; j--) {
-                int value = rule.compare(ligands.get(j - 1),
-                                         ligands.get(j));
-                if (value < 0) {
+                Comparison comparison = rule.compareLigands(ligands.get(j - 1),
+                                                            ligands.get(j));
+
+                type = comparison.getType().ordinal() > type.ordinal()
+                       ? comparison.getType() : type;
+
+                if (comparison.getOrder() < 0) {
                     swap(ligands, j, j - 1);
                 } else {
-                    if (value == 0)
+                    if (comparison.getOrder() == 0)
                         unique = Boolean.FALSE;
                     break;
                 }
 
             }
 
-        return unique;
+        return new Priority(unique, type);
 
     }
 

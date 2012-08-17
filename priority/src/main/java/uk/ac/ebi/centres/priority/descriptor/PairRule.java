@@ -102,7 +102,7 @@ public class PairRule<A>
             descriptors.add(accessor.getDescriptor(ligand));
 
             List<Ligand<A>> ligands = ligand.getLigands();
-            if (prioritise(ligands)) {
+            if (prioritise(ligands).isUnique()) {
 
                 // unique
 

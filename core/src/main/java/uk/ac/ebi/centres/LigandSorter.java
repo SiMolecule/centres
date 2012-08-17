@@ -36,9 +36,10 @@ public interface LigandSorter<A> {
      *
      * @param ligands the ligands that will be sorted
      *
-     * @return whether the ligands are all different
+     * @return whether the ligands are all different and which type of rule was
+     *         used
      */
-    public Boolean prioritise(List<Ligand<A>> ligands);
+    public Priority prioritise(List<Ligand<A>> ligands);
 
     public List<List<Ligand<A>>> getGroups(List<Ligand<A>> sorted);
 

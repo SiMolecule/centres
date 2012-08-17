@@ -62,7 +62,7 @@ public class AtomicNumberRuleTest {
         Ligand<TestAtom> carbon2 = new TestLigand(new TestAtom("C", 6));
 
         assertEquals(0, rule.compare(carbon1, carbon2));
-        assertFalse(rule.prioritise(Arrays.asList(carbon1, carbon2)));
+        assertFalse(rule.prioritise(Arrays.asList(carbon1, carbon2)).isUnique());
 
     }
 
@@ -108,7 +108,7 @@ public class AtomicNumberRuleTest {
             assertThat("Lists were equal before sorting",
                        actual, not(expected));
             assertTrue("Non-unique items detected whilst sorting",
-                        rule.prioritise(actual));
+                       rule.prioritise(actual).isUnique());
             assertThat("Lists were not equal",
                        actual, equalTo(expected));
         }
@@ -119,7 +119,7 @@ public class AtomicNumberRuleTest {
             assertThat("Lists were equal before sorting",
                        actual, not(expected));
             assertTrue("Non-unique items detected whilst sorting",
-                        rule.prioritise(actual));
+                       rule.prioritise(actual).isUnique());
             assertThat("Lists were not equal",
                        actual, equalTo(expected));
         }
@@ -130,7 +130,7 @@ public class AtomicNumberRuleTest {
             assertThat("Lists were equal before sorting",
                        actual, not(expected));
             assertTrue("Non-unique items detected whilst sorting",
-                        rule.prioritise(actual));
+                       rule.prioritise(actual).isUnique());
             assertThat("Lists were not equal",
                        actual, equalTo(expected));
         }
@@ -141,7 +141,7 @@ public class AtomicNumberRuleTest {
             assertThat("Lists were equal before sorting",
                        actual, not(expected));
             assertTrue("Non-unique items detected whilst sorting",
-                        rule.prioritise(actual));
+                       rule.prioritise(actual).isUnique());
             assertThat("Lists were not equal",
                        actual, equalTo(expected));
         }

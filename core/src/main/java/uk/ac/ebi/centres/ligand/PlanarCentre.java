@@ -25,6 +25,7 @@ import uk.ac.ebi.centres.ConnectionProvider;
 import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Ligand;
 import uk.ac.ebi.centres.MutableDescriptor;
+import uk.ac.ebi.centres.Priority;
 import uk.ac.ebi.centres.PriorityRule;
 import uk.ac.ebi.centres.SignCalculator;
 import uk.ac.ebi.centres.descriptor.General;
@@ -139,9 +140,10 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
         List<Ligand<A>> secondLigands = second.getLigands();
 
         // check for pseudo
-        boolean unique = rule.prioritise(firstLigands) && rule.prioritise(secondLigands);
+        Priority firstPriority = rule.prioritise(firstLigands);
+        Priority secondPriority = rule.prioritise(secondLigands);
 
-        if (!unique) {
+        if (!firstPriority.isUnique()) {
             return General.UNKNOWN;
         }
 
@@ -152,9 +154,12 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
                                             second.getAtom(),
                                             first.getAtom());
 
+        boolean pseudo = firstPriority.getType().equals(Descriptor.Type.PSEUDO_ASYMMETRIC)
+                || secondPriority.getType().equals(Descriptor.Type.PSEUDO_ASYMMETRIC);
 
         // also check for psuedo (from prioritise)
-        return firstSign == secondSign ? Planar.E : Planar.Z;
+        return firstSign == secondSign ? pseudo ? Planar.e : Planar.E
+                                       : pseudo ? Planar.z : Planar.Z;
 
     }
 }

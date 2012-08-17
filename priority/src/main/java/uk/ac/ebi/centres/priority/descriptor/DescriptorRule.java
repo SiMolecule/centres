@@ -68,6 +68,7 @@ public class DescriptorRule<A> extends AbstractPriorityRule<A> {
     public DescriptorRule(Descriptor.Type type,
                           DescriptorAccessor<A> accessor,
                           Descriptor... descriptors) {
+        super(type);
         this.accessor = accessor;
 
         ranking = Maps.newHashMapWithExpectedSize(descriptors.length);

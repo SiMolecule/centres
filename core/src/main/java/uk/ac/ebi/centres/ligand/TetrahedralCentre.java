@@ -22,6 +22,7 @@ import uk.ac.ebi.centres.Centre;
 import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Ligand;
 import uk.ac.ebi.centres.MutableDescriptor;
+import uk.ac.ebi.centres.Priority;
 import uk.ac.ebi.centres.PriorityRule;
 import uk.ac.ebi.centres.SignCalculator;
 import uk.ac.ebi.centres.descriptor.General;
@@ -128,9 +129,9 @@ public class TetrahedralCentre<A>
             return General.NONE;
         }
 
-        boolean unique = rule.prioritise(proximal);
+        Priority priority = rule.prioritise(proximal);
 
-        if (unique) {
+        if (priority.isUnique()) {
 
             if (proximal.size() < 4) proximal.add(this);
 
@@ -139,9 +140,14 @@ public class TetrahedralCentre<A>
                                           proximal.get(2),
                                           proximal.get(3));
 
-            return sign > 0 ? Tetrahedral.S : sign < 0
-                                              ? Tetrahedral.R
-                                              : General.UNSPECIFIED;
+            boolean pseudo = priority.getType().equals(Descriptor.Type.PSEUDO_ASYMMETRIC);
+
+            return sign > 0 ? pseudo ? Tetrahedral.s
+                                     : Tetrahedral.S
+                            : sign < 0
+                              ? pseudo ? Tetrahedral.r
+                                       : Tetrahedral.R
+                              : General.UNSPECIFIED;
 
 
         }

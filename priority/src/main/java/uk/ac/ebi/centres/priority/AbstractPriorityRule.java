@@ -23,6 +23,7 @@ import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Ligand;
 import uk.ac.ebi.centres.LigandComparison;
 import uk.ac.ebi.centres.LigandSorter;
+import uk.ac.ebi.centres.Priority;
 import uk.ac.ebi.centres.PriorityRule;
 
 import java.util.Iterator;
@@ -101,7 +102,7 @@ public abstract class AbstractPriorityRule<A>
      *
      * @return whether the ligands are unique
      */
-    public boolean prioritise(List<Ligand<A>> ligands) {
+    public Priority prioritise(List<Ligand<A>> ligands) {
         return getSorter().prioritise(ligands);
     }
 

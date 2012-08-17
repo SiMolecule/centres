@@ -58,7 +58,7 @@ public class MassNumberRuleTest {
         Ligand<TestAtom> carbon2 = new TestLigand(new TestAtom("C", 6, 12));
 
         assertEquals(0, rule.compare(carbon1, carbon2));
-        assertFalse(rule.prioritise(Arrays.asList(carbon1, carbon2)));
+        assertFalse(rule.prioritise(Arrays.asList(carbon1, carbon2)).isUnique());
 
     }
 

@@ -41,7 +41,7 @@ public interface PriorityRule<A> extends Comparator<Ligand<A>> {
      *
      * @return whether the ligands were unique
      */
-    public boolean prioritise(List<Ligand<A>> ligands);
+    public Priority prioritise(List<Ligand<A>> ligands);
 
     /**
      * Allows injection of a ligand sorter. The ligand sort is used when two
