@@ -19,12 +19,12 @@
 package uk.ac.ebi.centres.cdk;
 
 import org.openscience.cdk.interfaces.IAtom;
-import uk.ac.ebi.centres.Abstract2DSignCalculator;
+import uk.ac.ebi.centres.calculator.TwoDimensionalSignCalculator;
 
 /**
  * @author John May
  */
-public class CDK2DSignCalculator extends Abstract2DSignCalculator<IAtom> {
+public class CDK2DSignCalculator extends TwoDimensionalSignCalculator<IAtom> {
 
     @Override
     public double getX(IAtom atom) {

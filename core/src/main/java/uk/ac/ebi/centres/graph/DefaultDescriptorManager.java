@@ -18,21 +18,19 @@
 
 package uk.ac.ebi.centres.graph;
 
-import com.google.common.collect.Sets;
 import uk.ac.ebi.centres.DescriptorManager;
 import uk.ac.ebi.centres.MutableDescriptor;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author John May
  */
 public class DefaultDescriptorManager<A> implements DescriptorManager<A> {
 
-    private Map<A, MutableDescriptor>      atomMap = new HashMap<A, MutableDescriptor>();
-    private Map<Set<A>, MutableDescriptor> bondMap = new HashMap<Set<A>, MutableDescriptor>();
+    private Map<A, MutableDescriptor>               atomMap = new HashMap<A, MutableDescriptor>();
+    private Map<Map.Entry<A, A>, MutableDescriptor> bondMap = new HashMap<Map.Entry<A, A>, MutableDescriptor>();
 
 
     @Override
@@ -48,11 +46,14 @@ public class DefaultDescriptorManager<A> implements DescriptorManager<A> {
 
     @Override
     public MutableDescriptor getDescriptor(A first, A second) {
-        Set<A> atoms = Sets.newHashSet(first, second);
-        MutableDescriptor mutableDescriptor = bondMap.get(atoms);
+
+        Map.Entry<A, A> entry = new HashMap.SimpleEntry(first, second);
+
+        MutableDescriptor mutableDescriptor = bondMap.get(entry);
         if (mutableDescriptor == null) {
             mutableDescriptor = new MutableDescriptor();
-            bondMap.put(atoms, mutableDescriptor);
+            bondMap.put(entry, mutableDescriptor);
+            bondMap.put(new HashMap.SimpleEntry(second, first), mutableDescriptor);
         }
         return mutableDescriptor;
     }
