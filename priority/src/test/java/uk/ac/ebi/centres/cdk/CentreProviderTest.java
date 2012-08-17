@@ -60,8 +60,7 @@ public class CentreProviderTest {
     @Test
     public void testGetCentres() throws CDKException, IOException {
 
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream("(2R,3S,5R,7R,8R)-4,6-bis[(2R,3R)-3-hydroxybutan-2-yl]-3,7-dimethylnonane-2,5,8-triol.xml
-yl]-3,7-dimethylnonane-2,5,8-triol.xml"));
+        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream("(2R,3S,5R,7R,8R)-4,6-bis[(2R,3R)-3-hydroxybutan-2-yl]-3,7-dimethylnonane-2,5,8-triol.xml"));
 
         AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(container);
         for (IAtom atom : container.atoms())
