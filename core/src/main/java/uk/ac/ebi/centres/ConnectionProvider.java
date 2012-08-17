@@ -27,10 +27,16 @@ import java.util.List;
  */
 public interface ConnectionProvider<A> {
 
+    public void build();
+
+    public List<Ligand<A>> getLigands(A atom);
+
     public List<Ligand<A>> getLigands(Ligand<A> ligand);
 
     public List<Arc<A>> getArcs(Ligand<A> ligand);
 
     public Arc<A> getParentArc(Ligand<A> ligand);
+
+    public void reroot(Ligand<A> ligand);
 
 }

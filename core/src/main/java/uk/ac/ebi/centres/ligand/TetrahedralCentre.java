@@ -19,7 +19,6 @@
 package uk.ac.ebi.centres.ligand;
 
 import uk.ac.ebi.centres.Centre;
-import uk.ac.ebi.centres.ConnectionProvider;
 import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Ligand;
 import uk.ac.ebi.centres.MutableDescriptor;
@@ -28,8 +27,11 @@ import uk.ac.ebi.centres.SignCalculator;
 import uk.ac.ebi.centres.descriptor.General;
 import uk.ac.ebi.centres.descriptor.Tetrahedral;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -40,12 +42,14 @@ public class TetrahedralCentre<A>
         implements Centre<A> {
 
     private final A atom;
+    private       A parent;
 
 
     public TetrahedralCentre(MutableDescriptor descriptor,
                              A atom) {
         super(descriptor);
         this.atom = atom;
+        this.parent = atom;
     }
 
 
@@ -56,30 +60,88 @@ public class TetrahedralCentre<A>
 
 
     @Override
+    public void setParent(A atom) {
+        // don't have a parent here
+        this.parent = atom;
+    }
+
+
+    @Override
+    public A getParent() {
+        return this.parent;
+    }
+
+
+    @Override
     public Set<A> getAtoms() {
         return Collections.singleton(atom);
     }
 
 
     @Override
-    public Descriptor perceive(PriorityRule<A> rule, SignCalculator<A> calculator) {
+    public void perceiveAuxiliary(Collection<Centre<A>> centres,
+                                  PriorityRule<A> rule,
+                                  SignCalculator<A> calculator) {
 
-        List<Ligand<A>> ligands = getLigands();
+        Map<Ligand<A>, Descriptor> auxiliary = new HashMap<Ligand<A>, Descriptor>(centres.size());
 
-        boolean unique = rule.prioritise(ligands);
+        getProvider().build();
 
+        for (Centre<A> centre : centres) {
+
+            // don't do aux perception on self
+            if (centre == this)
+                continue;
+
+            // can only reroot on single atom centres
+            if (centre.getAtoms().size() == 1) {
+
+                for (Ligand<A> ligand : getProvider().getLigands(centre.getAtom())) {
+
+                    getProvider().reroot(ligand);
+
+                    Descriptor descriptor = centre.perceive(getProvider().getLigands(ligand),
+                                                            rule,
+                                                            calculator);
+
+                    if (descriptor != General.UNKNOWN)
+                        auxiliary.put(ligand, descriptor);
+
+                }
+            }
+        }
+
+        // transfer auxiliary descriptors to their respective ligands
+        for (Map.Entry<Ligand<A>, Descriptor> entry : auxiliary.entrySet())
+            entry.getKey().setAuxiliary(entry.getValue());
+
+        // reroot on this
+        getProvider().reroot(this);
+
+    }
+
+
+    @Override
+    public Descriptor perceive(List<Ligand<A>> proximal, PriorityRule<A> rule, SignCalculator<A> calculator) {
+
+        if (proximal.size() < 3) {
+            return General.NONE;
+        }
+
+        boolean unique = rule.prioritise(proximal);
 
         if (unique) {
 
-            if (ligands.size() < 4) ligands.add(this);
+            if (proximal.size() < 4) proximal.add(this);
 
-            int sign = calculator.getSign(ligands.get(0),
-                                          ligands.get(1),
-                                          ligands.get(2),
-                                          ligands.get(3));
+            int sign = calculator.getSign(proximal.get(0),
+                                          proximal.get(1),
+                                          proximal.get(2),
+                                          proximal.get(3));
 
             return sign > 0 ? Tetrahedral.S : sign < 0
-                            ? Tetrahedral.R : General.UNSPECIFIED;
+                                              ? Tetrahedral.R
+                                              : General.UNSPECIFIED;
 
 
         }
@@ -89,7 +151,16 @@ public class TetrahedralCentre<A>
 
 
     @Override
+    public Descriptor perceive(PriorityRule<A> rule, SignCalculator<A> calculator) {
+
+        return perceive(getLigands(), rule, calculator);
+
+
+    }
+
+
+    @Override
     public Boolean isParent(A atom) {
-        return Boolean.FALSE;
+        return parent.equals(atom);
     }
 }

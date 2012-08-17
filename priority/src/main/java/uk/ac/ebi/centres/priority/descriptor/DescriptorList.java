@@ -38,7 +38,7 @@ import java.util.Set;
  * @author John May
  * @see Descriptor
  */
-public class DescriptorList {
+public class DescriptorList implements Comparable<DescriptorList> {
 
     private final List<Descriptor> descriptors = new ArrayList<Descriptor>();
     private final Set<Descriptor>  ignore      = new HashSet<Descriptor>();
@@ -242,6 +242,12 @@ public class DescriptorList {
 
         return sb.toString();
 
+    }
+
+
+    @Override
+    public int compareTo(DescriptorList o) {
+        return getPairing() - o.getPairing();
     }
 
 

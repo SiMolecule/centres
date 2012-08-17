@@ -46,6 +46,18 @@ public class TestLigand implements Ligand<TestAtom> {
 
 
     @Override
+    public void setParent(TestAtom atom) {
+
+    }
+
+
+    @Override
+    public TestAtom getParent() {
+        return null;
+    }
+
+
+    @Override
     public List<Ligand<TestAtom>> getLigands() {
         return Collections.EMPTY_LIST;
     }

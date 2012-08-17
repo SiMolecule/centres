@@ -99,6 +99,18 @@ public interface Ligand<A> {
     public Boolean isParent(A atom);
 
     /**
+     * Set the parent of ligand for when we are shuffling around for auxiliary
+     * descriptors. Not supported on planar ligands
+     *
+     * @param atom
+     *
+     * @return
+     */
+    public void setParent(A atom);
+
+    public A getParent();
+
+    /**
      * Determine if the provided atom has already been visited
      *
      * @param atom the atom which may be visited

@@ -30,7 +30,7 @@ import java.util.Set;
 public class NonterminalLigand<A> extends AbstractLigand<A> {
 
     private final A atom;
-    private final A parent;
+    private       A parent;
 
 
     public NonterminalLigand(MutableDescriptor descriptor,
@@ -63,6 +63,9 @@ public class NonterminalLigand<A> extends AbstractLigand<A> {
             throw new IllegalArgumentException("Provided non-terminal parent" +
                                                        " atom should not be null");
 
+        getVisited().add(atom);
+        getVisited().add(parent);
+
         this.atom = atom;
         this.parent = parent;
     }
@@ -85,6 +88,22 @@ public class NonterminalLigand<A> extends AbstractLigand<A> {
         this.atom = atom;
         this.parent = parent;
 
+        getVisited().add(atom);
+        getVisited().add(parent);
+
+
+    }
+
+
+    @Override
+    public A getParent() {
+        return this.parent;
+    }
+
+
+    @Override
+    public void setParent(A atom) {
+        this.parent = atom;
     }
 
 

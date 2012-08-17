@@ -133,4 +133,14 @@ public class CombinedRule<A> extends AbstractPriorityRule<A> {
         // can't really give a rule type here...
         return new LigandComparison(0, Descriptor.Type.NON_STEREOGENIC);
     }
+
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("Combined rule:");
+        for (PriorityRule<A> rule : rules)
+            builder.append(rule.toString()).append(", ");
+        return builder.toString();
+    }
+
 }

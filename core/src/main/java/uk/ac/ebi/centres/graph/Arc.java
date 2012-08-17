@@ -84,6 +84,13 @@ public class Arc<A> {
         Ligand<A> tmp = tail;
         tail = head;
         head = tmp;
+        depth *= -1; // invert the sign
+        head.setParent(tail.getAtom());
     }
 
+
+    @Override
+    public String toString() {
+        return tail + " -> " + head;
+    }
 }

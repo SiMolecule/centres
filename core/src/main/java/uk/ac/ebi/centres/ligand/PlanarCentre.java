@@ -31,6 +31,7 @@ import uk.ac.ebi.centres.descriptor.General;
 import uk.ac.ebi.centres.descriptor.Planar;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -103,6 +104,31 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
     @Override
     public Set<A> getAtoms() {
         return atoms;
+    }
+
+
+    @Override
+    public A getParent() {
+        throw new UnsupportedOperationException("Can't get parent on a planar centre");
+    }
+
+
+    @Override
+    public void setParent(A atom) {
+        throw new UnsupportedOperationException("Can't set parent on a planar centre");
+    }
+
+
+    @Override
+    public void perceiveAuxiliary(Collection<Centre<A>> centres, PriorityRule<A> rule, SignCalculator<A> calculator) {
+        System.err.println("Should auxiliary perception be done on planar centres?");
+    }
+
+
+    @Override
+    public Descriptor perceive(List<Ligand<A>> proximal, PriorityRule<A> rule, SignCalculator<A> calculator) {
+        // can't do auxiliary perception for planar centres
+        return General.UNKNOWN;
     }
 
 

@@ -45,7 +45,7 @@ import java.util.Queue;
 public abstract class AbstractDigraph<A> implements Digraph<A>,
                                                     ConnectionProvider<A> {
 
-    private final Ligand<A> root;
+    private Ligand<A> root;
     private final ArcMap                     arcs      = new ArcMap(); // Could set expected size
     private final ListMultimap<A, Ligand<A>> ligandMap = ArrayListMultimap.create();
     private final DescriptorManager<A> manager;
@@ -88,12 +88,28 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
     @Override
     public void reroot(Ligand<A> ligand) {
 
+//        System.out.println("tails: " + arcs.tails);
+//        System.out.println("heads: " + arcs.heads);
+
+        root = ligand;
+
+        Queue<Arc<A>> queue = new LinkedList<Arc<A>>();
+
         // get parent arcs
         Arc<A> arc = arcs.getForHead(ligand);
         while (arc != null) {
-            arcs.transpose(arc);
-            arc = arcs.getForHead(arc.getHead());
+            arcs.remove(arc);
+            Arc<A> next = arcs.getForHead(arc.getTail());
+            arc.transpose();
+            queue.add(arc);
+            arc = next;
         }
+
+        for (Arc<A> transposedArc : queue) {
+            arcs.add(transposedArc);
+        }
+
+        ligand.setParent(ligand.getAtom());
 
     }
 
@@ -139,12 +155,12 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
         if (!ligands.isEmpty())
             return ligands;
 
+
         // ligands have not be built
         for (A atom : getConnected(ligand.getAtom())) {
 
             if (ligand.isParent(atom))
                 continue;
-
 
             MutableDescriptor descriptor = manager.getDescriptor(atom);
 
@@ -152,7 +168,6 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
             Ligand<A> neighbour = ligand.isVisited(atom)
                                   ? new TerminalLigand<A>(this, descriptor, ligand.getVisited(), atom, ligand.getAtom())
                                   : new NonterminalLigand<A>(this, descriptor, ligand.getVisited(), atom, ligand.getAtom());
-
             arcs.add(newArc(ligand, neighbour));
             ligandMap.put(atom, neighbour);
 
@@ -202,16 +217,17 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
         private final Map<Ligand<A>, Arc<A>>          heads = new HashMap<Ligand<A>, Arc<A>>();
 
 
-        public void transpose(Arc<A> arc) {
-            tails.removeAll(arc.getTail());
+        public void remove(Arc<A> arc) {
+            //System.out.println("\tremoving " + arc.getTail() + ": " + arc + " and " + arc.getHead() + ": " + arc);
+            tails.remove(arc.getTail(), arc);
             heads.remove(arc.getHead());
-            arc.transpose();
-            add(arc);
         }
 
 
         public void add(Arc<A> arc) {
             tails.put(arc.getTail(), arc);
+            if (heads.containsKey(arc.getHead()))
+                System.err.println("Key clash!");
             heads.put(arc.getHead(), arc);
         }
 
@@ -241,7 +257,7 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
 
 
         public Ligand<A> getTail(Ligand<A> head) {
-            Arc<A> arc = heads.get(head);
+            Arc<A> arc = getForHead(head);
             if (arc == null)
                 throw new NoSuchElementException("No tail for provided head");
             return arc.getTail();

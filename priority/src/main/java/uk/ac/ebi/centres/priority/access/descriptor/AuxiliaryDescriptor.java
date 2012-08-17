@@ -16,40 +16,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-package uk.ac.ebi.centres.ligand;
+package uk.ac.ebi.centres.priority.access.descriptor;
 
-import uk.ac.ebi.centres.ConnectionProvider;
+import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Ligand;
-import uk.ac.ebi.centres.MutableDescriptor;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 
 /**
+ * Access the primary descriptor on a ligand
+ *
  * @author John May
  */
-public class TerminalLigand<A> extends NonterminalLigand<A> {
-
-    public TerminalLigand(ConnectionProvider<A> provider, MutableDescriptor descriptor, A atom, A parent) {
-        super(provider, descriptor, atom, parent);
-    }
-
-
-    public TerminalLigand(ConnectionProvider<A> provider, MutableDescriptor descriptor, Set<A> visited, A atom, A parent) {
-        super(provider, descriptor, visited, atom, parent);
-    }
-
+public class AuxiliaryDescriptor<A> implements
+                                    uk.ac.ebi.centres.priority.access.DescriptorAccessor<A> {
 
     @Override
-    public List<Ligand<A>> getLigands() {
-        // suppress use of connection provider
-        return Collections.emptyList();
-    }
-
-
-    @Override
-    public String toString() {
-        return super.toString() + "'";
+    public Descriptor getDescriptor(Ligand<A> ligand) {
+        return ligand.getAuxiliary();
     }
 }

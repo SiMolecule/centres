@@ -18,6 +18,8 @@
 
 package uk.ac.ebi.centres;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -61,4 +63,9 @@ public interface Centre<A> extends Ligand<A> {
      */
     public Descriptor perceive(PriorityRule<A> rule, SignCalculator<A> calculator);
 
+    public Descriptor perceive(List<Ligand<A>> proximal, PriorityRule<A> rule, SignCalculator<A> calculator);
+
+    public void perceiveAuxiliary(Collection<Centre<A>> centres,
+                                  PriorityRule<A> rule,
+                                  SignCalculator<A> calculator);
 }

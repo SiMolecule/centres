@@ -20,7 +20,7 @@ package uk.ac.ebi.centres.priority.descriptor;
 
 import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.descriptor.Tetrahedral;
-import uk.ac.ebi.centres.priority.access.descriptor.PrimaryDescriptor;
+import uk.ac.ebi.centres.priority.access.DescriptorAccessor;
 
 /**
  * A rule with prioritises ligands in R configuration over those in S
@@ -30,9 +30,9 @@ import uk.ac.ebi.centres.priority.access.descriptor.PrimaryDescriptor;
  */
 public class RSRule<A> extends DescriptorRule<A> {
 
-    public RSRule() {
+    public RSRule(DescriptorAccessor<A> accessor) {
         super(Descriptor.Type.PSEUDO_ASYMMETRIC,
-              new PrimaryDescriptor<A>(),
+              accessor,
               Tetrahedral.S, Tetrahedral.R);
     }
 

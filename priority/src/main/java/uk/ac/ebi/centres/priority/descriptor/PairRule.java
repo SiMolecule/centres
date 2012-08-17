@@ -236,7 +236,7 @@ public class PairRule<A>
         Iterator<DescriptorList> list2It = generate(o2).iterator();
 
         while (list1It.hasNext() && list2It.hasNext()) {
-            int value = list1It.next().getPairing() - list2It.next().getPairing();
+            int value = list1It.next().compareTo(list2It.next());
             if (value != 0) return value;
         }
 
