@@ -42,10 +42,9 @@ public class TetrahedralCentre<A>
     private final A atom;
 
 
-    public TetrahedralCentre(ConnectionProvider<A> provider,
-                             MutableDescriptor descriptor,
+    public TetrahedralCentre(MutableDescriptor descriptor,
                              A atom) {
-        super(provider, descriptor);
+        super(descriptor);
         this.atom = atom;
     }
 

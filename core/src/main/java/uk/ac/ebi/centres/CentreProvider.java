@@ -27,7 +27,6 @@ import java.util.Collection;
  */
 public interface CentreProvider<A> {
 
-    public Collection<Centre<A>> getCentres(ConnectionProvider<A> provider,
-                                            DescriptorManager<A> manager);
+    public Collection<Centre<A>> getCentres(DescriptorManager<A> manager);
 
 }

@@ -39,26 +39,32 @@ import java.util.Set;
  */
 public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
 
-    private final Ligand<A> first;
-    private final Ligand<A> second;
-    private final Set<A>    atoms;
+    private final AbstractLigand<A> first;
+    private final AbstractLigand<A> second;
+    private final Set<A>            atoms;
 
 
     @SuppressWarnings("unchecked")
     public PlanarCentre(A first, A second,
-                        ConnectionProvider<A> provider,
                         MutableDescriptor descriptor) {
 
-        super(provider, descriptor);
+        super(descriptor);
 
         Ligand<A> self = this;
 
         // create two ligand delegates
-        this.first = new NonterminalLigand<A>(provider, descriptor, first, second);
-        this.second = new NonterminalLigand<A>(provider, descriptor, second, first);
+        this.first = new NonterminalLigand<A>(descriptor, first, second);
+        this.second = new NonterminalLigand<A>(descriptor, second, first);
 
         atoms = Sets.newHashSet(first, second);
 
+    }
+
+
+    @Override
+    public void setProvider(ConnectionProvider<A> provider) {
+        first.setProvider(provider);
+        second.setProvider(provider);
     }
 
 

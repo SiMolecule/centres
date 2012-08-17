@@ -33,6 +33,13 @@ public class NonterminalLigand<A> extends AbstractLigand<A> {
     private final A parent;
 
 
+    public NonterminalLigand(MutableDescriptor descriptor,
+                             A atom,
+                             A parent) {
+        this(descriptor, Collections.EMPTY_SET, atom, parent);
+    }
+
+
     public NonterminalLigand(ConnectionProvider<A> provider,
                              MutableDescriptor descriptor,
                              A atom,
@@ -46,8 +53,8 @@ public class NonterminalLigand<A> extends AbstractLigand<A> {
                              Set<A> visited,
                              A atom,
                              A parent) {
-
-        super(provider, visited, descriptor);
+        super(provider,
+              visited, descriptor);
 
         if (atom == null)
             throw new IllegalArgumentException("Provided non-terminal " +
@@ -58,7 +65,25 @@ public class NonterminalLigand<A> extends AbstractLigand<A> {
 
         this.atom = atom;
         this.parent = parent;
+    }
 
+
+    public NonterminalLigand(MutableDescriptor descriptor,
+                             Set<A> visited,
+                             A atom,
+                             A parent) {
+
+        super(visited, descriptor);
+
+        if (atom == null)
+            throw new IllegalArgumentException("Provided non-terminal " +
+                                                       "atom should not be null");
+        if (parent == null)
+            throw new IllegalArgumentException("Provided non-terminal parent" +
+                                                       " atom should not be null");
+
+        this.atom = atom;
+        this.parent = parent;
 
     }
 

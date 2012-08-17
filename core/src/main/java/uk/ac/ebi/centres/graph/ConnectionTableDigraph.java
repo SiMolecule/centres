@@ -18,9 +18,9 @@
 
 package uk.ac.ebi.centres.graph;
 
-import uk.ac.ebi.centres.ConnectionProvider;
 import uk.ac.ebi.centres.ConnectionTable;
 import uk.ac.ebi.centres.DescriptorManager;
+import uk.ac.ebi.centres.Ligand;
 
 import java.util.Collection;
 
@@ -28,15 +28,16 @@ import java.util.Collection;
  * @author John May
  */
 public class ConnectionTableDigraph<A>
-        extends AbstractMutableDigraph<A>  {
+        extends RootedDigraph<A> {
 
 
     private final ConnectionTable<A> table;
 
 
-    public ConnectionTableDigraph(DescriptorManager<A> manager,
+    public ConnectionTableDigraph(Ligand<A> root,
+                                  DescriptorManager<A> manager,
                                   ConnectionTable<A> table) {
-        super(manager);
+        super(root, manager);
         this.table = table;
     }
 

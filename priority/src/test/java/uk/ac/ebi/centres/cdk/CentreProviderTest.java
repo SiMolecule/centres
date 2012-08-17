@@ -31,7 +31,6 @@ import uk.ac.ebi.centres.DescriptorManager;
 import uk.ac.ebi.centres.PriorityRule;
 import uk.ac.ebi.centres.SignCalculator;
 import uk.ac.ebi.centres.descriptor.General;
-import uk.ac.ebi.centres.graph.ConnectionTableDigraph;
 import uk.ac.ebi.centres.graph.DefaultDescriptorManager;
 import uk.ac.ebi.centres.priority.AtomicNumberRule;
 import uk.ac.ebi.centres.priority.CombinedRule;
@@ -60,11 +59,8 @@ public class CentreProviderTest {
             atom.setAtomicNumber(PeriodicTable.getAtomicNumber(atom.getSymbol()));
         DescriptorManager<IAtom> manager = new DefaultDescriptorManager<IAtom>();
 
-        ConnectionTableDigraph<IAtom> digraph = new ConnectionTableDigraph<IAtom>(manager,
-                                                                                  new CDKConnectionTable(container));
-
         CentreProvider<IAtom> provider = new CDKCentreProvider(container);
-        Collection<Centre<IAtom>> centres = provider.getCentres(digraph, manager);
+        Collection<Centre<IAtom>> centres = provider.getCentres(manager);
 
 
         PriorityRule<IAtom> rule = new CombinedRule<IAtom>(
@@ -91,7 +87,6 @@ public class CentreProviderTest {
 
             for (Centre<IAtom> centre : unperceived) {
 
-                digraph.setRoot(centre);
                 Descriptor descriptor = centre.perceive(rule, calc);
 
                 if (descriptor != General.UNKNOWN)

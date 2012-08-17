@@ -37,7 +37,7 @@ import java.util.Set;
 public abstract class AbstractLigand<A> implements Ligand<A> {
 
     private Descriptor auxiliary = General.UNKNOWN;
-    private final ConnectionProvider<A> provider;
+    private       ConnectionProvider<A> provider;
     private final Set<A>                visited;
     private final MutableDescriptor     descriptor;
 
@@ -55,15 +55,34 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
     }
 
 
-    public AbstractLigand(ConnectionProvider<A> provider,
+    public AbstractLigand(Set<A> visited,
                           MutableDescriptor descriptor) {
 
-        this.provider = provider;
+        this.descriptor = descriptor;
+
+        // optimise size for a load factor of 0.75
+        this.visited = Sets.newHashSet(visited);
+
+    }
+
+
+    public AbstractLigand(MutableDescriptor descriptor) {
+
         this.descriptor = descriptor;
 
 
         this.visited = Collections.EMPTY_SET;
 
+    }
+
+
+    public ConnectionProvider<A> getProvider() {
+        return provider;
+    }
+
+
+    public void setProvider(ConnectionProvider<A> provider) {
+        this.provider = provider;
     }
 
 

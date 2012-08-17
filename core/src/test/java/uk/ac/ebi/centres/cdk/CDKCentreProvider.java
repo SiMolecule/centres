@@ -24,8 +24,9 @@ import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IBond;
 import uk.ac.ebi.centres.Centre;
 import uk.ac.ebi.centres.CentreProvider;
-import uk.ac.ebi.centres.ConnectionProvider;
+import uk.ac.ebi.centres.ConnectionTable;
 import uk.ac.ebi.centres.DescriptorManager;
+import uk.ac.ebi.centres.graph.ConnectionTableDigraph;
 import uk.ac.ebi.centres.ligand.PlanarCentre;
 import uk.ac.ebi.centres.ligand.TetrahedralCentre;
 
@@ -38,16 +39,18 @@ import java.util.List;
  */
 public class CDKCentreProvider implements CentreProvider<IAtom> {
 
-    private final IAtomContainer container;
+    private final IAtomContainer         container;
+    private final ConnectionTable<IAtom> table;
 
 
     public CDKCentreProvider(IAtomContainer container) {
         this.container = container;
+        this.table = new CDKConnectionTable(container);
     }
 
 
     @Override
-    public Collection<Centre<IAtom>> getCentres(ConnectionProvider<IAtom> provider, DescriptorManager<IAtom> manager) {
+    public Collection<Centre<IAtom>> getCentres(DescriptorManager<IAtom> manager) {
 
         List<Centre<IAtom>> centres = new ArrayList<Centre<IAtom>>(container.getAtomCount());
 
@@ -56,7 +59,9 @@ public class CDKCentreProvider implements CentreProvider<IAtom> {
             // might need refinement
             if (IAtomType.Hybridization.SP3.equals(atom.getHybridization())
                     && container.getConnectedAtomsCount(atom) > 2) {
-                centres.add(new TetrahedralCentre<IAtom>(provider, manager.getDescriptor(atom), atom));
+                TetrahedralCentre<IAtom> centre = new TetrahedralCentre<IAtom>(manager.getDescriptor(atom), atom);
+                centre.setProvider(new ConnectionTableDigraph<IAtom>(centre, manager, table));
+                centres.add(centre);
             }
         }
 
@@ -64,9 +69,11 @@ public class CDKCentreProvider implements CentreProvider<IAtom> {
         for (IBond bond : container.bonds()) {
             // TODO: check we're not in a ring
             if (IBond.Order.DOUBLE.equals(bond.getOrder())) {
-                centres.add(new PlanarCentre<IAtom>(bond.getAtom(0), bond.getAtom(1),
-                                                    provider,
-                                                    manager.getDescriptor(bond.getAtom(0), bond.getAtom(1))));
+                PlanarCentre<IAtom> centre = new PlanarCentre<IAtom>(bond.getAtom(0), bond.getAtom(1),
+                                                                     manager.getDescriptor(bond.getAtom(0), bond.getAtom(1)));
+                centre.setProvider(new ConnectionTableDigraph<IAtom>(centre, manager, table));
+                centres.add(centre);
+
             }
         }
 
