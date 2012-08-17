@@ -16,21 +16,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-package uk.ac.ebi.centres.priority.access.descriptor;
+package uk.ac.ebi.centres.priority.descriptor;
 
 import uk.ac.ebi.centres.Descriptor;
-import uk.ac.ebi.centres.Ligand;
-import uk.ac.ebi.centres.priority.access.DescriptorAccessor;
+import uk.ac.ebi.centres.descriptor.Tetrahedral;
+import uk.ac.ebi.centres.priority.access.descriptor.PrimaryDescriptor;
 
 /**
- * Access a descriptor on the parent arc of a ligand.
+ * A rule with prioritises ligands in R configuration over those in S
+ * configuration. This rule is pseudo-asymmetric
  *
  * @author John May
  */
-public class ArcDescriptorAccessor<A> implements DescriptorAccessor<A> {
+public class RSRule<A> extends DescriptorRule<A> {
 
-    @Override
-    public Descriptor getDescriptor(Ligand<A> ligand) {
-        return ligand.getParentArc().getDescriptor();
+    public RSRule() {
+        super(Descriptor.Type.PSEUDO_ASYMMETRIC,
+              new PrimaryDescriptor<A>(),
+              Tetrahedral.S, Tetrahedral.R);
     }
+
 }

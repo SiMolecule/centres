@@ -16,21 +16,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-package uk.ac.ebi.centres.priority.descriptor;
+package uk.ac.ebi.centres.priority.access.descriptor;
 
-import uk.ac.ebi.centres.descriptor.Planar;
-import uk.ac.ebi.centres.priority.access.descriptor.ArcPrimaryDescriptor;
+import uk.ac.ebi.centres.Descriptor;
+import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.priority.access.DescriptorAccessor;
 
 /**
- * A rule with prioritises ligands in Z (cis) configuration over those in E
- * (trans) configuration.
+ * Access a descriptor on the parent arc of a ligand.
  *
  * @author John May
  */
-public class ZERule<A> extends DescriptorRule<A> {
+public class ArcPrimaryDescriptor<A> implements DescriptorAccessor<A> {
 
-    public ZERule() {
-        super(new ArcPrimaryDescriptor<A>(), Planar.E, Planar.Z);
+    @Override
+    public Descriptor getDescriptor(Ligand<A> ligand) {
+        return ligand.getParentArc().getDescriptor();
     }
-
 }
