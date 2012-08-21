@@ -26,14 +26,10 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.periodictable.PeriodicTable;
 import uk.ac.ebi.centres.Centre;
-import uk.ac.ebi.centres.CentreProvider;
-import uk.ac.ebi.centres.Descriptor;
-import uk.ac.ebi.centres.DescriptorManager;
+import uk.ac.ebi.centres.DefaultPerceptor;
 import uk.ac.ebi.centres.Digraph;
+import uk.ac.ebi.centres.Perceptor;
 import uk.ac.ebi.centres.PriorityRule;
-import uk.ac.ebi.centres.SignCalculator;
-import uk.ac.ebi.centres.descriptor.General;
-import uk.ac.ebi.centres.graph.DefaultDescriptorManager;
 import uk.ac.ebi.centres.io.CytoscapeWriter;
 import uk.ac.ebi.centres.ligand.AbstractLigand;
 import uk.ac.ebi.centres.priority.AtomicNumberRule;
@@ -49,12 +45,7 @@ import uk.ac.ebi.centres.priority.descriptor.ZERule;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author John May
@@ -72,11 +63,6 @@ public class CentreProviderTest {
             atom.setMassNumber(IsotopeFactory.getInstance(atom.getBuilder()).getMajorIsotope(atom.getSymbol()).getMassNumber());
         }
         AtomContainerManipulator.percieveAtomTypesAndConfigureUnsetProperties(container);
-
-        DescriptorManager<IAtom> manager = new DefaultDescriptorManager<IAtom>();
-
-        CentreProvider<IAtom> provider = new CDKCentreProvider(container);
-        Collection<Centre<IAtom>> centres = provider.getCentres(manager);
 
 
         PriorityRule<IAtom> rule = new CombinedRule<IAtom>(
@@ -113,81 +99,15 @@ public class CentreProviderTest {
                 new PairRule<IAtom>(new AuxiliaryDescriptor<IAtom>()),
                 new RSRule<IAtom>(new AuxiliaryDescriptor<IAtom>()));
 
-        // maintain two lists so that all unperceived centres can be set to
-        // 'NONE' at the end.
-        List<Centre<IAtom>> unperceived = new LinkedList<Centre<IAtom>>();
-        List<Centre<IAtom>> perceived = new LinkedList<Centre<IAtom>>();
+        Perceptor<IAtom> perceptor = new DefaultPerceptor<IAtom>(rule,
+                                                                 auxrule,
+                                                                 new CDK2DSignCalculator());
 
-        unperceived.addAll(centres);
+        perceptor.perceive(new CDKCentreProvider(container), new CDKManager(container));
 
-        SignCalculator<IAtom> calc = new CDK2DSignCalculator();
-
-        long start = System.currentTimeMillis();
-
-        Boolean found = Boolean.FALSE;
-        do {
-
-            Map<Centre<IAtom>, Descriptor> map = new HashMap<Centre<IAtom>, Descriptor>();
-
-            for (Centre<IAtom> centre : unperceived) {
-
-                Descriptor descriptor = centre.perceive(rule, calc);
-
-                if (descriptor != General.UNKNOWN)
-                    map.put(centre, descriptor);
-
-
-            }
-
-            found = !map.isEmpty();
-            // transfer descriptors
-            for (Map.Entry<Centre<IAtom>, Descriptor> entry : map.entrySet()) {
-                unperceived.remove(entry.getKey());
-                perceived.add(entry.getKey());
-                entry.getKey().setDescriptor(entry.getValue());
-            }
-
-
-        } while (found);
-
-
-        // check for aux calculations otherwise these don't have stereo
-        if (perceived.isEmpty()) {
-
-            System.out.println("[AUXILIARY]");
-
-            Map<Centre<IAtom>, Descriptor> map = new HashMap<Centre<IAtom>, Descriptor>();
-
-            for (Centre<IAtom> centre : unperceived) {
-
-                centre.perceiveAuxiliary(unperceived, rule, calc);
-                Descriptor descriptor = centre.perceive(auxrule, calc);
-
-                if (descriptor != General.UNKNOWN)
-                    map.put(centre, descriptor);
-
-
-            }
-
-            // transfer descriptors
-            for (Map.Entry<Centre<IAtom>, Descriptor> entry : map.entrySet()) {
-                unperceived.remove(entry.getKey());
-                perceived.add(entry.getKey());
-                entry.getKey().setDescriptor(entry.getValue());
-            }
-
-        }
-
-        long end = System.currentTimeMillis();
-        System.out.println(end - start);
-
-        for (Centre<IAtom> centre : unperceived) {
-            centre.setDescriptor(General.NONE);
-            System.out.println(centre + ": " + centre.getDescriptor());
-        }
-        for (Centre<IAtom> centre : perceived) {
-            System.out.println(centre + ": " + centre.getDescriptor());
-            Set<IAtom> atoms = centre.getAtoms();
+        for (IAtom atom : container.atoms()) {
+            System.out.println(atom.getSymbol() + container.getAtomNumber(atom)
+                                       + ": " + atom.getProperty("descriptor"));
         }
 
     }
