@@ -29,6 +29,9 @@
 
     <artifactId>centres-priority</artifactId>
 
+    <name>centres-core</name>
+    <url>http://www.github.com/johnmay/centres/priority</url>
+
     <dependencies>
         <dependency>
             <artifactId>centres-core</artifactId>
