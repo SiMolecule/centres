@@ -24,6 +24,8 @@ import uk.ac.ebi.centres.MutableDescriptor;
 import java.util.HashMap;
 import java.util.Map;
 
+import static uk.ac.ebi.centres.descriptor.General.UNKNOWN;
+
 /**
  * @author John May
  */
@@ -56,5 +58,20 @@ public class DefaultDescriptorManager<A> implements DescriptorManager<A> {
             bondMap.put(new HashMap.SimpleEntry(second, first), mutableDescriptor);
         }
         return mutableDescriptor;
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<A, MutableDescriptor> entry : atomMap.entrySet()) {
+            if (entry.getValue().get() != UNKNOWN)
+                sb.append(entry.getKey()).append(": ").append(entry.getValue().get()).append("\n");
+        }
+        for (Map.Entry<Map.Entry<A, A>, MutableDescriptor> entry : bondMap.entrySet()) {
+            if (entry.getValue().get() != UNKNOWN)
+                sb.append(entry.getKey().getKey()).append("=").append(entry.getKey().getValue()).append(": ").append(entry.getValue().get()).append("\n");
+        }
+        return sb.toString();
     }
 }
