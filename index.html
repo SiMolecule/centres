@@ -1,13 +1,90 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
   <head>
-    <title>Centres</title>
-  </head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Centres by johnmay</title>
 
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
   <body>
-    <h1>Centres</h1>
-    <p>Stereocenter Perception</p>
+    <div class="wrapper">
+      <header>
+        <h1>Centres</h1>
+        <p>Perception and labelling of stereogenic centres in chemical structures</p>
+
+        <p class="view"><a href="https://github.com/johnmay/centres">View the Project on GitHub <small>johnmay/centres</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/johnmay/centres/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/johnmay/centres/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/johnmay/centres">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <p>Centres is an open source Java library for that allows perception and labelling of stereogenic centres in chemical structures.</p>
+
+<h3>Functionality</h3>
+
+<ul>
+<li>Perception and labelling of tetrahedral (<em>R</em>/<em>S</em>) and planar (<em>Z</em>/<em>E</em>) stereogenic centres</li>
+<li>Identification of pseudoasymetric centres <em>r</em>, <em>s</em>, <em>z</em> and <em>e</em>
+</li>
+<li>Complete implementation of the Cahn-Ingold-Prelog (CIP) priority rules as they appear in Prelog and Helmchen, 1982</li>
+<li>Customizable priority rules that allow perception with alternate priorities such as those suggested by Predih and Rmzinger, 1994 </li>
+<li>Generic library allowing <a href="http://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a> of any molecule/atom object representation</li>
+</ul><h3>Artefacts</h3>
+
+<p>The easiest way to use the library is with a dependency manager (<a href="http://maven.apache.org/">Maven</a>, <a href="http://www.gradle.org/">Gradle</a> or <a href="http://ant.apache.org/ivy/">Ivy</a>). There are currently two artefacts of the centres library. The artefacts are currently located in the EBI repository <code>http://www.ebi.ac.uk/~maven/m2repo/</code> and <code>http://www.ebi.ac.uk/~maven/m2repo_snapshots</code>. The core (<code>centres-core</code>) module provides the interfaces and basic implementations of graphs/ligands and sorters. The priority (<code>centres-priority</code>) module provides implementations of the priority rules for ranking ligands.  </p>
+
+<h4>Maven</h4>
+
+<div class="highlight"><pre><span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>centres-core<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>uk.ac.ebi.centres<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>0.1-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>centres-priority<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>uk.ac.ebi.centres<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>0.1-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+
+<h3>Documentation</h3>
+
+<ul>
+<li>Learn how to use the library with your object model in the <a href="">tutorial</a>
+</li>
+<li>Access the API documentation for interfaces, classes and methods via the <a href="">JavaDoc</a>
+</li>
+</ul><h3>License</h3>
+
+<p><a href="http://www.gnu.org/licenses/lgpl.html">Lesser General Public License 3.0</a></p>
+
+<h3>Authors</h3>
+
+<p>John May</p>
+
+<h3>References</h3>
+
+<ul>
+<li>Prelog and Helmchen. Basic Principles of the CIP-System and Proposals for a Revision. <strong>Angewandte Chemie International Edition</strong> 21 (1982) 567-683</li>
+<li>Perdih and Rmzinger. Stereo-chemistry and Sequence Rules A Proposal for Modification of Cahn-Ingold-Prelog System. <strong>Tetrahedron: Asymmetry</strong> Vol 5 (1994) 835-861</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/johnmay">johnmay</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
   </body>
-  
 </html>
