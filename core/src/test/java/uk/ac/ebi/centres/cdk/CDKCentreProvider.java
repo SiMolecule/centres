@@ -18,6 +18,8 @@
 
 package uk.ac.ebi.centres.cdk;
 
+import org.openscience.cdk.CDKConstants;
+import org.openscience.cdk.graph.SpanningTree;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
@@ -32,7 +34,9 @@ import uk.ac.ebi.centres.ligand.TetrahedralCentre;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author John May
@@ -41,11 +45,17 @@ public class CDKCentreProvider implements CentreProvider<IAtom> {
 
     private final IAtomContainer         container;
     private final ConnectionTable<IAtom> table;
+    private final SpanningTree           tree;
 
+    private static final Set<String> tetrahedralSymbols = new HashSet<String>();
+    static {
+        tetrahedralSymbols.add("C");
+    }
 
     public CDKCentreProvider(IAtomContainer container) {
         this.container = container;
         this.table = new CDKConnectionTable(container);
+        this.tree = new SpanningTree(container);
     }
 
 
@@ -58,17 +68,25 @@ public class CDKCentreProvider implements CentreProvider<IAtom> {
         for (IAtom atom : container.atoms()) {
             // might need refinement
             if (IAtomType.Hybridization.SP3.equals(atom.getHybridization())
-                    && container.getConnectedAtomsCount(atom) > 2) {
+                    && container.getConnectedAtomsCount(atom) > 2
+                    && atom.getFormalNeighbourCount() == 4
+                    && hasStereoBonds(container, atom)) {
                 TetrahedralCentre<IAtom> centre = new TetrahedralCentre<IAtom>(manager.getDescriptor(atom), atom);
                 centre.setProvider(new ConnectionTableDigraph<IAtom>(centre, manager, table));
                 centres.add(centre);
             }
         }
 
+        IAtomContainer cyclic = tree.getCyclicFragmentsContainer();
+
         // planar centres
         for (IBond bond : container.bonds()) {
             // TODO: check we're not in a ring
-            if (IBond.Order.DOUBLE.equals(bond.getOrder())) {
+            if (IBond.Order.DOUBLE.equals(bond.getOrder())
+                    && bond.getFlag(CDKConstants.ISAROMATIC) == Boolean.FALSE
+                    && !cyclic.contains(bond)
+                    && container.getConnectedAtomsCount(bond.getAtom(0)) > 1
+                    && container.getConnectedAtomsCount(bond.getAtom(1)) > 1                    ) {
                 PlanarCentre<IAtom> centre = new PlanarCentre<IAtom>(bond.getAtom(0), bond.getAtom(1),
                                                                      manager.getDescriptor(bond.getAtom(0), bond.getAtom(1)));
                 centre.setProvider(new ConnectionTableDigraph<IAtom>(centre, manager, table));
@@ -80,5 +98,23 @@ public class CDKCentreProvider implements CentreProvider<IAtom> {
         return centres;
 
     }
+
+
+    private boolean hasStereoBonds(IAtomContainer container, IAtom atom) {
+        for (IBond bond : container.getConnectedBondsList(atom)) {
+            IBond.Stereo stereo = bond.getStereo();
+            if (IBond.Stereo.UP.equals(stereo)
+                    || IBond.Stereo.DOWN.equals(stereo)
+                    || IBond.Stereo.UP_INVERTED.equals(stereo)
+                    || IBond.Stereo.DOWN_INVERTED.equals(stereo)) {
+                return Boolean.TRUE;
+            }
+        }
+        return Boolean.FALSE;
+    }
+
+
+
+
 
 }

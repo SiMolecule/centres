@@ -30,6 +30,8 @@ import uk.ac.ebi.centres.DefaultPerceptor;
 import uk.ac.ebi.centres.Digraph;
 import uk.ac.ebi.centres.Perceptor;
 import uk.ac.ebi.centres.PriorityRule;
+import uk.ac.ebi.centres.graph.ConnectionTableDigraph;
+import uk.ac.ebi.centres.graph.DefaultDescriptorManager;
 import uk.ac.ebi.centres.io.CytoscapeWriter;
 import uk.ac.ebi.centres.ligand.AbstractLigand;
 import uk.ac.ebi.centres.priority.AtomicNumberRule;
@@ -45,6 +47,7 @@ import uk.ac.ebi.centres.priority.descriptor.ZERule;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -55,7 +58,7 @@ public class CentreProviderTest {
     @Test
     public void testGetCentres() throws CDKException, IOException {
 
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream("myo-inositol.xml"));
+        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream("ball.xml"));
 
         // setting correct properties :/
         for (IAtom atom : container.atoms()) {
@@ -63,6 +66,8 @@ public class CentreProviderTest {
             atom.setMassNumber(IsotopeFactory.getInstance(atom.getBuilder()).getMajorIsotope(atom.getSymbol()).getMassNumber());
         }
         AtomContainerManipulator.percieveAtomTypesAndConfigureUnsetProperties(container);
+
+        System.out.println(new CDKCentreProvider(container).getCentres(new DefaultDescriptorManager<IAtom>()).size());
 
 
         PriorityRule<IAtom> rule = new CombinedRule<IAtom>(
@@ -104,6 +109,13 @@ public class CentreProviderTest {
                                                                  new CDK2DSignCalculator());
 
         perceptor.perceive(new CDKCentreProvider(container), new CDKManager(container));
+
+        Centre<IAtom> centre = new ArrayList<Centre<IAtom>>(new CDKCentreProvider(container).getCentres(new DefaultDescriptorManager<IAtom>())).get(0);
+
+        Digraph<IAtom> digraph = new ConnectionTableDigraph<IAtom>(centre,
+                                                                   new DefaultDescriptorManager<IAtom>(),
+                                                                   new CDKConnectionTable(container));
+        write("digraph", centre);
 
         for (IAtom atom : container.atoms()) {
             System.out.println(atom.getSymbol() + container.getAtomNumber(atom)
