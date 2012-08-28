@@ -2,9 +2,9 @@ Centres is an open source Java library for that allows perception and labelling 
 
 ### Functionality
 * Perception and labelling of tetrahedral (__R__/__S__) and planar (__Z__/__E__) stereogenic centres
-* Identification of pseudoasymetric centres _r_, _s_, _z_ and _e_
+* Perception and labelling of pseudoasymetric centres _r_, _s_, _z_ and _e_
 * Complete implementation of the Cahn-Ingold-Prelog (CIP) priority rules as they appear in Prelog and Helmchen, 1982
-* Customizable priority rules that allow perception with alternate priorities such as those suggested by Predih and Rmzinger, 1994 
+* Complete implementation of graph baesed labelling as suggested by Predih and Rmzinger, 1994
 * Generic library allowing [dependency injection](http://en.wikipedia.org/wiki/Dependency_injection) of any molecule/atom object representation
 
 ### License
