@@ -123,6 +123,7 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
     @Override
     public void perceiveAuxiliary(Collection<Centre<A>> centres, PriorityRule<A> rule, SignCalculator<A> calculator) {
         System.err.println("Should auxiliary perception be done on planar centres?");
+        throw new IllegalArgumentException("Check this molecule!");
     }
 
 
@@ -138,6 +139,9 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
 
         List<Ligand<A>> firstLigands = first.getLigands();
         List<Ligand<A>> secondLigands = second.getLigands();
+
+        if (firstLigands.isEmpty() || secondLigands.isEmpty())
+            return General.NONE;
 
         // check for pseudo
         Priority firstPriority = rule.prioritise(firstLigands);
