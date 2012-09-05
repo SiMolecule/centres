@@ -65,6 +65,7 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
 
     @Override
     public void setProvider(ConnectionProvider<A> provider) {
+        super.setProvider(provider);
         first.setProvider(provider);
         second.setProvider(provider);
     }
@@ -123,7 +124,6 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
     @Override
     public void perceiveAuxiliary(Collection<Centre<A>> centres, PriorityRule<A> rule, SignCalculator<A> calculator) {
         System.err.println("Should auxiliary perception be done on planar centres?");
-        throw new IllegalArgumentException("Check this molecule!");
     }
 
 
