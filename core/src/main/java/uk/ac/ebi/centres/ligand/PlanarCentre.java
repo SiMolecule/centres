@@ -147,7 +147,8 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
         Priority firstPriority = rule.prioritise(firstLigands);
         Priority secondPriority = rule.prioritise(secondLigands);
 
-        if (!firstPriority.isUnique()) {
+        if (!firstPriority.isUnique() || !secondPriority.isUnique()) {
+            // we don't know whether it is none yet...
             return General.UNKNOWN;
         }
 
@@ -157,6 +158,9 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
         int secondSign = calculator.getSign(secondLigands.iterator().next().getAtom(),
                                             second.getAtom(),
                                             first.getAtom());
+
+        if (firstSign == 0 || secondSign == 0)
+            return General.UNSPECIFIED;
 
         boolean pseudo = firstPriority.getType().equals(Descriptor.Type.PSEUDO_ASYMMETRIC)
                 || secondPriority.getType().equals(Descriptor.Type.PSEUDO_ASYMMETRIC);
