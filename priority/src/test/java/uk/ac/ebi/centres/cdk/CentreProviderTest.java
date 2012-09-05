@@ -23,6 +23,7 @@ import org.openscience.cdk.config.IsotopeFactory;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.periodictable.PeriodicTable;
 import uk.ac.ebi.centres.Centre;
@@ -44,6 +45,7 @@ import uk.ac.ebi.centres.priority.access.descriptor.PrimaryDescriptor;
 import uk.ac.ebi.centres.priority.descriptor.PairRule;
 import uk.ac.ebi.centres.priority.descriptor.RSRule;
 import uk.ac.ebi.centres.priority.descriptor.ZERule;
+import uk.ac.ebi.mdk.tool.domain.ChiralityCalculator;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +60,7 @@ public class CentreProviderTest {
     @Test
     public void testGetCentres() throws CDKException, IOException {
 
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream("ball.xml"));
+        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream("but-2-ene.xml"));
 
         // setting correct properties :/
         for (IAtom atom : container.atoms()) {
@@ -67,8 +69,12 @@ public class CentreProviderTest {
         }
         AtomContainerManipulator.percieveAtomTypesAndConfigureUnsetProperties(container);
 
-        System.out.println(new CDKCentreProvider(container).getCentres(new DefaultDescriptorManager<IAtom>()).size());
+        // hmm this seems relatively fast.. (but wrong)
+        for (IAtom atom : container.atoms()) {
+            System.out.println(container.getAtomNumber(atom) + 1 + ": " + ChiralityCalculator.getChirality(container, atom));
+        }
 
+        System.out.println(new CDKCentreProvider(container).getCentres(new DefaultDescriptorManager<IAtom>()).size());
 
         PriorityRule<IAtom> rule = new CombinedRule<IAtom>(
                 new AtomicNumberRule<IAtom>(new AtomicNumberAccessor<IAtom>() {
@@ -85,7 +91,8 @@ public class CentreProviderTest {
                 }),
                 new ZERule<IAtom>(),
                 new PairRule<IAtom>(new PrimaryDescriptor<IAtom>()),
-                new RSRule<IAtom>(new PrimaryDescriptor<IAtom>()));
+                new RSRule<IAtom>(new PrimaryDescriptor<IAtom>())
+        );
 
         PriorityRule<IAtom> auxrule = new CombinedRule<IAtom>(
                 new AtomicNumberRule<IAtom>(new AtomicNumberAccessor<IAtom>() {
@@ -112,6 +119,7 @@ public class CentreProviderTest {
 
         Centre<IAtom> centre = new ArrayList<Centre<IAtom>>(new CDKCentreProvider(container).getCentres(new DefaultDescriptorManager<IAtom>())).get(0);
 
+
         Digraph<IAtom> digraph = new ConnectionTableDigraph<IAtom>(centre,
                                                                    new DefaultDescriptorManager<IAtom>(),
                                                                    new CDKConnectionTable(container));
@@ -120,6 +128,11 @@ public class CentreProviderTest {
         for (IAtom atom : container.atoms()) {
             System.out.println(atom.getSymbol() + container.getAtomNumber(atom)
                                        + ": " + atom.getProperty("descriptor"));
+        }
+        System.out.println("Bonds:");
+        for (IBond bond : container.bonds()) {
+            System.out.println(bond.getAtom(0).getSymbol() + "=" + bond.getAtom(1).getSymbol() + container.getBondNumber(bond)
+                                       + ": " + bond.getProperty("descriptor"));
         }
 
     }
