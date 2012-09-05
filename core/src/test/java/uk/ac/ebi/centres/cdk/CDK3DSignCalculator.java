@@ -19,21 +19,27 @@
 package uk.ac.ebi.centres.cdk;
 
 import org.openscience.cdk.interfaces.IAtom;
-import uk.ac.ebi.centres.calculator.TwoDimensionalSignCalculator;
+import uk.ac.ebi.centres.calculator.ThreeDimensionalSignCalculator;
 
 /**
  * @author John May
  */
-public class CDK3DSignCalculator extends TwoDimensionalSignCalculator<IAtom> {
+public class CDK3DSignCalculator extends ThreeDimensionalSignCalculator<IAtom> {
 
     @Override
     public double getX(IAtom atom) {
-        return atom.getPoint2d().x;
+        return atom.getPoint3d().x;
     }
 
 
     @Override
     public double getY(IAtom atom) {
-        return atom.getPoint2d().y;
+        return atom.getPoint3d().y;
+    }
+
+
+    @Override
+    public double getZ(IAtom atom) {
+        return atom.getPoint3d().z;
     }
 }
