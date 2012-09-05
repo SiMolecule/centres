@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<cml>
+    <MDocument>
+        <MChemicalStruct>
+            <molecule molID="m1">
+                <atomArray>
+                    <atom id="a1" elementType="C" isotope="13"
+                          x2="-4.364692946498077" y2="-0.7968874137193072" />
+                    <atom id="a2" elementType="C"
+                          x2="-3.0310138246700413" y2="-1.5668874137193072" />
+                    <atom id="a3" elementType="C"
+                          x2="-1.6973347028420065" y2="-0.7968874137193067" />
+                    <atom id="a4" elementType="C"
+                          x2="-0.3636555810139708" y2="-1.5668874137193067" />
+                    <atom id="a5" elementType="C"
+                          x2="0.9700235408140649" y2="-0.7968874137193063" />
+                    <atom id="a6" elementType="O"
+                          x2="-1.6973347028420056" y2="0.7431125862806933" />
+                    <atom id="a7" elementType="O"
+                          x2="2.3037026626421007" y2="-1.5668874137193063" />
+                    <atom id="a8" elementType="N"
+                          x2="-5.698372068326112" y2="-1.566887413719308" />
+                </atomArray>
+                <bondArray>
+                    <bond atomRefs2="a1 a2" order="1" />
+                    <bond atomRefs2="a2 a3" order="1" />
+                    <bond atomRefs2="a3 a4" order="1" />
+                    <bond atomRefs2="a4 a5" order="1" />
+                    <bond atomRefs2="a3 a6" order="1">
+                        <bondStereo dictRef="cml:W">W</bondStereo>
+                    </bond>
+                    <bond atomRefs2="a5 a7" order="1" />
+                    <bond atomRefs2="a1 a8" order="1" />
+                </bondArray>
+            </molecule>
+        </MChemicalStruct>
+    </MDocument>
+</cml>
