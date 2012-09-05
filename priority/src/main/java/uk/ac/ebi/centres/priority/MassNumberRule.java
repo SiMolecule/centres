@@ -55,8 +55,7 @@ public class MassNumberRule<A>
      */
     @Override
     public int compare(Ligand<A> o1, Ligand<A> o2) {
-        int value = accessor.getMassNumber(o1.getAtom()) - accessor.getMassNumber(o2.getAtom());
-        return value != 0 ? value : compare(o1.getLigands(), o2.getLigands());
+        return accessor.getMassNumber(o1.getAtom()) - accessor.getMassNumber(o2.getAtom());
     }
 
 }

@@ -94,7 +94,7 @@ public class CombinedRule<A> extends AbstractPriorityRule<A> {
         for (PriorityRule<A> rule : rules) {
 
             // compare expands exhaustively across the whole graph
-            int value = rule.compare(o1, o2);
+            int value = rule.recursiveCompare(o1, o2);
 
             if (value != 0) return value;
 
@@ -122,7 +122,7 @@ public class CombinedRule<A> extends AbstractPriorityRule<A> {
         for (PriorityRule<A> rule : rules) {
 
             // compare expands exhaustively across the whole graph
-            int value = rule.compare(o1, o2);
+            int value = rule.recursiveCompare(o1, o2);
 
             if (value != 0) {
                 return new LigandComparison(value, rule.getType());

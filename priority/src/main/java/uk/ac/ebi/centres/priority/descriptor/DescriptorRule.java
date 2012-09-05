@@ -101,8 +101,7 @@ public class DescriptorRule<A> extends AbstractPriorityRule<A> {
      */
     @Override
     public int compare(Ligand<A> o1, Ligand<A> o2) {
-        int value = getRank(o1) - getRank(o2);
-        return value != 0 ? value : compare(o1.getLigands(), o2.getLigands());
+        return getRank(o1) - getRank(o2);
     }
 
 

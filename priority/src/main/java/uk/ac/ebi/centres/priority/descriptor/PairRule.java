@@ -76,6 +76,13 @@ public class PairRule<A>
     }
 
 
+    @Override
+    public int recursiveCompare(Ligand<A> o1, Ligand<A> o2) {
+        // can't/don't need to do recursive on the pair rule
+        return compare(o1, o2);
+    }
+
+
     /**
      * Generates a set of descriptor lists that maintain the like/unlike pairing
      * whilst descriptors are added. The set is navigable and maintains priority

@@ -33,6 +33,8 @@ import java.util.List;
  */
 public interface PriorityRule<A> extends Comparator<Ligand<A>> {
 
+    public int recursiveCompare(Ligand<A> o1, Ligand<A> o2);
+
     /**
      * Prioritises ligands using the provided sorter and indicates whether the
      * ligands were unique.

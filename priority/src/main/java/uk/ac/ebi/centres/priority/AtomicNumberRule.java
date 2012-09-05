@@ -55,8 +55,7 @@ public class AtomicNumberRule<A>
      */
     @Override
     public int compare(Ligand<A> o1, Ligand<A> o2) {
-        int value = accessor.getAtomicNumber(o1.getAtom()) - accessor.getAtomicNumber(o2.getAtom());
-        return value != 0 ? value : compare(o1.getLigands(), o2.getLigands());
+        return accessor.getAtomicNumber(o1.getAtom()) - accessor.getAtomicNumber(o2.getAtom());
     }
 
 }

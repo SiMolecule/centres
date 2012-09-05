@@ -64,12 +64,18 @@ public abstract class AbstractPriorityRule<A>
     }
 
 
+    public int recursiveCompare(Ligand<A> o1, Ligand<A> o2) {
+        int value = compare(o1, o2);
+        return value != 0 ? value : compare(o1.getLigands(), o2.getLigands());
+    }
+
+
     /**
      * @inheritDoc
      */
     @Override
     public Comparison compareLigands(Ligand<A> o1, Ligand<A> o2) {
-        return new LigandComparison(compare(o1, o2), type);
+        return new LigandComparison(recursiveCompare(o1, o2), type);
     }
 
 
@@ -131,13 +137,32 @@ public abstract class AbstractPriorityRule<A>
         // compare each element - at the first difference that ligand
         // has priority
         while (firstIt.hasNext() && secondIt.hasNext()) {
-            int value = compare(firstIt.next(), secondIt.next());
+            Ligand<A> firstLigand = firstIt.next();
+            Ligand<A> secondLigand = secondIt.next();
+            int value = compare(firstLigand, secondLigand);
             if (value != 0) return value;
         }
 
         // no difference found yet, check for different size
-        return first.size() - second.size();
+        int sizediff = first.size() - second.size();
 
+        if (sizediff != 0)
+            return sizediff;
+
+        // reiterate with recursive compare
+        firstIt = first.iterator();
+        secondIt = second.iterator();
+
+        // compare each element - at the first difference that ligand
+        // has priority
+        while (firstIt.hasNext() && secondIt.hasNext()) {
+            Ligand<A> firstLigand = firstIt.next();
+            Ligand<A> secondLigand = secondIt.next();
+            int value = recursiveCompare(firstLigand, secondLigand);
+            if (value != 0) return value;
+        }
+
+        return 0;
     }
 
 
