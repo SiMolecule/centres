@@ -30,6 +30,14 @@ public abstract class ThreeDimensionalSignCalculator<A>
 
 
     @Override
+    double[] toVector(A base, A atom) {
+        return new double[]{getX(atom) - getX(base),
+                            getY(atom) - getY(base),
+                            getZ(atom) - getZ(base)};
+    }
+
+
+    @Override
     public int getSign(Ligand<A> a1, Ligand<A> a2, Ligand<A> a3, Ligand<A> a4) {
 
         // unspecified
@@ -54,6 +62,11 @@ public abstract class ThreeDimensionalSignCalculator<A>
         double[][] matrix = new double[][]{{getX(a1), getY(a1), getZ(a1)},
                                            {getX(a2), getY(a2), getZ(a2)},
                                            {getX(a3), getY(a3), getZ(a3)}};
-        return (int) Math.signum(determinant(matrix));
+
+
+        // checking the size of the sign doesn't work for 3D as it does for 2D
+        // instead we used the magnitude of the cross-product.
+        double magnitude = magnitude(crossproduct(toVector(a2, a1), toVector(a2, a3)));
+        return magnitude < 0.2 ? 0 : (int) Math.signum(determinant(matrix));
     }
 }

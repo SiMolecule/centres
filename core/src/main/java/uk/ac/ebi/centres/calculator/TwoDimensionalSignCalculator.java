@@ -47,11 +47,25 @@ public abstract class TwoDimensionalSignCalculator<A>
     }
 
 
+    /**
+     * Constructs a two dimensional vector from the base atom to the 'atom'
+     * @param base 0,0 coordinates
+     * @param atom target of the vector
+     * @return a double array of length 2
+     */
+    @Override
+    public double[] toVector(A base, A atom) {
+        return new double[]{getX(base) - getX(base),
+                            getY(atom) - getY(atom)};
+    }
+
+
     @Override
     public int getSign(A a1, A a2, A a3) {
         double[][] matrix = new double[][]{{getX(a1), getY(a1), 1},
                                            {getX(a2), getY(a2), 1},
                                            {getX(a3), getY(a3), 1}};
-        return (int) Math.signum(determinant(matrix));
+        double determinant = determinant(matrix);
+        return Math.abs(determinant) < 0.2 ? 0 : (int) Math.signum(determinant);
     }
 }
