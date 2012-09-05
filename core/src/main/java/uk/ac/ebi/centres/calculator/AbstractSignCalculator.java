@@ -25,10 +25,32 @@ import uk.ac.ebi.centres.SignCalculator;
  */
 public abstract class AbstractSignCalculator<A> implements SignCalculator<A> {
 
+    private static int x = 0;
+    private static int y = 1;
+    private static int z = 2;
+
 
     public abstract double getX(A atom);
 
     public abstract double getY(A atom);
+
+
+    double[] crossproduct(double[] v1, double[] v2) {
+        return new double[]{(v1[y] * v2[z]) - (v2[y] * v1[y]),
+                            (v1[z] * v2[x]) - (v2[z] * v1[x]),
+                            (v1[x] * v2[y]) - (v2[x] * v1[y])};
+    }
+
+
+    double magnitude(double[] vector) {
+        return Math.sqrt(vector[x] * vector[x] +
+                                 vector[y] * vector[y] +
+                                 vector[z] * vector[z]);
+
+    }
+
+
+    abstract double[] toVector(A base, A atom);
 
 
     /**
