@@ -163,7 +163,7 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
             return General.UNSPECIFIED;
 
         boolean pseudo = firstPriority.getType().equals(Descriptor.Type.PSEUDO_ASYMMETRIC)
-                || secondPriority.getType().equals(Descriptor.Type.PSEUDO_ASYMMETRIC);
+                && secondPriority.getType().equals(Descriptor.Type.PSEUDO_ASYMMETRIC);
 
         // also check for psuedo (from prioritise)
         return firstSign == secondSign ? pseudo ? Planar.e : Planar.E
