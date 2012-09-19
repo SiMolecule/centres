@@ -34,4 +34,6 @@ public interface ConnectionTable<A> {
 
     public Integer getAtomCount();
 
+
+
 }

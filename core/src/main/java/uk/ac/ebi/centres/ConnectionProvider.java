@@ -39,4 +39,10 @@ public interface ConnectionProvider<A> {
 
     public void reroot(Ligand<A> ligand);
 
+    /**
+     * Clear the digraph ready for GC
+     */
+    public void dispose();
+
+
 }

@@ -27,4 +27,6 @@ public interface DescriptorManager<A> {
 
     public MutableDescriptor getDescriptor(A first, A second);
 
+    public void clear();
+
 }

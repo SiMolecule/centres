@@ -27,11 +27,25 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * Need to do better testing
  * @author John May
  */
+@Deprecated
 public class TestLigand implements Ligand<TestAtom> {
 
     private TestAtom atom;
+
+
+    @Override
+    public boolean isTerminal() {
+        return false;
+    }
+
+
+    @Override
+    public boolean isBranching() {
+        return false;
+    }
 
 
     public TestLigand(TestAtom atom) {
@@ -66,6 +80,12 @@ public class TestLigand implements Ligand<TestAtom> {
     @Override
     public Set<TestAtom> getVisited() {
         return Collections.EMPTY_SET;
+    }
+
+
+    @Override
+    public int getDistanceFromRoot() {
+        return 0;
     }
 
 

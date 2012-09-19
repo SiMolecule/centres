@@ -40,14 +40,17 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
     private       ConnectionProvider<A> provider;
     private final Set<A>                visited;
     private final MutableDescriptor     descriptor;
+    private final int                   distance;
 
 
     public AbstractLigand(ConnectionProvider<A> provider,
                           Set<A> visited,
-                          MutableDescriptor descriptor) {
+                          MutableDescriptor descriptor,
+                          int distance) {
 
         this.provider = provider;
         this.descriptor = descriptor;
+        this.distance = distance;
 
         // optimise size for a load factor of 0.75
         this.visited = Sets.newHashSet(visited);
@@ -56,9 +59,11 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
 
 
     public AbstractLigand(Set<A> visited,
-                          MutableDescriptor descriptor) {
+                          MutableDescriptor descriptor,
+                          int distance) {
 
         this.descriptor = descriptor;
+        this.distance = distance;
 
         // optimise size for a load factor of 0.75
         this.visited = Sets.newHashSet(visited);
@@ -66,10 +71,11 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
     }
 
 
-    public AbstractLigand(MutableDescriptor descriptor) {
+    public AbstractLigand(MutableDescriptor descriptor,
+                          int distance) {
 
         this.descriptor = descriptor;
-
+        this.distance = distance;
 
         this.visited = Collections.EMPTY_SET;
 
@@ -141,6 +147,12 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
     }
 
 
+    @Override
+    public int getDistanceFromRoot() {
+        return distance;
+    }
+
+
     /**
      * @inheritDoc
      */
@@ -163,5 +175,17 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
     public int getDepth() {
         Arc<A> arc = getParentArc();
         return arc == null ? 0 : arc.getDepth();
+    }
+
+
+    @Override
+    public boolean isBranching() {
+        return Boolean.FALSE;
+    }
+
+
+    @Override
+    public boolean isTerminal() {
+        return Boolean.FALSE;
     }
 }

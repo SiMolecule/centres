@@ -68,4 +68,10 @@ public interface Centre<A> extends Ligand<A> {
     public void perceiveAuxiliary(Collection<Centre<A>> centres,
                                   PriorityRule<A> rule,
                                   SignCalculator<A> calculator);
+
+    /**
+     * Clean up the digraph
+     */
+    public void dispose();
+
 }

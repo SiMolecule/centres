@@ -29,4 +29,6 @@ public interface CentreProvider<A> {
 
     public Collection<Centre<A>> getCentres(DescriptorManager<A> manager);
 
+    public Integer getAtomCount();
+
 }

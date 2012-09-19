@@ -39,6 +39,7 @@ public abstract class AbstractPriorityRule<A>
         implements PriorityRule<A> {
 
     private LigandSorter<A> sorter;
+    private boolean halted = Boolean.FALSE;
 
     /**
      * The type is store here and appended with the {@link
@@ -64,9 +65,18 @@ public abstract class AbstractPriorityRule<A>
     }
 
 
+    @Override
+    public void setHalt(boolean halt) {
+        this.halted = halt;
+    }
+
+
     public int recursiveCompare(Ligand<A> o1, Ligand<A> o2) {
+
         int value = compare(o1, o2);
-        return value != 0 ? value : compare(o1.getLigands(), o2.getLigands());
+        return value != 0 || halted ? value
+                                    : compare(o1.getLigands(), o2.getLigands());
+
     }
 
 
@@ -126,6 +136,9 @@ public abstract class AbstractPriorityRule<A>
      */
     public int compare(List<Ligand<A>> first, List<Ligand<A>> second) {
 
+        if (halted)
+            return 0;
+
         // prioritise the ligands, unique isn't required
         prioritise(first);
         prioritise(second);
@@ -163,6 +176,11 @@ public abstract class AbstractPriorityRule<A>
         }
 
         return 0;
+    }
+
+
+    public boolean isHalted() {
+        return halted;
     }
 
 

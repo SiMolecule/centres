@@ -49,6 +49,7 @@ public interface Digraph<A> {
     public Ligand<A> getRoot();
 
 
+
     /**
      * Access the proximal ligands next to the root. If no root is set this
      * method will throw an {@link IllegalArgumentException}.

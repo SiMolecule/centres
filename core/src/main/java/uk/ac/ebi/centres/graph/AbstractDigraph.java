@@ -46,9 +46,9 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
                                                     ConnectionProvider<A> {
 
     private Ligand<A> root;
-    private final ArcMap                     arcs      = new ArcMap(); // Could set expected size
-    private final ListMultimap<A, Ligand<A>> ligandMap = ArrayListMultimap.create();
-    private final DescriptorManager<A> manager;
+    private ArcMap                     arcs      = new ArcMap(); // Could set expected size
+    private ListMultimap<A, Ligand<A>> ligandMap = ArrayListMultimap.create();
+    private DescriptorManager<A> manager;
 
 
     public AbstractDigraph(Ligand<A> root) {
@@ -166,8 +166,8 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
 
             // create the new ligand - terminal ligands are created in cases of cyclic molecules
             Ligand<A> neighbour = ligand.isVisited(atom)
-                                  ? new TerminalLigand<A>(this, descriptor, ligand.getVisited(), atom, ligand.getAtom())
-                                  : new NonterminalLigand<A>(this, descriptor, ligand.getVisited(), atom, ligand.getAtom());
+                                  ? new TerminalLigand<A>(this, descriptor, ligand.getVisited(), atom, ligand.getAtom(), ligand.getDistanceFromRoot() + 1)
+                                  : new NonterminalLigand<A>(this, descriptor, ligand.getVisited(), atom, ligand.getAtom(), ligand.getDistanceFromRoot() + 1);
             arcs.add(newArc(ligand, neighbour));
             ligandMap.put(atom, neighbour);
 
@@ -176,15 +176,29 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
             int order = getOrder(ligand.getAtom(), atom);
 
             // create ghost ligands (opened up from double bonds)
-            for (int i = 1; i < order; i++) {
+            if (order > 1) {
 
-                Ligand<A> ghost = new NonterminalLigand<A>(this, descriptor, ligand.getVisited(), atom, ligand.getAtom());
-                arcs.add(newArc(ligand, ghost));
-                ligandMap.put(atom, ghost);
-                ligands.add(ghost);
-                Ligand<A> terminalGhost = new TerminalLigand<A>(this, descriptor, ligand.getVisited(), ligand.getAtom(), atom);
-                arcs.add(newArc(ghost, terminalGhost));
-                ligandMap.put(ghost.getAtom(), terminalGhost);
+                // create required number of ghost ligands
+                for (int i = 1; i < order; i++) {
+                    Ligand<A> ghost = new TerminalLigand<A>(this, descriptor, ligand.getVisited(), atom, ligand.getAtom(), ligand.getDistanceFromRoot() + 1);
+                    arcs.add(newArc(ligand, ghost));
+                    ligandMap.put(atom, ghost);
+                    ligands.add(ghost);
+                }
+
+                // preload the neighbour and add the call back ghost...
+                // bit confusing but this turns -c1-c2=c3-o into:
+                //          c2
+                //         /
+                // -c1-c2-c3-o
+                //     \
+                //      c3
+                // when we're at c2 we preload c3 with the oxygen and then add the ghost c2
+                getLigands(neighbour);
+                Ligand<A> ghost = new TerminalLigand<A>(this, descriptor, ligand.getVisited(), ligand.getAtom(), atom, ligand.getDistanceFromRoot() + 1);
+                arcs.add(newArc(neighbour, ghost));
+                ligandMap.put(ligand.getAtom(), ghost);
+
             }
 
         }
@@ -266,4 +280,16 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
 
     }
 
+
+    @Override
+    public void dispose() {
+        ligandMap.clear();
+        arcs.tails.clear();
+        arcs.heads.clear();
+        root = null;
+        arcs = null;
+        ligandMap = null;
+        manager = null;
+
+    }
 }

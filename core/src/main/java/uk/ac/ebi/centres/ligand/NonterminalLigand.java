@@ -35,16 +35,18 @@ public class NonterminalLigand<A> extends AbstractLigand<A> {
 
     public NonterminalLigand(MutableDescriptor descriptor,
                              A atom,
-                             A parent) {
-        this(descriptor, Collections.EMPTY_SET, atom, parent);
+                             A parent,
+                             int distance) {
+        this(descriptor, Collections.EMPTY_SET, atom, parent, distance);
     }
 
 
     public NonterminalLigand(ConnectionProvider<A> provider,
                              MutableDescriptor descriptor,
                              A atom,
-                             A parent) {
-        this(provider, descriptor, Collections.EMPTY_SET, atom, parent);
+                             A parent,
+                             int distance) {
+        this(provider, descriptor, Collections.EMPTY_SET, atom, parent, distance);
     }
 
 
@@ -52,9 +54,10 @@ public class NonterminalLigand<A> extends AbstractLigand<A> {
                              MutableDescriptor descriptor,
                              Set<A> visited,
                              A atom,
-                             A parent) {
+                             A parent,
+                             int distance) {
         super(provider,
-              visited, descriptor);
+              visited, descriptor, distance);
 
         if (atom == null)
             throw new IllegalArgumentException("Provided non-terminal " +
@@ -74,9 +77,10 @@ public class NonterminalLigand<A> extends AbstractLigand<A> {
     public NonterminalLigand(MutableDescriptor descriptor,
                              Set<A> visited,
                              A atom,
-                             A parent) {
+                             A parent,
+                             int distance) {
 
-        super(visited, descriptor);
+        super(visited, descriptor, distance);
 
         if (atom == null)
             throw new IllegalArgumentException("Provided non-terminal " +
@@ -110,6 +114,18 @@ public class NonterminalLigand<A> extends AbstractLigand<A> {
     @Override
     public A getAtom() {
         return atom;
+    }
+
+
+    @Override
+    public boolean isTerminal() {
+        return Boolean.FALSE;
+    }
+
+
+    @Override
+    public boolean isBranching() {
+        return Boolean.FALSE;
     }
 
 

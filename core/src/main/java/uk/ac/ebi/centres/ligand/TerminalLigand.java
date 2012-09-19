@@ -31,13 +31,13 @@ import java.util.Set;
  */
 public class TerminalLigand<A> extends NonterminalLigand<A> {
 
-    public TerminalLigand(ConnectionProvider<A> provider, MutableDescriptor descriptor, A atom, A parent) {
-        super(provider, descriptor, atom, parent);
+    public TerminalLigand(ConnectionProvider<A> provider, MutableDescriptor descriptor, A atom, A parent, int distance) {
+        super(provider, descriptor, atom, parent, distance);
     }
 
 
-    public TerminalLigand(ConnectionProvider<A> provider, MutableDescriptor descriptor, Set<A> visited, A atom, A parent) {
-        super(provider, descriptor, visited, atom, parent);
+    public TerminalLigand(ConnectionProvider<A> provider, MutableDescriptor descriptor, Set<A> visited, A atom, A parent, int distance) {
+        super(provider, descriptor, visited, atom, parent, distance);
     }
 
 
@@ -52,4 +52,16 @@ public class TerminalLigand<A> extends NonterminalLigand<A> {
     public String toString() {
         return super.toString() + "'";
     }
+
+    @Override
+    public boolean isTerminal() {
+        return Boolean.TRUE;
+    }
+
+
+    @Override
+    public boolean isBranching() {
+        return Boolean.FALSE;
+    }
+
 }

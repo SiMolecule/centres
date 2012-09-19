@@ -34,6 +34,9 @@ import java.util.Set;
  */
 public interface Ligand<A> {
 
+    public boolean isTerminal();
+
+    public boolean isBranching();
 
     public A getAtom();
 
@@ -138,7 +141,18 @@ public interface Ligand<A> {
 
     public Arc<A> getParentArc();
 
+    /**
+     * Access the distance from the root this ligand is
+     *
+     * @return
+     */
+    public int getDistanceFromRoot();
 
+    /**
+     * Access the depth (z coord)
+     *
+     * @return
+     */
     public int getDepth();
 
 }

@@ -18,12 +18,16 @@
 
 package uk.ac.ebi.centres;
 
+import java.util.concurrent.TimeoutException;
+
 /**
  * @author John May
  */
 public interface Perceptor<A> {
 
     public void perceive(CentreProvider<A> provider,
-                         DescriptorManager<A> manager);
+                         DescriptorManager<A> manager) throws TimeoutException;
+
+    public void shutdown();
 
 }

@@ -93,6 +93,9 @@ public class CombinedRule<A> extends AbstractPriorityRule<A> {
         // to all child ligands
         for (PriorityRule<A> rule : rules) {
 
+            if(isHalted())
+                return 0;
+
             // compare expands exhaustively across the whole graph
             int value = rule.recursiveCompare(o1, o2);
 
@@ -121,6 +124,9 @@ public class CombinedRule<A> extends AbstractPriorityRule<A> {
         // to all child ligands
         for (PriorityRule<A> rule : rules) {
 
+            if (isHalted())
+                return new LigandComparison(0, Descriptor.Type.NON_STEREOGENIC);
+
             // compare expands exhaustively across the whole graph
             int value = rule.recursiveCompare(o1, o2);
 
@@ -132,6 +138,13 @@ public class CombinedRule<A> extends AbstractPriorityRule<A> {
 
         // can't really give a rule type here...
         return new LigandComparison(0, Descriptor.Type.NON_STEREOGENIC);
+    }
+
+
+    @Override
+    public void setHalt(boolean halt) {
+        for (PriorityRule<A> rule : rules)
+            rule.setHalt(halt);
     }
 
 

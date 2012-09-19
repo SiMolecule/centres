@@ -50,13 +50,13 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
     public PlanarCentre(A first, A second,
                         MutableDescriptor descriptor) {
 
-        super(descriptor);
+        super(descriptor, 0);
 
         Ligand<A> self = this;
 
         // create two ligand delegates
-        this.first = new NonterminalLigand<A>(descriptor, first, second);
-        this.second = new NonterminalLigand<A>(descriptor, second, first);
+        this.first = new NonterminalLigand<A>(descriptor, first, second, 0);
+        this.second = new NonterminalLigand<A>(descriptor, second, first, 0);
 
         atoms = Sets.newHashSet(first, second);
 
@@ -93,7 +93,7 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
             return ((IAtom) first.getAtom()).getSymbol() + "" + ((IAtom) first.getAtom()).getProperty("number") + "=" +
                     ((IAtom) second.getAtom()).getSymbol() + "" + ((IAtom) second.getAtom()).getProperty("number");
         }
-        return "eh?";
+        return first.getAtom().toString() + "=" + second.getAtom().toString();
     }
 
 
@@ -123,13 +123,13 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
 
     @Override
     public void perceiveAuxiliary(Collection<Centre<A>> centres, PriorityRule<A> rule, SignCalculator<A> calculator) {
-        System.err.println("Should auxiliary perception be done on planar centres?");
+        // System.err.println("Auxiliary perception is not currently supported on planar centres");
     }
 
 
     @Override
     public Descriptor perceive(List<Ligand<A>> proximal, PriorityRule<A> rule, SignCalculator<A> calculator) {
-        // can't do auxiliary perception for planar centres
+        // can't do this type of perception for planar centres
         return General.UNKNOWN;
     }
 
@@ -170,4 +170,13 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
                                        : pseudo ? Planar.z : Planar.Z;
 
     }
+
+
+    @Override
+    public void dispose() {
+        getProvider().dispose();
+        setProvider(null);
+    }
+
+
 }

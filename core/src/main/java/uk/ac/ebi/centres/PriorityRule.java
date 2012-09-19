@@ -78,4 +78,15 @@ public interface PriorityRule<A> extends Comparator<Ligand<A>> {
      * @return the type of rule
      */
     public Descriptor.Type getType();
+
+
+    /**
+     * Indicates the rule should halt. This allows us to terminate a timed out
+     * thread but stopping all comparisons
+     *
+     * @param value
+     */
+    public void setHalt(boolean value);
+
+
 }

@@ -87,4 +87,9 @@ public class CDKManager implements DescriptorManager<IAtom> {
         }
     }
 
+
+    @Override
+    public void clear() {
+        map.clear();
+    }
 }

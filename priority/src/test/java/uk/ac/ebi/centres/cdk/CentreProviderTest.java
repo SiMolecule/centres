@@ -45,12 +45,13 @@ import uk.ac.ebi.centres.priority.access.descriptor.PrimaryDescriptor;
 import uk.ac.ebi.centres.priority.descriptor.PairRule;
 import uk.ac.ebi.centres.priority.descriptor.RSRule;
 import uk.ac.ebi.centres.priority.descriptor.ZERule;
-import uk.ac.ebi.mdk.tool.domain.ChiralityCalculator;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author John May
@@ -58,9 +59,9 @@ import java.util.Map;
 public class CentreProviderTest {
 
     @Test
-    public void testGetCentres() throws CDKException, IOException {
+    public void testGetCentres() throws CDKException, IOException, ExecutionException, TimeoutException, InterruptedException {
 
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream("but-2-ene.xml"));
+        final IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream("demo.xml"));
 
         // setting correct properties :/
         for (IAtom atom : container.atoms()) {
@@ -69,12 +70,11 @@ public class CentreProviderTest {
         }
         AtomContainerManipulator.percieveAtomTypesAndConfigureUnsetProperties(container);
 
-        // hmm this seems relatively fast.. (but wrong)
-        for (IAtom atom : container.atoms()) {
-            System.out.println(container.getAtomNumber(atom) + 1 + ": " + ChiralityCalculator.getChirality(container, atom));
-        }
+        long start = System.currentTimeMillis();
+        System.out.println("Number of centres: " + new CDKCentreProvider(container).getCentres(new DefaultDescriptorManager<IAtom>()).size());
+        long end = System.currentTimeMillis();
 
-        System.out.println(new CDKCentreProvider(container).getCentres(new DefaultDescriptorManager<IAtom>()).size());
+        System.out.println(end - start);
 
         PriorityRule<IAtom> rule = new CombinedRule<IAtom>(
                 new AtomicNumberRule<IAtom>(new AtomicNumberAccessor<IAtom>() {
@@ -111,11 +111,14 @@ public class CentreProviderTest {
                 new PairRule<IAtom>(new AuxiliaryDescriptor<IAtom>()),
                 new RSRule<IAtom>(new AuxiliaryDescriptor<IAtom>()));
 
-        Perceptor<IAtom> perceptor = new DefaultPerceptor<IAtom>(rule,
-                                                                 auxrule,
-                                                                 new CDK2DSignCalculator());
+        final Perceptor<IAtom> perceptor = new DefaultPerceptor<IAtom>(rule,
+                                                                       auxrule,
+                                                                       new CDK2DSignCalculator());
+
 
         perceptor.perceive(new CDKCentreProvider(container), new CDKManager(container));
+
+        perceptor.shutdown();
 
         Centre<IAtom> centre = new ArrayList<Centre<IAtom>>(new CDKCentreProvider(container).getCentres(new DefaultDescriptorManager<IAtom>())).get(0);
 
@@ -123,10 +126,22 @@ public class CentreProviderTest {
         Digraph<IAtom> digraph = new ConnectionTableDigraph<IAtom>(centre,
                                                                    new DefaultDescriptorManager<IAtom>(),
                                                                    new CDKConnectionTable(container));
-        write("digraph", centre);
+
+        CytoscapeWriter<IAtom> writer = new CytoscapeWriter<IAtom>(new File("/Users/johnmay/Desktop/digraph"), digraph) {
+            @Override
+            public void mapAttributes(IAtom atom, Map<String, String> map) {
+                map.put("atom.symbol", atom.getSymbol());
+                map.put("atom.number", atom.getProperty("number").toString());
+            }
+        };
+        System.out.println(centre);
+        writer.writeSif();
+        writer.writeAttributes();
+        writer.close();
+
 
         for (IAtom atom : container.atoms()) {
-            System.out.println(atom.getSymbol() + container.getAtomNumber(atom)
+            System.out.println(atom.getSymbol() + atom.getProperty("number")
                                        + ": " + atom.getProperty("descriptor"));
         }
         System.out.println("Bonds:");
@@ -134,6 +149,7 @@ public class CentreProviderTest {
             System.out.println(bond.getAtom(0).getSymbol() + "=" + bond.getAtom(1).getSymbol() + container.getBondNumber(bond)
                                        + ": " + bond.getProperty("descriptor"));
         }
+
 
     }
 

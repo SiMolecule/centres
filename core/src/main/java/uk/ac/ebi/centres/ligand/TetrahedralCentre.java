@@ -48,7 +48,7 @@ public class TetrahedralCentre<A>
 
     public TetrahedralCentre(MutableDescriptor descriptor,
                              A atom) {
-        super(descriptor);
+        super(descriptor, 0);
         this.atom = atom;
         this.parent = atom;
     }
@@ -168,5 +168,12 @@ public class TetrahedralCentre<A>
     @Override
     public Boolean isParent(A atom) {
         return parent.equals(atom);
+    }
+
+
+    @Override
+    public void dispose() {
+        getProvider().dispose();
+        setProvider(null);
     }
 }

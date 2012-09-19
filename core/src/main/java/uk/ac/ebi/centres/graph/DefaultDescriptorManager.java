@@ -74,4 +74,11 @@ public class DefaultDescriptorManager<A> implements DescriptorManager<A> {
         }
         return sb.toString();
     }
+
+
+    @Override
+    public void clear() {
+        atomMap.clear();
+        bondMap.clear();
+    }
 }

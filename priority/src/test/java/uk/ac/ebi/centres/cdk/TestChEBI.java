@@ -26,13 +26,16 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
+import uk.ac.ebi.mdk.domain.identifier.ChEBIIdentifier;
+import uk.ac.ebi.mdk.service.DefaultServiceManager;
+import uk.ac.ebi.mdk.service.query.name.PreferredNameService;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author John May
@@ -47,13 +50,10 @@ public class TestChEBI {
 
         final List<IAtomContainer> containers = new ArrayList<IAtomContainer>(12000);
 
-        int max = 2000;
-
         long rStart = System.currentTimeMillis();
         while (reader.hasNext()) {
-            containers.add(reader.next());
-            if (containers.size() == max)
-                break;
+            IAtomContainer container = reader.next();
+            containers.add(container);
         }
         long rEnd = System.currentTimeMillis();
 
@@ -64,12 +64,12 @@ public class TestChEBI {
         List<IAtomContainer> bad = new ArrayList<IAtomContainer>();
         IsotopeFactory factory = IsotopeFactory.getInstance(SilentChemObjectBuilder.getInstance());
 
+        //Set<String> ignore = new HashSet<String>(Arrays.asList("CHEBI:3499", "CHEBI:16155", "CHEBI:16157", "CHEBI:16322", "CHEBI:16323", "CHEBI:16324", "CHEBI:16507", "CHEBI:16508", "CHEBI:17401", "CHEBI:17402", "CHEBI:17403", "CHEBI:17404", "CHEBI:17405", "CHEBI:17406", "CHEBI:17407", "CHEBI:17409", "CHEBI:17410", "CHEBI:17411"));
+
         long tStart = System.currentTimeMillis();
         for (int i = 0; i < containers.size(); i++) {
             IAtomContainer container = containers.get(i);
             try {
-                if (container.getAtomCount() > 60)
-                    bad.add(container);
                 AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(container);
                 for (IAtom atom : container.atoms()) {
                     if (atom.getSymbol().equals("R"))
@@ -93,41 +93,50 @@ public class TestChEBI {
         // remove problem molecules
         containers.removeAll(bad);
 
-        System.out.println("Tell me when:");
-        new Scanner(System.in).next();
 
-        final CDKPerceptor perceptor = new CDKPerceptor();
-        final List<RuntimeException> exceptions = new ArrayList<RuntimeException>();
+        final PreferredNameService<ChEBIIdentifier> names = DefaultServiceManager.getInstance().getService(ChEBIIdentifier.class,
+                                                                                                           PreferredNameService.class);
+        final List<ChEBIIdentifier> timeout = new ArrayList<ChEBIIdentifier>();
 
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int count = 0;
-                long pStart = System.currentTimeMillis();
 
-                for (IAtomContainer container : containers) {
+        long pStart = System.currentTimeMillis();
+        int count = 0;
+        for (final IAtomContainer container : containers) {
+
+            if (++count % 100 == 100) {
+                System.out.println("[" + count + "/" + containers.size() + "]");
+            }
+
+            ChEBIIdentifier identifier = new ChEBIIdentifier(container.getProperty("ChEBI ID").toString());
+            try {
+                CDKPerceptor perceptor = new CDKPerceptor();
+                perceptor.perceive(container);
+                perceptor.shutdown();
+            } catch (RuntimeException ex) {
+                System.err.println("Combinatorial explosion possible " + identifier);
+            } catch (TimeoutException e) {
+                System.out.println("Timeout whilst perceiving (" + identifier + "): " + new CDKCentreProvider(container).getCentres(new CDKManager(container)) + " centres");
+                if (identifier.getAccession().equals("CHEBI:51442")) {
                     try {
-                        perceptor.perceive(container);
-                    } catch (OutOfMemoryError err) {
-                        System.err.println("OOME: " + container.getProperty("ChEBI ID"));
-                    } catch (IllegalArgumentException ex) {
-                        System.err.println("Check this molecule: " + container.getProperty("ChEBI ID"));
-                    } catch (RuntimeException ex) {
-                        exceptions.add(ex);
+                        Thread.sleep(2000L);
+                    } catch (InterruptedException e1) {
+                        System.err.println(e1.getMessage());
                     }
                 }
-                long pEnd = System.currentTimeMillis();
-                System.out.println("Perceived: " + (pEnd - pStart) + " ms");
 
-                System.out.println("Exceptions: ");
-                for (RuntimeException ex : exceptions) {
-                    ex.printStackTrace();
-                }
+                timeout.add(identifier);
             }
-        });
-        t.setName("Perception");
-        t.start();
-        t.join();
+        }
+
+        long pEnd = System.currentTimeMillis();
+        System.out.println("Perceived: " + (pEnd - pStart) + " ms");
+
+        System.out.println("Timeouts: ");
+        for (ChEBIIdentifier identifier : timeout) {
+            System.out.println(names.getPreferredName(identifier) + " (" + identifier + ") timed out");
+        }
+
+        System.out.println("Completed: " + (containers.size() - timeout.size()) / (double) containers.size() * 100);
 
 
     }

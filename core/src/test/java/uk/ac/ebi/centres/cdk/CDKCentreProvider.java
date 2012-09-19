@@ -34,9 +34,7 @@ import uk.ac.ebi.centres.ligand.TetrahedralCentre;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author John May
@@ -45,17 +43,18 @@ public class CDKCentreProvider implements CentreProvider<IAtom> {
 
     private final IAtomContainer         container;
     private final ConnectionTable<IAtom> table;
-    private final SpanningTree           tree;
+    private       IAtomContainer         cyclicFragments;
 
-    private static final Set<String> tetrahedralSymbols = new HashSet<String>();
-    static {
-        tetrahedralSymbols.add("C");
-    }
 
     public CDKCentreProvider(IAtomContainer container) {
         this.container = container;
         this.table = new CDKConnectionTable(container);
-        this.tree = new SpanningTree(container);
+    }
+
+
+    @Override
+    public Integer getAtomCount() {
+        return container.getAtomCount();
     }
 
 
@@ -66,6 +65,7 @@ public class CDKCentreProvider implements CentreProvider<IAtom> {
 
         // tetrahedral centres
         for (IAtom atom : container.atoms()) {
+
             // might need refinement
             if (IAtomType.Hybridization.SP3.equals(atom.getHybridization())
                     && container.getConnectedAtomsCount(atom) > 2
@@ -77,16 +77,14 @@ public class CDKCentreProvider implements CentreProvider<IAtom> {
             }
         }
 
-        IAtomContainer cyclic = tree.getCyclicFragmentsContainer();
 
         // planar centres
         for (IBond bond : container.bonds()) {
-            // TODO: check we're not in a ring
             if (IBond.Order.DOUBLE.equals(bond.getOrder())
-                    && bond.getFlag(CDKConstants.ISAROMATIC) == Boolean.FALSE
-                    && !cyclic.contains(bond)
                     && container.getConnectedAtomsCount(bond.getAtom(0)) > 1
-                    && container.getConnectedAtomsCount(bond.getAtom(1)) > 1                    ) {
+                    && container.getConnectedAtomsCount(bond.getAtom(1)) > 1
+                    && bond.getFlag(CDKConstants.ISAROMATIC) == Boolean.FALSE
+                    && !getCyclicFragments().contains(bond)) {
                 PlanarCentre<IAtom> centre = new PlanarCentre<IAtom>(bond.getAtom(0), bond.getAtom(1),
                                                                      manager.getDescriptor(bond.getAtom(0), bond.getAtom(1)));
                 centre.setProvider(new ConnectionTableDigraph<IAtom>(centre, manager, table));
@@ -97,6 +95,14 @@ public class CDKCentreProvider implements CentreProvider<IAtom> {
 
         return centres;
 
+    }
+
+
+    private IAtomContainer getCyclicFragments() {
+        if (cyclicFragments == null) {
+            cyclicFragments = new SpanningTree(container).getCyclicFragmentsContainer();
+        }
+        return cyclicFragments;
     }
 
 
@@ -112,9 +118,6 @@ public class CDKCentreProvider implements CentreProvider<IAtom> {
         }
         return Boolean.FALSE;
     }
-
-
-
 
 
 }

@@ -25,6 +25,12 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author John May
@@ -33,6 +39,8 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
 
     private final CentrePerceptor<A> mainPerceptor;
     private final CentrePerceptor<A> auxPerceptor;
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
+    private long            timeout  = 250;
 
 
     public DefaultPerceptor(final PriorityRule<A> rule,
@@ -40,13 +48,13 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
                             final SignCalculator<A> calculator) {
 
         // create the main and aux perceptors
-        this.mainPerceptor = new CentrePerceptor<A>() {
+        this.mainPerceptor = new CentrePerceptor<A>(rule) {
             @Override
             public Descriptor perceive(Centre<A> centre, Collection<Centre<A>> centres) {
                 return centre.perceive(rule, calculator);
             }
         };
-        this.auxPerceptor = new CentrePerceptor<A>() {
+        this.auxPerceptor = new CentrePerceptor<A>(auxRule) {
             @Override
             public Descriptor perceive(Centre<A> centre, Collection<Centre<A>> centres) {
                 centre.perceiveAuxiliary(centres, rule, calculator);
@@ -70,6 +78,8 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
 
                 Descriptor descriptor = perceptor.perceive(centre, unperceived);
 
+                System.out.println(centre + ": " + descriptor);
+
                 if (descriptor != General.UNKNOWN)
                     map.put(centre, descriptor);
 
@@ -81,6 +91,7 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
             for (Map.Entry<Centre<A>, Descriptor> entry : map.entrySet()) {
                 unperceived.remove(entry.getKey());
                 perceived.add(entry.getKey());
+                entry.getKey().dispose();
                 entry.getKey().setDescriptor(entry.getValue());
             }
 
@@ -93,10 +104,26 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
 
 
     @Override
-    public void perceive(CentreProvider<A> provider, DescriptorManager<A> manager) {
+    public void perceive(final CentreProvider<A> provider, final DescriptorManager<A> manager) throws TimeoutException {
 
-        Collection<Centre<A>> unperceived = new ArrayList<Centre<A>>(provider.getCentres(manager));
+        if (provider.getAtomCount() > 60) {
+            perceiveLarge(provider, manager);
+        } else {
+            _perceive(provider, manager);
+        }
 
+    }
+
+
+    private void _perceive(CentreProvider<A> provider, DescriptorManager<A> manager) {
+        // timeout fo the centre provider incase we have a huge molecule and the spanning tree can't
+        // be constructed
+        Collection<Centre<A>> unperceived = provider.getCentres(manager);
+
+        if (unperceived.isEmpty())
+            return;
+
+        // could switch to only use this on large molecule
         List<Centre<A>> perceived = _perceive(unperceived, mainPerceptor);
 
         // no centres perceived, perform auxiliary perception
@@ -106,13 +133,77 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
         // set all unperceived centres to 'none'
         for (Centre<A> centre : unperceived) {
             centre.setDescriptor(General.NONE);
+            centre.dispose();
+        }
+        provider = null;
+        unperceived.clear();
+        unperceived = null;
+        manager.clear();
+
+    }
+
+
+    private void perceiveLarge(final CentreProvider<A> provider, final DescriptorManager<A> manager) throws TimeoutException {
+
+        Future<?> future = executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                _perceive(provider, manager);
+            }
+        });
+
+        try {
+            future.get(500, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException ex) {
+
+            // restart the executor
+            executor.shutdownNow();
+            executor = Executors.newSingleThreadExecutor();
+
+            throw ex;
+
+        } catch (InterruptedException e) {
+            // throw these exceptions as timeout - simplified the API
+            throw new TimeoutException(e.getMessage());
+        } catch (ExecutionException e) {
+            throw new TimeoutException(e.getMessage());
+        } finally {
+            mainPerceptor.rule.setHalt(Boolean.TRUE);
+            auxPerceptor.rule.setHalt(Boolean.TRUE);
+            // give the thread time to shutdown
+            try {
+                future.get(100, TimeUnit.MILLISECONDS);
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+            executor.shutdownNow();
+            executor = Executors.newSingleThreadExecutor();
+            mainPerceptor.rule.setHalt(Boolean.FALSE);
+            auxPerceptor.rule.setHalt(Boolean.FALSE);
         }
 
     }
 
 
-    interface CentrePerceptor<A> {
-        public Descriptor perceive(Centre<A> centre, Collection<Centre<A>> centres);
+    /**
+     * Shutdown the internal executor
+     */
+    public void shutdown() {
+        executor.shutdownNow();
+    }
+
+
+    abstract class CentrePerceptor<A> {
+
+        private PriorityRule<A> rule;
+
+
+        protected CentrePerceptor(PriorityRule<A> rule) {
+            this.rule = rule;
+        }
+
+
+        public abstract Descriptor perceive(Centre<A> centre, Collection<Centre<A>> centres);
     }
 
 
