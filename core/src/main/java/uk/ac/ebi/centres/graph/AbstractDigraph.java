@@ -25,6 +25,7 @@ import uk.ac.ebi.centres.DescriptorManager;
 import uk.ac.ebi.centres.Digraph;
 import uk.ac.ebi.centres.Ligand;
 import uk.ac.ebi.centres.MutableDescriptor;
+import uk.ac.ebi.centres.exception.WarpCoreEjection;
 import uk.ac.ebi.centres.ligand.NonterminalLigand;
 import uk.ac.ebi.centres.ligand.TerminalLigand;
 
@@ -150,6 +151,10 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
     public List<Ligand<A>> getLigands(Ligand<A> ligand) {
 
         List<Ligand<A>> ligands = arcs.getHeads(ligand);
+
+        // lots of ligands being created
+        if(ligandMap.size() > 10000)
+            throw new WarpCoreEjection();
 
         // ligands already determined
         if (!ligands.isEmpty())

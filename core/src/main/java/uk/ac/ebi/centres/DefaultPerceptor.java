@@ -78,8 +78,6 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
 
                 Descriptor descriptor = perceptor.perceive(centre, unperceived);
 
-                System.out.println(centre + ": " + descriptor);
-
                 if (descriptor != General.UNKNOWN)
                     map.put(centre, descriptor);
 
@@ -104,18 +102,8 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
 
 
     @Override
-    public void perceive(final CentreProvider<A> provider, final DescriptorManager<A> manager) throws TimeoutException {
+    public void perceive(final CentreProvider<A> provider, final DescriptorManager<A> manager) {
 
-        if (provider.getAtomCount() > 60) {
-            perceiveLarge(provider, manager);
-        } else {
-            _perceive(provider, manager);
-        }
-
-    }
-
-
-    private void _perceive(CentreProvider<A> provider, DescriptorManager<A> manager) {
         // timeout fo the centre provider incase we have a huge molecule and the spanning tree can't
         // be constructed
         Collection<Centre<A>> unperceived = provider.getCentres(manager);
@@ -135,55 +123,12 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
             centre.setDescriptor(General.NONE);
             centre.dispose();
         }
-        provider = null;
+
         unperceived.clear();
         unperceived = null;
         manager.clear();
 
     }
-
-
-    private void perceiveLarge(final CentreProvider<A> provider, final DescriptorManager<A> manager) throws TimeoutException {
-
-        Future<?> future = executor.submit(new Runnable() {
-            @Override
-            public void run() {
-                _perceive(provider, manager);
-            }
-        });
-
-        try {
-            future.get(500, TimeUnit.MILLISECONDS);
-        } catch (TimeoutException ex) {
-
-            // restart the executor
-            executor.shutdownNow();
-            executor = Executors.newSingleThreadExecutor();
-
-            throw ex;
-
-        } catch (InterruptedException e) {
-            // throw these exceptions as timeout - simplified the API
-            throw new TimeoutException(e.getMessage());
-        } catch (ExecutionException e) {
-            throw new TimeoutException(e.getMessage());
-        } finally {
-            mainPerceptor.rule.setHalt(Boolean.TRUE);
-            auxPerceptor.rule.setHalt(Boolean.TRUE);
-            // give the thread time to shutdown
-            try {
-                future.get(100, TimeUnit.MILLISECONDS);
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
-            }
-            executor.shutdownNow();
-            executor = Executors.newSingleThreadExecutor();
-            mainPerceptor.rule.setHalt(Boolean.FALSE);
-            auxPerceptor.rule.setHalt(Boolean.FALSE);
-        }
-
-    }
-
 
     /**
      * Shutdown the internal executor
@@ -201,7 +146,6 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
         protected CentrePerceptor(PriorityRule<A> rule) {
             this.rule = rule;
         }
-
 
         public abstract Descriptor perceive(Centre<A> centre, Collection<Centre<A>> centres);
     }

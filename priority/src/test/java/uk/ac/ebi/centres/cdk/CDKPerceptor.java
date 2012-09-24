@@ -32,8 +32,6 @@ import uk.ac.ebi.centres.priority.descriptor.PairRule;
 import uk.ac.ebi.centres.priority.descriptor.RSRule;
 import uk.ac.ebi.centres.priority.descriptor.ZERule;
 
-import java.util.concurrent.TimeoutException;
-
 /**
  * @author John May
  */
@@ -78,7 +76,7 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
     }
 
 
-    public void perceive(IAtomContainer container) throws TimeoutException {
+    public void perceive(IAtomContainer container) {
         perceive(new CDKCentreProvider(container), new CDKManager(container));
     }
 

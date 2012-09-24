@@ -27,6 +27,7 @@ import org.openscience.cdk.io.iterator.IteratingMDLReader;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import uk.ac.ebi.mdk.domain.identifier.ChEBIIdentifier;
+import uk.ac.ebi.mdk.domain.identifier.Identifier;
 import uk.ac.ebi.mdk.service.DefaultServiceManager;
 import uk.ac.ebi.mdk.service.query.name.PreferredNameService;
 
@@ -34,8 +35,11 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author John May
@@ -48,7 +52,7 @@ public class TestChEBI {
                                                            SilentChemObjectBuilder.getInstance(),
                                                            true);
 
-        final List<IAtomContainer> containers = new ArrayList<IAtomContainer>(12000);
+         List<IAtomContainer> containers = new ArrayList<IAtomContainer>(12000);
 
         long rStart = System.currentTimeMillis();
         while (reader.hasNext()) {
@@ -85,6 +89,8 @@ public class TestChEBI {
             }
         }
 
+        containers = containers.subList(14500, containers.size());
+
         System.out.println(bad.size());
 
         long tEnd = System.currentTimeMillis();
@@ -101,43 +107,48 @@ public class TestChEBI {
 
         long pStart = System.currentTimeMillis();
         int count = 0;
+        final Map<Identifier, Long> timing = new HashMap<Identifier, Long>();
+
         for (final IAtomContainer container : containers) {
 
-            if (++count % 100 == 100) {
+            if (++count % 250 == 0) {
                 System.out.println("[" + count + "/" + containers.size() + "]");
             }
 
             ChEBIIdentifier identifier = new ChEBIIdentifier(container.getProperty("ChEBI ID").toString());
             try {
+                System.out.println(identifier);
                 CDKPerceptor perceptor = new CDKPerceptor();
+                long innerStart = System.currentTimeMillis();
                 perceptor.perceive(container);
                 perceptor.shutdown();
+                long innerEnd = System.currentTimeMillis();
+                timing.put(identifier, innerEnd - innerStart);
             } catch (RuntimeException ex) {
-                System.err.println("Combinatorial explosion possible " + identifier);
-            } catch (TimeoutException e) {
-                System.out.println("Timeout whilst perceiving (" + identifier + "): " + new CDKCentreProvider(container).getCentres(new CDKManager(container)) + " centres");
-                if (identifier.getAccession().equals("CHEBI:51442")) {
-                    try {
-                        Thread.sleep(2000L);
-                    } catch (InterruptedException e1) {
-                        System.err.println(e1.getMessage());
-                    }
-                }
-
-                timeout.add(identifier);
+                System.err.println("Combinatorial explosion possible " + identifier + ": " + ex.getMessage());
             }
         }
 
         long pEnd = System.currentTimeMillis();
         System.out.println("Perceived: " + (pEnd - pStart) + " ms");
 
-        System.out.println("Timeouts: ");
-        for (ChEBIIdentifier identifier : timeout) {
-            System.out.println(names.getPreferredName(identifier) + " (" + identifier + ") timed out");
-        }
-
         System.out.println("Completed: " + (containers.size() - timeout.size()) / (double) containers.size() * 100);
 
+        Map<Identifier, Long> orderedMap = new TreeMap<Identifier, Long>(new Comparator<Identifier>() {
+            @Override
+            public int compare(Identifier o1, Identifier o2) {
+                return timing.get(o2).compareTo(timing.get(o1));
+            }
+        });
+
+        System.out.println("Timings:");
+        int printcount = 0;
+        orderedMap.putAll(timing);
+        for (Map.Entry<Identifier, Long> e : orderedMap.entrySet()) {
+            System.out.println(e.getKey() + ": " + e.getValue());
+            if (++printcount == 20)
+                break;
+        }
 
     }
 
