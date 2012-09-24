@@ -43,6 +43,12 @@ public class TestLigand implements Ligand<TestAtom> {
 
 
     @Override
+    public boolean isDuplicate() {
+        return false;
+    }
+
+
+    @Override
     public boolean isBranching() {
         return false;
     }

@@ -23,6 +23,7 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import uk.ac.ebi.centres.DefaultPerceptor;
 import uk.ac.ebi.centres.priority.AtomicNumberRule;
 import uk.ac.ebi.centres.priority.CombinedRule;
+import uk.ac.ebi.centres.priority.DuplicateAtomRule;
 import uk.ac.ebi.centres.priority.MassNumberRule;
 import uk.ac.ebi.centres.priority.access.AtomicNumberAccessor;
 import uk.ac.ebi.centres.priority.access.MassNumberAccessor;
@@ -45,6 +46,7 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
                         return atom.getAtomicNumber();
                     }
                 }),
+                new DuplicateAtomRule<IAtom>(),
                 new MassNumberRule<IAtom>(new MassNumberAccessor<IAtom>() {
                     @Override
                     public int getMassNumber(IAtom atom) {

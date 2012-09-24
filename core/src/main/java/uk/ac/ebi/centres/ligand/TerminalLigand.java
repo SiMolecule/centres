@@ -33,11 +33,13 @@ public class TerminalLigand<A> extends NonterminalLigand<A> {
 
     public TerminalLigand(ConnectionProvider<A> provider, MutableDescriptor descriptor, A atom, A parent, int distance) {
         super(provider, descriptor, atom, parent, distance);
+        setDuplicate(Boolean.TRUE);
     }
 
 
     public TerminalLigand(ConnectionProvider<A> provider, MutableDescriptor descriptor, Set<A> visited, A atom, A parent, int distance) {
         super(provider, descriptor, visited, atom, parent, distance);
+        setDuplicate(Boolean.TRUE);
     }
 
 
@@ -46,7 +48,6 @@ public class TerminalLigand<A> extends NonterminalLigand<A> {
         // suppress use of connection provider
         return Collections.emptyList();
     }
-
 
     @Override
     public String toString() {

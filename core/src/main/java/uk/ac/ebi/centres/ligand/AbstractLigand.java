@@ -41,6 +41,9 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
     private final Set<A>                visited;
     private final MutableDescriptor     descriptor;
     private final int                   distance;
+    private       boolean               duplicate;
+    private List<Ligand<A>> ligands;
+    private Descriptor descriptorCache;
 
 
     public AbstractLigand(ConnectionProvider<A> provider,
@@ -82,6 +85,16 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
     }
 
 
+    public boolean isDuplicate() {
+        return duplicate;
+    }
+
+
+    public void setDuplicate(boolean duplicate) {
+        this.duplicate = duplicate;
+    }
+
+
     public ConnectionProvider<A> getProvider() {
         return provider;
     }
@@ -112,7 +125,13 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
 
     @Override
     public Descriptor getDescriptor() {
-        return descriptor.get();
+        if(descriptorCache == null) {
+            Descriptor descriptor = this.descriptor.get();
+            if(descriptor == General.NONE)  // cache access to NONE descriptors
+                descriptorCache = descriptor;
+            return descriptor;
+        }
+        return descriptorCache;
     }
 
 
@@ -121,7 +140,9 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
      */
     @Override
     public List<Ligand<A>> getLigands() {
-        return provider.getLigands(this);
+        if(ligands == null)
+            ligands = provider.getLigands(this);
+        return ligands;
     }
 
 

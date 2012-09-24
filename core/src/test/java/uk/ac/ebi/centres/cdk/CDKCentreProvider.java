@@ -79,21 +79,21 @@ public class CDKCentreProvider implements CentreProvider<IAtom> {
 
 
         // planar centres
-//        for (IBond bond : container.bonds()) {
-//            if (IBond.Order.DOUBLE.equals(bond.getOrder())
-//                    && container.getConnectedAtomsCount(bond.getAtom(0)) > 1
-//                    && container.getConnectedAtomsCount(bond.getAtom(1)) > 1
-//                    && bond.getFlag(CDKConstants.ISAROMATIC) == Boolean.FALSE
-//                    && !getCyclicFragments().contains(bond)
-//                    && !hasVariableBond(container, bond.getAtom(0))
-//                    && !hasVariableBond(container, bond.getAtom(1))) {
-//                PlanarCentre<IAtom> centre = new PlanarCentre<IAtom>(bond.getAtom(0), bond.getAtom(1),
-//                                                                     manager.getDescriptor(bond.getAtom(0), bond.getAtom(1)));
-//                centre.setProvider(new ConnectionTableDigraph<IAtom>(centre, manager, table));
-//                centres.add(centre);
-//
-//            }
-//        }
+        for (IBond bond : container.bonds()) {
+            if (IBond.Order.DOUBLE.equals(bond.getOrder())
+                    && container.getConnectedAtomsCount(bond.getAtom(0)) > 1
+                    && container.getConnectedAtomsCount(bond.getAtom(1)) > 1
+                    && bond.getFlag(CDKConstants.ISAROMATIC) == Boolean.FALSE
+                    && !getCyclicFragments().contains(bond)
+                    && !hasVariableBond(container, bond.getAtom(0))
+                    && !hasVariableBond(container, bond.getAtom(1))) {
+                PlanarCentre<IAtom> centre = new PlanarCentre<IAtom>(bond.getAtom(0), bond.getAtom(1),
+                                                                     manager.getDescriptor(bond.getAtom(0), bond.getAtom(1)));
+                centre.setProvider(new ConnectionTableDigraph<IAtom>(centre, manager, table));
+                centres.add(centre);
+
+            }
+        }
 
         return centres;
 
@@ -107,16 +107,18 @@ public class CDKCentreProvider implements CentreProvider<IAtom> {
         return cyclicFragments;
     }
 
-    private boolean hasVariableBond(IAtomContainer container, IAtom atom){
+
+    private boolean hasVariableBond(IAtomContainer container, IAtom atom) {
         for (IBond bond : container.getConnectedBondsList(atom)) {
             IBond.Stereo stereo = bond.getStereo();
             if (IBond.Stereo.UP_OR_DOWN.equals(stereo)
-                    || IBond.Stereo.UP_OR_DOWN_INVERTED.equals(stereo) ){
+                    || IBond.Stereo.UP_OR_DOWN_INVERTED.equals(stereo)) {
                 return Boolean.TRUE;
             }
         }
         return Boolean.FALSE;
     }
+
 
     private boolean hasStereoBonds(IAtomContainer container, IAtom atom) {
         for (IBond bond : container.getConnectedBondsList(atom)) {

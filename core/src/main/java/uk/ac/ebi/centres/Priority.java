@@ -18,6 +18,14 @@
 
 package uk.ac.ebi.centres;
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 /**
  * Holds some properties that are determined when sorting/prioritising ligands.
  *
@@ -27,11 +35,18 @@ public class Priority {
 
     private Boolean         unique;
     private Descriptor.Type type;
+    private Set<Set<Integer>> duplicates;
 
 
     public Priority(Boolean unique, Descriptor.Type type) {
         this.unique = unique;
         this.type = type;
+    }
+
+    public Priority(Boolean unique, Descriptor.Type type, Set<Set<Integer>> duplicates) {
+        this.unique = unique;
+        this.type = type;
+        this.duplicates = duplicates;
     }
 
 
@@ -54,6 +69,37 @@ public class Priority {
      */
     public Descriptor.Type getType() {
         return type;
+    }
+
+    public <A> List<List<Ligand<A>>> createBins(List<Ligand<A>> ligands){
+        if(duplicates == null)
+            throw new IllegalArgumentException("No duplicates stored at time of sort!");
+
+        List<List<Ligand<A>>> bins = new ArrayList<List<Ligand<A>>>(ligands.size());
+
+        // now need to place in bins
+        for (int i = 0; i < ligands.size(); i++) {
+            List<Ligand<A>> bin = new ArrayList<Ligand<A>>();
+            bin.add(ligands.get(0));
+            bins.add(bin);
+        }
+
+        Set<Integer> removed = new HashSet<Integer>();
+        // and compact (could be doing something wrong
+        for(Set<Integer> pair : duplicates){
+            Iterator<Integer> it = pair.iterator();
+            int i = it.next();
+            int j = it.next();
+            if(!removed.contains(i) || !removed.contains(j) ) {
+                bins.get(i).addAll(bins.get(j));
+                removed.add(j);
+            }
+        }
+        for(Integer remove : removed)
+            bins.remove(remove);
+
+        return bins;
+
     }
 
 }

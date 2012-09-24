@@ -23,6 +23,7 @@ import uk.ac.ebi.centres.Comparison;
 import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Ligand;
 import uk.ac.ebi.centres.LigandComparison;
+import uk.ac.ebi.centres.LigandSorter;
 import uk.ac.ebi.centres.PriorityRule;
 
 import java.util.List;
@@ -72,8 +73,12 @@ public class CombinedRule<A> extends AbstractPriorityRule<A> {
         if (rule == null)
             throw new IllegalArgumentException("Provided priority rule was" +
                                                        "null!");
-        rule.setSorter(getSorter());
         rules.add(rule);
+        rule.setSorter(createSorter(rules));
+    }
+
+    public LigandSorter<A> createSorter(List<PriorityRule<A>> rules){
+        return new InsertionSorter<A>(rules);
     }
 
 

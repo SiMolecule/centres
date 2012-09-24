@@ -38,6 +38,8 @@ public interface Ligand<A> {
 
     public boolean isBranching();
 
+    public boolean isDuplicate();
+
     public A getAtom();
 
 

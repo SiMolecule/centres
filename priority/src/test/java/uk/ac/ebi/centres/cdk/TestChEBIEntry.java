@@ -29,6 +29,7 @@ import uk.ac.ebi.mdk.service.DefaultServiceManager;
 import uk.ac.ebi.mdk.service.ServiceManager;
 import uk.ac.ebi.mdk.service.query.structure.StructureService;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 
@@ -37,22 +38,37 @@ import java.util.Scanner;
  */
 public class TestChEBIEntry {
 
-    public static void main(String[] args) throws CDKException, InterruptedException {
+    public static void main(String[] args) throws CDKException, InterruptedException, IOException {
 
         ServiceManager manager = DefaultServiceManager.getInstance();
         StructureService<ChEBIIdentifier> service = manager.getService(ChEBIIdentifier.class,
                                                                        StructureService.class);
 
-        final IAtomContainer container = service.getStructure(new ChEBIIdentifier("CHEBI:63067"));
+        final IAtomContainer container = service.getStructure(new ChEBIIdentifier("CHEBI:59601"));
 
         final CDKPerceptor perceptor = new CDKPerceptor();
         AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(container);
 
-        new Scanner(System.in).next();
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
+//        new Scanner(System.in).next();
+//        Thread t = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
                 long start = System.currentTimeMillis();
+
+//        PlanarCentre<IAtom> centre = (PlanarCentre<IAtom>) new CDKCentreProvider(container).getCentres(new CDKManager(container)).iterator().next();
+//        CytoscapeWriter<IAtom> writer = new CytoscapeWriter<IAtom>(new File("/Users/johnmay/Desktop"), (Digraph<IAtom>) centre.getProvider()) {
+//            @Override
+//            public void mapAttributes(IAtom atom, Map<String, String> map) {
+//                map.put("symbol", atom.getSymbol());
+//                map.put("number", Integer.toString(container.getAtomNumber(atom) + 1));
+//            }
+//        };
+//        writer.writeSif();
+//        writer.writeAttributes();
+//        writer.close();
+
+                System.out.println("Doing perception");
+
                 perceptor.perceive(container);
                 for (IAtom atom : container.atoms()) {
                     Descriptor descriptor = (Descriptor) atom.getProperty("descriptor");
@@ -61,13 +77,13 @@ public class TestChEBIEntry {
                 }
                 long end = System.currentTimeMillis();
                 System.out.println(end - start);
-            }
-        });
-        t.setName("PERCEPTION");
-        t.start();
-        t.join();
 
+//            }});
+//            t.setName("PERCEPTION");
+//            t.start();
+//            t.join();
+
+
+        }
 
     }
-
-}

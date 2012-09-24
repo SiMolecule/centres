@@ -21,6 +21,7 @@ package uk.ac.ebi.centres.priority.descriptor;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Priority;
 import uk.ac.ebi.centres.descriptor.General;
 import uk.ac.ebi.centres.priority.AbstractPriorityRule;
 import uk.ac.ebi.centres.priority.access.DescriptorAccessor;
@@ -109,7 +110,8 @@ public class PairRule<A>
             descriptors.add(accessor.getDescriptor(ligand));
 
             List<Ligand<A>> ligands = ligand.getLigands();
-            if (prioritise(ligands).isUnique()) {
+            Priority priority = prioritise(ligands);
+            if (priority.isUnique()) {
 
                 // unique
 
@@ -118,11 +120,8 @@ public class PairRule<A>
 
 
             } else {
-
-                List<List<Ligand<A>>> groups = getSorter().getGroups(ligands);
-
                 // non unique need to subdivide and combine
-                for (List<Ligand<A>> combinated : permutate(groups)) {
+                for (List<Ligand<A>> combinated : permutate(getSorter().getGroups(ligands))) {
 
                     Queue<Ligand<A>> subqueue = new LinkedList<Ligand<A>>(queue);
                     subqueue.addAll(combinated);
