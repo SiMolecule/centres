@@ -51,8 +51,9 @@ public class DescriptorRule<A> extends AbstractPriorityRule<A> {
      * @param descriptors ranking of descriptors low .. high priority
      */
     public DescriptorRule(DescriptorAccessor<A> accessor,
+                          Type ordering,
                           Descriptor... descriptors) {
-        this(Descriptor.Type.ASYMMETRIC, accessor, descriptors);
+        this(Descriptor.Type.ASYMMETRIC, ordering, accessor, descriptors);
     }
 
 
@@ -66,9 +67,10 @@ public class DescriptorRule<A> extends AbstractPriorityRule<A> {
      * @param descriptors ranking of descriptors low .. high priority
      */
     public DescriptorRule(Descriptor.Type type,
+                          Type ordering,
                           DescriptorAccessor<A> accessor,
                           Descriptor... descriptors) {
-        super(type);
+        super(type, ordering);
         this.accessor = accessor;
 
         ranking = Maps.newHashMapWithExpectedSize(descriptors.length);

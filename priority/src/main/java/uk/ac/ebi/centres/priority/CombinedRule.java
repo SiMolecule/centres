@@ -47,6 +47,7 @@ public class CombinedRule<A> extends AbstractPriorityRule<A> {
      * Default constructor creates a combined rule with no sub-rules.
      */
     public CombinedRule() {
+        super(Type.COMBINED);
         rules = Lists.newArrayListWithExpectedSize(8);
     }
 
@@ -57,6 +58,7 @@ public class CombinedRule<A> extends AbstractPriorityRule<A> {
      * @param rules the rules to combined
      */
     public CombinedRule(PriorityRule<A>... rules) {
+        super(Type.COMBINED);
         this.rules = Lists.newArrayListWithExpectedSize(rules.length);
         for (PriorityRule<A> rule : rules)
             add(rule);
@@ -78,7 +80,7 @@ public class CombinedRule<A> extends AbstractPriorityRule<A> {
     }
 
     public LigandSorter<A> createSorter(List<PriorityRule<A>> rules){
-        return new InsertionSorter<A>(rules);
+        return new InsertionSorter<A>(rules, Type.CONSTITUTIONAL); // restriction should be configurable
     }
 
 

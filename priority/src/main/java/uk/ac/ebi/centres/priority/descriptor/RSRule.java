@@ -32,6 +32,7 @@ public class RSRule<A> extends DescriptorRule<A> {
 
     public RSRule(DescriptorAccessor<A> accessor) {
         super(Descriptor.Type.PSEUDO_ASYMMETRIC,
+              Type.TOPOGRAPHICAL,
               accessor,
               Tetrahedral.S, Tetrahedral.R);
     }

@@ -44,6 +44,7 @@ public class AtomicNumberRule<A>
      * @param accessor an accessor for the atom's atomic number
      */
     public AtomicNumberRule(AtomicNumberAccessor<A> accessor) {
+        super(Type.CONSTITUTIONAL);
         this.accessor = accessor;
     }
 

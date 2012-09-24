@@ -55,6 +55,7 @@ public class PairRule<A>
      * @param accessor access to a descriptor on a ligand
      */
     public PairRule(DescriptorAccessor<A> accessor) {
+        super(Type.GEOMETRICAL);
         this.accessor = accessor;
     }
 

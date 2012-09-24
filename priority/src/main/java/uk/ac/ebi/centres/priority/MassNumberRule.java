@@ -44,6 +44,7 @@ public class MassNumberRule<A>
      * @param accessor an accessor for the atom's mass number
      */
     public MassNumberRule(MassNumberAccessor<A> accessor) {
+        super(Type.CONSTITUTIONAL);
         this.accessor = accessor;
     }
 

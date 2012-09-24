@@ -89,7 +89,7 @@ public class TestChEBI {
             }
         }
 
-        containers = containers.subList(14500, containers.size());
+        //containers = containers.subList(14500, containers.size());
 
         System.out.println(bad.size());
 
@@ -109,21 +109,15 @@ public class TestChEBI {
         int count = 0;
         final Map<Identifier, Long> timing = new HashMap<Identifier, Long>();
 
+        CDKPerceptor perceptor = new CDKPerceptor();
+
         for (final IAtomContainer container : containers) {
-
-            if (++count % 250 == 0) {
-                System.out.println("[" + count + "/" + containers.size() + "]");
-            }
-
             ChEBIIdentifier identifier = new ChEBIIdentifier(container.getProperty("ChEBI ID").toString());
             try {
-                System.out.println(identifier);
-                CDKPerceptor perceptor = new CDKPerceptor();
-                long innerStart = System.currentTimeMillis();
+//                long innerStart = System.currentTimeMillis();
                 perceptor.perceive(container);
-                perceptor.shutdown();
-                long innerEnd = System.currentTimeMillis();
-                timing.put(identifier, innerEnd - innerStart);
+//                long innerEnd = System.currentTimeMillis();
+//                timing.put(identifier, innerEnd - innerStart);
             } catch (RuntimeException ex) {
                 System.err.println("Combinatorial explosion possible " + identifier + ": " + ex.getMessage());
             }

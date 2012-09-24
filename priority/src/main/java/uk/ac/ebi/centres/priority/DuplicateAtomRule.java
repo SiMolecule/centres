@@ -23,6 +23,10 @@ import uk.ac.ebi.centres.Ligand;
 public class DuplicateAtomRule<A>
         extends AbstractPriorityRule<A> {
 
+    public DuplicateAtomRule(){
+        super(Type.CONSTITUTIONAL);
+    }
+
     @Override
     public int compare(Ligand<A> o1, Ligand<A> o2) {
         if (o1.isDuplicate() && !o2.isDuplicate()) {

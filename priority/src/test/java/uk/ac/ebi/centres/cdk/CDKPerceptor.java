@@ -55,7 +55,8 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
                 }),
                 new ZERule<IAtom>(),
                 new PairRule<IAtom>(new PrimaryDescriptor<IAtom>()),
-                new RSRule<IAtom>(new PrimaryDescriptor<IAtom>())),
+                new RSRule<IAtom>(new PrimaryDescriptor<IAtom>())
+        ),
               new CombinedRule<IAtom>(
                       new AtomicNumberRule<IAtom>(new AtomicNumberAccessor<IAtom>() {
                           @Override
@@ -71,7 +72,8 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
                       }),
                       new ZERule<IAtom>(),
                       new PairRule<IAtom>(new AuxiliaryDescriptor<IAtom>()),
-                      new RSRule<IAtom>(new AuxiliaryDescriptor<IAtom>())),
+                      new RSRule<IAtom>(new AuxiliaryDescriptor<IAtom>())
+              ),
               new CDK2DSignCalculator());
 
 

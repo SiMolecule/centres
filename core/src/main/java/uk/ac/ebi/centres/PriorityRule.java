@@ -33,6 +33,15 @@ import java.util.List;
  */
 public interface PriorityRule<A> extends Comparator<Ligand<A>> {
 
+    public enum Type {
+        CONSTITUTIONAL,
+        GEOMETRICAL,
+        TOPOGRAPHICAL,
+        COMBINED
+    }
+
+    public Type getRuleType();
+
     public int recursiveCompare(Ligand<A> o1, Ligand<A> o2);
 
     /**

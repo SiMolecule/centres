@@ -48,6 +48,14 @@ public class InsertionSorter<A> implements LigandSorter<A> {
     }
 
 
+    public InsertionSorter(List<PriorityRule<A>> comparators, PriorityRule.Type restrict) {
+        for(PriorityRule<A> rule : comparators){
+            if(rule.getRuleType().equals(restrict)){
+                this.rules.add(rule);
+            }
+        }
+    }
+
     public InsertionSorter(List<PriorityRule<A>> comparators) {
         rules.addAll(comparators);
     }

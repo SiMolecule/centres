@@ -30,7 +30,7 @@ import uk.ac.ebi.centres.priority.access.descriptor.ArcPrimaryDescriptor;
 public class ZERule<A> extends DescriptorRule<A> {
 
     public ZERule() {
-        super(new ArcPrimaryDescriptor<A>(), Planar.E, Planar.Z);
+        super(new ArcPrimaryDescriptor<A>(), Type.GEOMETRICAL, Planar.E, Planar.Z);
     }
 
 }

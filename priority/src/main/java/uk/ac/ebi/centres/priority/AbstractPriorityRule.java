@@ -45,23 +45,26 @@ public abstract class AbstractPriorityRule<A>
      * The type is store here and appended with the {@link
      * #compareLigands(uk.ac.ebi.centres.Ligand, uk.ac.ebi.centres.Ligand)}
      */
-    private final Descriptor.Type type;
+    private final Descriptor.Type reflection;
+    private final Type            ordering;
 
 
     /**
      * Default constructor creates an {@link Descriptor.Type#ASYMMETRIC}
      * comparator.
      */
-    public AbstractPriorityRule() {
-        this(Descriptor.Type.ASYMMETRIC);
+    public AbstractPriorityRule(Type ordering) {
+        this(Descriptor.Type.ASYMMETRIC, ordering);
     }
 
 
     /**
      * Constructor creates a comparator with the specified type.
      */
-    public AbstractPriorityRule(Descriptor.Type type) {
-        this.type = type;
+    public AbstractPriorityRule(Descriptor.Type reflection, Type ordering) {
+        this.ordering = ordering;
+        this.reflection = reflection;
+
     }
 
 
@@ -85,7 +88,7 @@ public abstract class AbstractPriorityRule<A>
      */
     @Override
     public Comparison compareLigands(Ligand<A> o1, Ligand<A> o2) {
-        return new LigandComparison(recursiveCompare(o1, o2), type);
+        return new LigandComparison(recursiveCompare(o1, o2), reflection);
     }
 
 
@@ -189,6 +192,16 @@ public abstract class AbstractPriorityRule<A>
      */
     @Override
     public Descriptor.Type getType() {
-        return type;
+        return reflection;
+    }
+
+
+    /**
+     * Indicates whether the rule is conditional etc.
+     *
+     * @return
+     */
+    public Type getRuleType() {
+        return ordering;
     }
 }
