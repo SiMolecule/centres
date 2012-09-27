@@ -61,7 +61,7 @@ public class CentreProviderTest {
     @Test
     public void testGetCentres() throws CDKException, IOException, ExecutionException, TimeoutException, InterruptedException {
 
-        final IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream("demo.xml"));
+        final IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream("myo-inositol.xml"));
 
         // setting correct properties :/
         for (IAtom atom : container.atoms()) {

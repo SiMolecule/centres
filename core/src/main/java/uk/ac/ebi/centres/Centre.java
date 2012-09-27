@@ -65,7 +65,7 @@ public interface Centre<A> extends Ligand<A> {
 
     public Descriptor perceive(List<Ligand<A>> proximal, PriorityRule<A> rule, SignCalculator<A> calculator);
 
-    public void perceiveAuxiliary(Collection<Centre<A>> centres,
+    public int perceiveAuxiliary(Collection<Centre<A>> centres,
                                   PriorityRule<A> rule,
                                   SignCalculator<A> calculator);
 

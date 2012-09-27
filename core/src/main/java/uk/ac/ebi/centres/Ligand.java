@@ -42,6 +42,10 @@ public interface Ligand<A> {
 
     public A getAtom();
 
+    /**
+     * Resets any caches
+     */
+    public void reset();
 
     /**
      * Sets the descriptor for this centre. This method will throw an illegal

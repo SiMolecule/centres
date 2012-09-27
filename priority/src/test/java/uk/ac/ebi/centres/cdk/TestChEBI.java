@@ -18,14 +18,19 @@
 
 package uk.ac.ebi.centres.cdk;
 
+import au.com.bytecode.opencsv.CSVWriter;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.config.IsotopeFactory;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
+import uk.ac.ebi.centres.Descriptor;
+import uk.ac.ebi.centres.descriptor.General;
+import uk.ac.ebi.centres.exception.WarpCoreEjection;
 import uk.ac.ebi.mdk.domain.identifier.ChEBIIdentifier;
 import uk.ac.ebi.mdk.domain.identifier.Identifier;
 import uk.ac.ebi.mdk.service.DefaultServiceManager;
@@ -33,13 +38,16 @@ import uk.ac.ebi.mdk.service.query.name.PreferredNameService;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.TimeZone;
 
 /**
  * @author John May
@@ -52,12 +60,13 @@ public class TestChEBI {
                                                            SilentChemObjectBuilder.getInstance(),
                                                            true);
 
-         List<IAtomContainer> containers = new ArrayList<IAtomContainer>(12000);
+        List<IAtomContainer> containers = new ArrayList<IAtomContainer>(12000);
 
         long rStart = System.currentTimeMillis();
         while (reader.hasNext()) {
             IAtomContainer container = reader.next();
-            containers.add(container);
+            if (container.getAtomCount() < 50)
+                containers.add(container);
         }
         long rEnd = System.currentTimeMillis();
 
@@ -105,45 +114,82 @@ public class TestChEBI {
         final List<ChEBIIdentifier> timeout = new ArrayList<ChEBIIdentifier>();
 
 
-        long pStart = System.currentTimeMillis();
         int count = 0;
         final Map<Identifier, Long> timing = new HashMap<Identifier, Long>();
 
         CDKPerceptor perceptor = new CDKPerceptor();
 
+        CSVWriter writer = new CSVWriter(new FileWriter("/Users/johnmay/Desktop/chebi-centres-" + getDateTime() + ".tsv"), '\t', '\0');
+        int missed = 0;
+        long pStart = System.currentTimeMillis();
         for (final IAtomContainer container : containers) {
-            ChEBIIdentifier identifier = new ChEBIIdentifier(container.getProperty("ChEBI ID").toString());
             try {
-//                long innerStart = System.currentTimeMillis();
                 perceptor.perceive(container);
-//                long innerEnd = System.currentTimeMillis();
-//                timing.put(identifier, innerEnd - innerStart);
-            } catch (RuntimeException ex) {
-                System.err.println("Combinatorial explosion possible " + identifier + ": " + ex.getMessage());
+                //append(container, writer);
+            } catch (WarpCoreEjection ex) {
+                System.err.println(ex.getMessage());
+                missed++;
             }
         }
-
         long pEnd = System.currentTimeMillis();
-        System.out.println("Perceived: " + (pEnd - pStart) + " ms");
+        writer.close();
 
-        System.out.println("Completed: " + (containers.size() - timeout.size()) / (double) containers.size() * 100);
 
-        Map<Identifier, Long> orderedMap = new TreeMap<Identifier, Long>(new Comparator<Identifier>() {
-            @Override
-            public int compare(Identifier o1, Identifier o2) {
-                return timing.get(o2).compareTo(timing.get(o1));
-            }
-        });
-
-        System.out.println("Timings:");
-        int printcount = 0;
-        orderedMap.putAll(timing);
-        for (Map.Entry<Identifier, Long> e : orderedMap.entrySet()) {
-            System.out.println(e.getKey() + ": " + e.getValue());
-            if (++printcount == 20)
-                break;
-        }
+        System.out.println("Perceived in " + (pEnd - pStart) + " ms");
+        System.out.println("Succeeded for  " + (containers.size() - missed) / (double) containers.size() * 100 + "% of " + containers.size() + " structures");
 
     }
+
+
+    private final static String getDateTime() {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss");
+        df.setTimeZone(TimeZone.getTimeZone("GMT+1"));
+        return df.format(new Date());
+    }
+
+
+    public static void append(IAtomContainer container, CSVWriter writer) {
+        String id = (String) container.getProperty("ChEBI ID");
+        for (IAtom atom : container.atoms()) {
+            Descriptor descriptor = (Descriptor) atom.getProperty("descriptor");
+            if (descriptor != General.NONE && descriptor != null) {
+                writer.writeNext(new String[]{
+                        id,
+                        toString(atom, container),
+                        descriptor.toString()
+                });
+            }
+        }
+        for (IBond bond : container.bonds()) {
+            Descriptor descriptor = (Descriptor) bond.getProperty("descriptor");
+            if (descriptor != General.NONE && descriptor != null) {
+                writer.writeNext(new String[]{
+                        id,
+                        toString(bond, container),
+                        descriptor.toString()
+                });
+            }
+        }
+    }
+
+
+    public static String toString(IAtom atom, IAtomContainer container) {
+        return atom.getSymbol() + (container.getAtomNumber(atom) + 1);
+    }
+
+
+    public static String toString(IBond bond, IAtomContainer container) {
+        return toString(bond.getAtom(0), container) + "=" + toString(bond.getAtom(1), container);
+    }
+
+
+    public static String toString(IBond.Order order) {
+        if (order == IBond.Order.SINGLE) return "-";
+        if (order == IBond.Order.DOUBLE) return "=";
+        if (order == IBond.Order.TRIPLE) return "#";
+        if (order == IBond.Order.QUADRUPLE) return "$";
+        return "?";
+    }
+
 
 }

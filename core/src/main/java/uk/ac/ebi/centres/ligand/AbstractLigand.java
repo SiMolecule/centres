@@ -145,6 +145,9 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
         return ligands;
     }
 
+    public void reset() {
+        ligands = null;
+    }
 
     @Override
     public String toString() {

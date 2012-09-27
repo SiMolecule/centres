@@ -80,7 +80,7 @@ public class TetrahedralCentre<A>
 
 
     @Override
-    public void perceiveAuxiliary(Collection<Centre<A>> centres,
+    public int perceiveAuxiliary(Collection<Centre<A>> centres,
                                   PriorityRule<A> rule,
                                   SignCalculator<A> calculator) {
 
@@ -105,8 +105,9 @@ public class TetrahedralCentre<A>
                                                             rule,
                                                             calculator);
 
-                    if (descriptor != General.UNKNOWN)
+                    if (descriptor != General.UNKNOWN) {
                         auxiliary.put(ligand, descriptor);
+                    }
 
                 }
             }
@@ -118,6 +119,8 @@ public class TetrahedralCentre<A>
 
         // reroot on this
         getProvider().reroot(this);
+
+        return auxiliary.size();
 
     }
 

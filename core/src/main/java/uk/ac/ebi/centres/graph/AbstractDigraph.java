@@ -93,6 +93,7 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
 //        System.out.println("heads: " + arcs.heads);
 
         root = ligand;
+        ligand.reset();
 
         Queue<Arc<A>> queue = new LinkedList<Arc<A>>();
 

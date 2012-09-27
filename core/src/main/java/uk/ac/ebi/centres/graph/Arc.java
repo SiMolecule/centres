@@ -86,6 +86,8 @@ public class Arc<A> {
         head = tmp;
         depth *= -1; // invert the sign
         head.setParent(tail.getAtom());
+        head.reset(); // need to reset any caches
+        tail.reset();
     }
 
 

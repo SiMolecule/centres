@@ -25,12 +25,8 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * @author John May
@@ -57,8 +53,10 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
         this.auxPerceptor = new CentrePerceptor<A>(auxRule) {
             @Override
             public Descriptor perceive(Centre<A> centre, Collection<Centre<A>> centres) {
-                centre.perceiveAuxiliary(centres, rule, calculator);
-                return centre.perceive(auxRule, calculator);
+                // only attempt re-perception if there were auxiliary labels defined
+                return centre.perceiveAuxiliary(centres, rule, calculator) != 0
+                       ? centre.perceive(auxRule, calculator)
+                       : General.UNKNOWN;
             }
         };
     }
@@ -130,6 +128,7 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
 
     }
 
+
     /**
      * Shutdown the internal executor
      */
@@ -146,6 +145,7 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
         protected CentrePerceptor(PriorityRule<A> rule) {
             this.rule = rule;
         }
+
 
         public abstract Descriptor perceive(Centre<A> centre, Collection<Centre<A>> centres);
     }

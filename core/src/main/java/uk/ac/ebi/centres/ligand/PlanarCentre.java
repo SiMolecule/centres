@@ -122,8 +122,9 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
 
 
     @Override
-    public void perceiveAuxiliary(Collection<Centre<A>> centres, PriorityRule<A> rule, SignCalculator<A> calculator) {
+    public int perceiveAuxiliary(Collection<Centre<A>> centres, PriorityRule<A> rule, SignCalculator<A> calculator) {
         // System.err.println("Auxiliary perception is not currently supported on planar centres");
+        return 0;
     }
 
 

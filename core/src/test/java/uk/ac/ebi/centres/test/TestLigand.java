@@ -43,6 +43,12 @@ public class TestLigand implements Ligand<TestAtom> {
 
 
     @Override
+    public void reset() {
+
+    }
+
+
+    @Override
     public boolean isDuplicate() {
         return false;
     }

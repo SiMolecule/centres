@@ -26,11 +26,8 @@ import uk.ac.ebi.centres.Priority;
 import uk.ac.ebi.centres.PriorityRule;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A simple insertion sort for ligands. The number of ligands is not likely to
@@ -49,12 +46,13 @@ public class InsertionSorter<A> implements LigandSorter<A> {
 
 
     public InsertionSorter(List<PriorityRule<A>> comparators, PriorityRule.Type restrict) {
-        for(PriorityRule<A> rule : comparators){
-            if(rule.getRuleType().equals(restrict)){
+        for (PriorityRule<A> rule : comparators) {
+            if (rule.getRuleType().equals(restrict)) {
                 this.rules.add(rule);
             }
         }
     }
+
 
     public InsertionSorter(List<PriorityRule<A>> comparators) {
         rules.addAll(comparators);
@@ -85,10 +83,9 @@ public class InsertionSorter<A> implements LigandSorter<A> {
 
                 if (comparison.getOrder() < 0) {
                     swap(ligands, j, j - 1);
-                } else if (comparison.getOrder() == 0) {
-                    unique = Boolean.FALSE;
-                    // need to place in bins
                 } else {
+                    if (comparison.getOrder() == 0)
+                        unique = Boolean.FALSE;
                     break;
                 }
 
