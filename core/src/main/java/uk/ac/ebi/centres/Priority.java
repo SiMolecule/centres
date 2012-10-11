@@ -18,8 +18,6 @@
 
 package uk.ac.ebi.centres;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;

@@ -19,7 +19,6 @@
 package uk.ac.ebi.centres.ligand;
 
 import com.google.common.collect.Sets;
-import org.openscience.cdk.interfaces.IAtom;
 import uk.ac.ebi.centres.Centre;
 import uk.ac.ebi.centres.ConnectionProvider;
 import uk.ac.ebi.centres.Descriptor;
@@ -89,10 +88,10 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
 
     @Override
     public String toString() {
-        if (first.getAtom() instanceof IAtom) {
-            return ((IAtom) first.getAtom()).getSymbol() + "" + ((IAtom) first.getAtom()).getProperty("number") + "=" +
-                    ((IAtom) second.getAtom()).getSymbol() + "" + ((IAtom) second.getAtom()).getProperty("number");
-        }
+//        if (first.getAtom() instanceof IAtom) {
+//            return ((IAtom) first.getAtom()).getSymbol() + "" + ((IAtom) first.getAtom()).getProperty("number") + "=" +
+//                    ((IAtom) second.getAtom()).getSymbol() + "" + ((IAtom) second.getAtom()).getProperty("number");
+//        }
         return first.getAtom().toString() + "=" + second.getAtom().toString();
     }
 

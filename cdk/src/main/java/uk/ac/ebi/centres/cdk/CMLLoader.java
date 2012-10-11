@@ -19,13 +19,17 @@
 package uk.ac.ebi.centres.cdk;
 
 
+import org.openscience.cdk.config.IsotopeFactory;
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.io.CMLReader;
 import org.openscience.cdk.silent.AtomContainer;
 import org.openscience.cdk.silent.ChemFile;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
+import org.openscience.cdk.tools.periodictable.PeriodicTable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,10 +46,20 @@ public class CMLLoader {
         try {
             IChemFile chemfile = reader.read(new ChemFile());
             Iterator<IAtomContainer> iterator = ChemFileManipulator.getAllAtomContainers(chemfile).iterator();
-            if (iterator.hasNext())
-                return iterator.next();
+            if (iterator.hasNext()) {
+                IAtomContainer container = iterator.next();
+                // due to a bug need to reconfigure molecule
+                for (IAtom atom : container.atoms()) {
+                    atom.setAtomicNumber(PeriodicTable.getAtomicNumber(atom.getSymbol()));
+                    atom.setMassNumber(IsotopeFactory.getInstance(atom.getBuilder()).getMajorIsotope(atom.getSymbol()).getMassNumber());
+                }
+                AtomContainerManipulator.percieveAtomTypesAndConfigureUnsetProperties(container);
+                return container;
+            }
         } catch (CDKException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
         }
         try {
             if (reader != null)

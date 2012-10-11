@@ -145,12 +145,14 @@ public class TetrahedralCentre<A>
 
             boolean pseudo = priority.getType().equals(Descriptor.Type.PSEUDO_ASYMMETRIC);
 
-            return sign > 0 ? pseudo ? Tetrahedral.s
-                                     : Tetrahedral.S
-                            : sign < 0
-                              ? pseudo ? Tetrahedral.r
-                                       : Tetrahedral.R
-                              : General.UNSPECIFIED;
+            if(sign == 0)
+                return General.UNKNOWN;
+
+            if(pseudo)
+                return sign > 0 ? Tetrahedral.s : Tetrahedral.r;
+            else
+                return sign > 0 ? Tetrahedral.S : Tetrahedral.R;
+
 
 
         }

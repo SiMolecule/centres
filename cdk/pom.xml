@@ -14,7 +14,7 @@
   ~
   ~ You should have received a copy of the GNU Lesser General Public
   ~ License along with this library; if not, write to the Free Software
-  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -27,22 +27,37 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>centres-priority</artifactId>
-    <url>http://www.github.com/johnmay/centres/priority</url>
+    <artifactId>centres-cdk</artifactId>
 
     <dependencies>
+
         <dependency>
-            <artifactId>centres-core</artifactId>
             <groupId>${project.groupId}</groupId>
+            <artifactId>centres-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <artifactId>centres-core</artifactId>
             <groupId>${project.groupId}</groupId>
+            <artifactId>centres-priority</artifactId>
             <version>${project.version}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-interfaces</artifactId>
+            <version>1.4.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-io</artifactId>
+            <version>1.4.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-silent</artifactId>
+            <version>1.4.11</version>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -50,29 +65,7 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-library</artifactId>
-            <version>1.1</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.2</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>test-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+    </dependencies>
 
 </project>

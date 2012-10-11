@@ -19,7 +19,6 @@
 package uk.ac.ebi.centres.ligand;
 
 import com.google.common.collect.Sets;
-import org.openscience.cdk.interfaces.IAtom;
 import uk.ac.ebi.centres.ConnectionProvider;
 import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Ligand;
@@ -147,15 +146,6 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
 
     public void reset() {
         ligands = null;
-    }
-
-    @Override
-    public String toString() {
-        A atom = getAtom();
-        if (atom instanceof IAtom) {
-            return ((IAtom) atom).getSymbol() + "" + ((IAtom) atom).getProperty("number");
-        }
-        return "Non CDK Atom";
     }
 
 

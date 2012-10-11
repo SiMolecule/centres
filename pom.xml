@@ -12,11 +12,11 @@
     <modules>
         <module>core</module>
         <module>priority</module>
-        <module>api</module>
+        <module>cdk</module>
     </modules>
 
     <name>centres</name>
-    <url>http://www.github.com/johnmay/centres</url>
+    <url>http://johnmay.github.com/centres</url>
 
     <licenses>
         <license>
@@ -45,6 +45,16 @@
             <url>${ebi.maven.repo.snapshots.deploy.url}</url>
         </snapshotRepository>
     </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>ebi-repo</id>
+            <url>http://www.ebi.ac.uk/~maven/m2repo</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <build>
 

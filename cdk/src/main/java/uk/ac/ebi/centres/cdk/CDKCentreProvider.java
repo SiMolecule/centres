@@ -84,6 +84,7 @@ public class CDKCentreProvider implements CentreProvider<IAtom> {
                     && container.getConnectedAtomsCount(bond.getAtom(0)) > 1
                     && container.getConnectedAtomsCount(bond.getAtom(1)) > 1
                     && bond.getFlag(CDKConstants.ISAROMATIC) == Boolean.FALSE
+                    && onlyConnectedToSingleBonds(bond, container)
                     && !getCyclicFragments().contains(bond)
                     && !hasVariableBond(container, bond.getAtom(0))
                     && !hasVariableBond(container, bond.getAtom(1))) {
@@ -99,6 +100,21 @@ public class CDKCentreProvider implements CentreProvider<IAtom> {
 
     }
 
+    /**
+     * stops tandem double bonds being provided
+     *      C=C=C
+     *           \
+     *
+     * being provided. see. unit test of 2-iminoethen-1-ol (testIminoethenol)
+     *
+     * @param bond
+     * @param container
+     * @return
+     */
+    private boolean onlyConnectedToSingleBonds(IBond bond, IAtomContainer container){
+        return container.getMaximumBondOrder(bond.getAtom(0)) == IBond.Order.SINGLE
+                && container.getMaximumBondOrder(bond.getAtom(1)) == IBond.Order.SINGLE;
+    }
 
     private IAtomContainer getCyclicFragments() {
         if (cyclicFragments == null) {
