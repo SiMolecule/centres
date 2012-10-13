@@ -18,14 +18,18 @@
 
 package uk.ac.ebi.centres.cdk;
 
+import junit.framework.Assert;
 import org.junit.Test;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
+import uk.ac.ebi.centres.descriptor.Planar;
 import uk.ac.ebi.centres.descriptor.Tetrahedral;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNotSame;
+import static junit.framework.Assert.assertNull;
 
 /**
  * This test suite tests correct perception of several difficult
@@ -108,6 +112,53 @@ public class PerceptorTest {
         assertEquals(Tetrahedral.s, container.getAtom(3).getProperty("descriptor"));
         assertEquals(Tetrahedral.S, container.getAtom(4).getProperty("descriptor")); // maps to atom 3 non inverse
         assertEquals(Tetrahedral.R, container.getAtom(5).getProperty("descriptor")); // maps to atom 2 non inverse
+
+    }
+
+
+    @Test
+    public void testE22Furyl35nitro2furylacrylamide() {
+
+        String         path      = "(E)-2-(2-Furyl)-3-(5-nitro-2-furyl)acrylamide.xml";
+        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+
+        assertNotNull("molecule was not loaded", container);
+
+        // the E may actually be read at some point in future but not atm
+        assertNotSame(IBond.Stereo.E, container.getBond(6).getStereo());
+
+        assertNull("descriptor should be null before perception",
+                   container.getBond(6).getProperty("descriptor"));
+
+        perceptor.perceive(container);
+
+        assertEquals("Expected E conformation",
+                     Planar.E, container.getBond(6).getProperty("descriptor"));
+
+    }
+
+    /**
+     * This also uses 3D cordinates
+     */
+    @Test
+    public void testZ22Furyl35nitro2furylacrylamide() {
+
+        String         path      = "(Z)-2-(2-Furyl)-3-(5-nitro-2-furyl)acrylamide.xml";
+        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+
+        assertNotNull("molecule was not loaded", container);
+
+        // the E may actually be read at some point in future but not atm
+        assertNotSame(IBond.Stereo.E, container.getBond(6).getStereo());
+
+        assertNull("descriptor should be null before perception",
+                   container.getBond(6).getProperty("descriptor"));
+
+        CDKPerceptor perceptor3D = new CDKPerceptor(new CDK3DSignCalculator());
+        perceptor3D.perceive(container);
+
+        assertEquals("Expected Z conformation",
+                     Planar.Z, container.getBond(6).getProperty("descriptor"));
 
     }
 
