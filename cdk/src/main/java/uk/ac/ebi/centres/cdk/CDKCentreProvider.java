@@ -112,9 +112,18 @@ public class CDKCentreProvider implements CentreProvider<IAtom> {
      * @return
      */
     private boolean onlyConnectedToSingleBonds(IBond bond, IAtomContainer container){
-        return container.getMaximumBondOrder(bond.getAtom(0)) == IBond.Order.SINGLE
-                && container.getMaximumBondOrder(bond.getAtom(1)) == IBond.Order.SINGLE;
+        return onlyConnectedToSingleBonds(bond, bond.getAtom(0), container)
+                    && onlyConnectedToSingleBonds(bond, bond.getAtom(1), container);
     }
+
+    private boolean onlyConnectedToSingleBonds(IBond bond, IAtom atom, IAtomContainer container) {
+        for(IBond connected : container.getConnectedBondsList(atom))
+            if(!IBond.Order.SINGLE.equals(connected.getOrder()) && !connected.equals(bond))
+                return Boolean.FALSE;
+        return Boolean.TRUE;
+    }
+
+
 
     private IAtomContainer getCyclicFragments() {
         if (cyclicFragments == null) {
