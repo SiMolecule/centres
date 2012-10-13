@@ -21,6 +21,7 @@ package uk.ac.ebi.centres.cdk;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import uk.ac.ebi.centres.DefaultPerceptor;
+import uk.ac.ebi.centres.SignCalculator;
 import uk.ac.ebi.centres.priority.AtomicNumberRule;
 import uk.ac.ebi.centres.priority.CombinedRule;
 import uk.ac.ebi.centres.priority.DuplicateAtomRule;
@@ -38,7 +39,7 @@ import uk.ac.ebi.centres.priority.descriptor.ZERule;
  */
 public class CDKPerceptor extends DefaultPerceptor<IAtom> {
 
-    public CDKPerceptor() {
+    public CDKPerceptor(SignCalculator<IAtom> calculator) {
         super(new CombinedRule<IAtom>(
                 new AtomicNumberRule<IAtom>(new AtomicNumberAccessor<IAtom>() {
                     @Override
@@ -74,9 +75,14 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
                       new PairRule<IAtom>(new AuxiliaryDescriptor<IAtom>()),
                       new RSRule<IAtom>(new AuxiliaryDescriptor<IAtom>())
               ),
-              new CDK2DSignCalculator());
+              calculator);
+    }
 
-
+    /**
+     * Creates a perceptor for 2D centres
+     */
+    public CDKPerceptor(){
+        this(new CDK2DSignCalculator());
     }
 
 
