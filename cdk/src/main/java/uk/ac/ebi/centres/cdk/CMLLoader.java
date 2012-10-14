@@ -51,7 +51,8 @@ public class CMLLoader {
                 // due to a bug need to reconfigure molecule
                 for (IAtom atom : container.atoms()) {
                     atom.setAtomicNumber(PeriodicTable.getAtomicNumber(atom.getSymbol()));
-                    atom.setMassNumber(IsotopeFactory.getInstance(atom.getBuilder()).getMajorIsotope(atom.getSymbol()).getMassNumber());
+                    if(!atom.getSymbol().equals("R"))
+                        atom.setMassNumber(IsotopeFactory.getInstance(atom.getBuilder()).getMajorIsotope(atom.getSymbol()).getMassNumber());
                 }
                 AtomContainerManipulator.percieveAtomTypesAndConfigureUnsetProperties(container);
                 return container;
