@@ -28,6 +28,7 @@ import uk.ac.ebi.centres.priority.DuplicateAtomRule;
 import uk.ac.ebi.centres.priority.MassNumberRule;
 import uk.ac.ebi.centres.priority.access.AtomicNumberAccessor;
 import uk.ac.ebi.centres.priority.access.MassNumberAccessor;
+import uk.ac.ebi.centres.priority.access.PsuedoAtomicNumberModifier;
 import uk.ac.ebi.centres.priority.access.descriptor.AuxiliaryDescriptor;
 import uk.ac.ebi.centres.priority.access.descriptor.PrimaryDescriptor;
 import uk.ac.ebi.centres.priority.descriptor.PairRule;
@@ -41,12 +42,14 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
 
     public CDKPerceptor(SignCalculator<IAtom> calculator) {
         super(new CombinedRule<IAtom>(
-                new AtomicNumberRule<IAtom>(new AtomicNumberAccessor<IAtom>() {
-                    @Override
-                    public int getAtomicNumber(IAtom atom) {
-                        return atom.getAtomicNumber();
-                    }
-                }),
+                new AtomicNumberRule<IAtom>(
+                        new PsuedoAtomicNumberModifier<IAtom>(
+                                new AtomicNumberAccessor<IAtom>() {
+                                    @Override
+                                    public int getAtomicNumber(IAtom atom) {
+                                        return atom.getAtomicNumber();
+                                    }
+                                })),
                 new DuplicateAtomRule<IAtom>(),
                 new MassNumberRule<IAtom>(new MassNumberAccessor<IAtom>() {
                     @Override
@@ -59,12 +62,14 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
                 new RSRule<IAtom>(new PrimaryDescriptor<IAtom>())
         ),
               new CombinedRule<IAtom>(
-                      new AtomicNumberRule<IAtom>(new AtomicNumberAccessor<IAtom>() {
-                          @Override
-                          public int getAtomicNumber(IAtom atom) {
-                              return atom.getAtomicNumber();
-                          }
-                      }),
+                      new AtomicNumberRule<IAtom>(
+                              new PsuedoAtomicNumberModifier<IAtom>(
+                                      new AtomicNumberAccessor<IAtom>() {
+                                          @Override
+                                          public int getAtomicNumber(IAtom atom) {
+                                              return atom.getAtomicNumber();
+                                          }
+                                      })),
                       new MassNumberRule<IAtom>(new MassNumberAccessor<IAtom>() {
                           @Override
                           public int getMassNumber(IAtom atom) {
@@ -81,7 +86,7 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
     /**
      * Creates a perceptor for 2D centres
      */
-    public CDKPerceptor(){
+    public CDKPerceptor() {
         this(new CDK2DSignCalculator());
     }
 
