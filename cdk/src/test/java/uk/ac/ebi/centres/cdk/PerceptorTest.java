@@ -162,4 +162,42 @@ public class PerceptorTest {
 
     }
 
+    /**
+     * Tests that stereo-centres involving a pseudo atom give a meaningful
+     * descriptor.
+     */
+    @Test public void testImplicitPsuedo() {
+
+        String         path      = "implicitPseudoCentre.xml";
+        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+
+        assertNotNull("molecule was not loaded", container);
+
+        perceptor.perceive(container);
+
+        assertEquals("Expected S conformation",
+                     Tetrahedral.S, container.getAtom(0).getProperty("descriptor"));
+
+
+    }
+
+    /**
+     * Tests that stereo-centres involving a pseudo atom do not change given
+     * explicit hydrogens.
+     */
+    @Test public void testExplicitPsuedo() {
+
+        String         path      = "explicitPseudoCentre.xml";
+        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+
+        assertNotNull("molecule was not loaded", container);
+
+        perceptor.perceive(container);
+
+        assertEquals("Expected S conformation",
+                     Tetrahedral.S, container.getAtom(0).getProperty("descriptor"));
+
+
+    }
+
 }

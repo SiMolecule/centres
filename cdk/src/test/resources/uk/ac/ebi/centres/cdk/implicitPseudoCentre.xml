@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<!-- A simple implicit stereocentre with a pseudo atom -->
+<cml>
+    <MDocument>
+        <MChemicalStruct>
+            <molecule molID="m1">
+                <atomArray>
+                    <atom id="a1" elementType="C"
+                          x2="-2.9149999618530273" y2="1.5950000286102295" />
+                    <atom id="a2" elementType="O"
+                          x2="-1.5813208400249916" y2="2.3650000286102295" />
+                    <atom id="a3" elementType="N"
+                          x2="-4.248679083681063" y2="2.3650000286102295" />
+                    <atom id="a4" elementType="R" rgroupRef="0"
+                          x2="-2.914999961853028" y2="0.05500002861022946"
+                          ligandOrder="a1" />
+                </atomArray>
+                <bondArray>
+                    <bond atomRefs2="a1 a2" order="1">
+                        <bondStereo dictRef="cml:W">W</bondStereo>
+                    </bond>
+                    <bond atomRefs2="a1 a3" order="1" />
+                    <bond atomRefs2="a1 a4" order="1" />
+                </bondArray>
+            </molecule>
+        </MChemicalStruct>
+    </MDocument>
+</cml>
