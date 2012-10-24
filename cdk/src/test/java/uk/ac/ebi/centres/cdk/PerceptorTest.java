@@ -200,4 +200,20 @@ public class PerceptorTest {
 
     }
 
+
+    @Test public void testVomifoliol(){
+
+        String         path      = "(6R)-vomifoliol.xml";
+        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+
+        assertNotNull("molecule was not loaded", container);
+
+        perceptor.perceive(container);
+
+        assertEquals("expected R conformation",
+                     Tetrahedral.R, container.getAtom(12).getProperty("descriptor"));
+
+
+    }
+
 }
