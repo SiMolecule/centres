@@ -71,7 +71,7 @@ public class CDKManager implements DescriptorManager<IAtom> {
 
         public ProxyMutator(IChemObject chemObject) {
             this.chemObject = chemObject;
-            chemObject.setProperty("descriptor", General.NONE);
+            chemObject.setProperty("descriptor", General.UNKNOWN);
         }
 
 
