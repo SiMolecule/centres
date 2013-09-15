@@ -45,17 +45,17 @@
         <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-interfaces</artifactId>
-            <version>1.4.11</version>
+            <version>1.5.3</version>
         </dependency>
         <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-io</artifactId>
-            <version>1.4.11</version>
+            <version>1.5.3</version>
         </dependency>
         <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-silent</artifactId>
-            <version>1.4.11</version>
+            <version>1.5.3</version>
         </dependency>
 
         <dependency>
