@@ -18,18 +18,18 @@
 
 package uk.ac.ebi.centres.cdk;
 
-import junit.framework.Assert;
 import org.junit.Test;
-import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import uk.ac.ebi.centres.descriptor.Planar;
 import uk.ac.ebi.centres.descriptor.Tetrahedral;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNotSame;
-import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * This test suite tests correct perception of several difficult
@@ -214,6 +214,34 @@ public class PerceptorTest {
                      Tetrahedral.R, container.getAtom(12).getProperty("descriptor"));
 
 
+    }
+    
+    @Test public void testCHEBI_73215() {
+        
+        String         path      = "CHEBI_73215.xml";
+        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+
+        perceptor.perceive(container);
+        
+        assertThat(container.getBond(48).getProperty("descriptor", Planar.class),
+                   is(Planar.Z));
+        
+        assertThat(container.getAtom(0).getProperty("descriptor", Tetrahedral.class),
+                   is(Tetrahedral.R));
+        assertThat(container.getAtom(1).getProperty("descriptor", Tetrahedral.class),
+                   is(Tetrahedral.S));
+        assertThat(container.getAtom(2).getProperty("descriptor", Tetrahedral.class),
+                   is(Tetrahedral.R));
+        assertThat(container.getAtom(3).getProperty("descriptor", Tetrahedral.class),
+                   is(Tetrahedral.R));
+        assertThat(container.getAtom(4).getProperty("descriptor", Tetrahedral.class),
+                   is(Tetrahedral.S));
+        assertThat(container.getAtom(5).getProperty("descriptor", Tetrahedral.class),
+                   is(Tetrahedral.S));
+        
+        assertThat(container.getAtom(17).getProperty("descriptor", Tetrahedral.class),
+                   is(Tetrahedral.R));
+        
     }
 
 }
