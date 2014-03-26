@@ -18,6 +18,7 @@
 
 package uk.ac.ebi.centres.graph;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import uk.ac.ebi.centres.ConnectionProvider;
@@ -45,7 +46,7 @@ import java.util.Queue;
  */
 public abstract class AbstractDigraph<A> implements Digraph<A>,
                                                     ConnectionProvider<A> {
-
+    private static final int NODE_LIMIT = 10000;
     private Ligand<A> root;
     private ArcMap                     arcs      = new ArcMap(); // Could set expected size
     private ListMultimap<A, Ligand<A>> ligandMap = ArrayListMultimap.create();
@@ -78,7 +79,7 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
 
 
     @Override
-    public List<Ligand<A>> getLigands(A atom) {
+    public List<Ligand<A>> ligandInstancesForAtom(A atom) {
         return ligandMap.get(atom);
     }
 
@@ -88,9 +89,6 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
      */
     @Override
     public void reroot(Ligand<A> ligand) {
-
-//        System.out.println("tails: " + arcs.tails);
-//        System.out.println("heads: " + arcs.heads);
 
         root = ligand;
         ligand.reset();
@@ -110,9 +108,16 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
         for (Arc<A> transposedArc : queue) {
             arcs.add(transposedArc);
         }
+        
+        for (Ligand<A> l : ligands())
+            l.clearOrderedBy();
 
         ligand.setParent(ligand.getAtom());
 
+    }
+    
+    public String dump() {
+        return arcs.toString();
     }
 
 
@@ -154,7 +159,7 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
         List<Ligand<A>> ligands = arcs.getHeads(ligand);
 
         // lots of ligands being created
-        if(ligandMap.size() > 10000)
+        if(ligandMap.size() > NODE_LIMIT)
             throw new WarpCoreEjection();
 
         // ligands already determined
@@ -184,14 +189,6 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
             // create ghost ligands (opened up from double bonds)
             if (order > 1) {
 
-                // create required number of ghost ligands
-                for (int i = 1; i < order; i++) {
-                    Ligand<A> ghost = new TerminalLigand<A>(this, descriptor, ligand.getVisited(), atom, ligand.getAtom(), ligand.getDistanceFromRoot() + 1);
-                    arcs.add(newArc(ligand, ghost));
-                    ligandMap.put(atom, ghost);
-                    ligands.add(ghost);
-                }
-
                 // preload the neighbour and add the call back ghost...
                 // bit confusing but this turns -c1-c2=c3-o into:
                 //          c2
@@ -200,11 +197,21 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
                 //     \
                 //      c3
                 // when we're at c2 we preload c3 with the oxygen and then add the ghost c2
-                getLigands(neighbour);
-                Ligand<A> ghost = new TerminalLigand<A>(this, descriptor, ligand.getVisited(), ligand.getAtom(), atom, ligand.getDistanceFromRoot() + 1);
-                arcs.add(newArc(neighbour, ghost));
-                ligandMap.put(ligand.getAtom(), ghost);
+                getLigands(neighbour);  // preloading
+                
+                // create required number of ghost ligands
+                for (int i = 1; i < order; i++) {
+                    Ligand<A> neighbourGhost = new TerminalLigand<A>(this, descriptor, ligand.getVisited(), atom, ligand.getAtom(), ligand.getDistanceFromRoot() + 1);
+                    Ligand<A> ghost          = new TerminalLigand<A>(this, descriptor, ligand.getVisited(), ligand.getAtom(), atom, ligand.getDistanceFromRoot() + 1);
+                    
+                    arcs.add(newArc(ligand, neighbourGhost));
+                    arcs.add(newArc(neighbour, ghost));
+                    
+                    ligandMap.put(atom, neighbourGhost);
+                    ligandMap.put(ligand.getAtom(), ghost);
 
+                    ligands.add(neighbourGhost);
+                }
             }
 
         }
@@ -212,7 +219,10 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
         return ligands;
 
     }
-
+    
+    public Collection<Ligand<A>> ligands() {
+        return ligandMap.values();
+    }
 
     public abstract Collection<A> getConnected(A atom);
 
@@ -283,9 +293,14 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
             return arc.getTail();
         }
 
-
+        @Override public String toString() {
+            return Joiner.on("\n").join(heads.values());
+        }
     }
 
+    @Override public String toString() {
+        return dump();
+    }
 
     @Override
     public void dispose() {
