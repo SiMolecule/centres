@@ -18,6 +18,8 @@
 
 package uk.ac.ebi.centres.ligand;
 
+import org.omg.CORBA.UNKNOWN;
+import org.openscience.cdk.interfaces.IAtom;
 import uk.ac.ebi.centres.Centre;
 import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Ligand;
@@ -28,9 +30,11 @@ import uk.ac.ebi.centres.SignCalculator;
 import uk.ac.ebi.centres.descriptor.General;
 import uk.ac.ebi.centres.descriptor.Tetrahedral;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,7 +48,6 @@ public class TetrahedralCentre<A>
 
     private final A atom;
     private       A parent;
-
 
     public TetrahedralCentre(MutableDescriptor descriptor,
                              A atom) {
@@ -81,49 +84,62 @@ public class TetrahedralCentre<A>
 
     @Override
     public int perceiveAuxiliary(Collection<Centre<A>> centres,
-                                  PriorityRule<A> rule,
-                                  SignCalculator<A> calculator) {
+                                 PriorityRule<A> rule,
+                                 SignCalculator<A> calculator) {
 
         Map<Ligand<A>, Descriptor> auxiliary = new HashMap<Ligand<A>, Descriptor>(centres.size());
+        Set<Ligand<A>> done = new HashSet<Ligand<A>>();
 
-        getProvider().build();
+        
+        for (Ligand<A> ligand : getProvider().ligands()) {
+            ligand.setAuxiliary(General.UNKNOWN);
+        }
+        
+        int size = 0;
 
-        for (Centre<A> centre : centres) {
+        do {
+            auxiliary.clear();
+            for (Centre<A> centre : centres) {
 
-            // don't do aux perception on self
-            if (centre == this)
-                continue;
+                // don't do aux perception on self
+                if (centre == this)
+                    continue;                                  
+                
+                // can only reroot on single atom centres
+                if (centre.getAtoms().size() == 1) {
 
-            // can only reroot on single atom centres
-            if (centre.getAtoms().size() == 1) {
+                    for (Ligand<A> ligand : getProvider().ligandInstancesForAtom(centre.getAtom())) {
 
-                for (Ligand<A> ligand : getProvider().getLigands(centre.getAtom())) {
+                        if (done.contains(ligand)) continue;
+                        
+                        getProvider().reroot(ligand);
 
-                    getProvider().reroot(ligand);
+                        Descriptor descriptor = centre.perceive(getProvider().getLigands(ligand),
+                                                                rule,
+                                                                calculator);
+                        
+                        if (descriptor != General.UNKNOWN) {
+                            auxiliary.put(ligand, descriptor);
+                            done.add(ligand);
+                        }
 
-                    Descriptor descriptor = centre.perceive(getProvider().getLigands(ligand),
-                                                            rule,
-                                                            calculator);
-
-                    if (descriptor != General.UNKNOWN) {
-                        auxiliary.put(ligand, descriptor);
                     }
-
                 }
             }
-        }
 
-        // transfer auxiliary descriptors to their respective ligands
-        for (Map.Entry<Ligand<A>, Descriptor> entry : auxiliary.entrySet())
-            entry.getKey().setAuxiliary(entry.getValue());
+            // transfer auxiliary descriptors to their respective ligands
+            for (Map.Entry<Ligand<A>, Descriptor> entry : auxiliary.entrySet())
+                entry.getKey().setAuxiliary(entry.getValue());
+            size += auxiliary.size();
+            
+        } while (!auxiliary.isEmpty());
 
         // reroot on this
         getProvider().reroot(this);
 
-        return auxiliary.size();
+        return size;
 
     }
-
 
     @Override
     public Descriptor perceive(List<Ligand<A>> proximal, PriorityRule<A> rule, SignCalculator<A> calculator) {
@@ -132,12 +148,24 @@ public class TetrahedralCentre<A>
             return General.NONE;
         }
 
+        IAtom iatom = (IAtom) getAtom();
+       
         Priority priority = rule.prioritise(proximal);
 
         if (priority.isUnique()) {
 
+            // remove hydrogen and 'duplicated' double-bond atoms (i.e. sulfoxide)
+            for (Ligand<A> ligand : new ArrayList<Ligand<A>>(proximal)) {
+                if (((IAtom) ligand.getAtom()).getPoint2d() == null) {
+                    proximal.remove(ligand);
+                }
+                if ((iatom.getSymbol().equals("S") || iatom.getSymbol().equals("P")) && ligand.isDuplicate()) {
+                    proximal.remove(ligand);
+                }
+            }
+            
             if (proximal.size() < 4) proximal.add(this);
-
+            
             int sign = calculator.getSign(proximal.get(0),
                                           proximal.get(1),
                                           proximal.get(2),
@@ -145,28 +173,21 @@ public class TetrahedralCentre<A>
 
             boolean pseudo = priority.getType().equals(Descriptor.Type.PSEUDO_ASYMMETRIC);
 
-            if(sign == 0)
+            if (sign == 0)
                 return General.UNKNOWN;
-
-            if(pseudo)
+            
+            if (pseudo)
                 return sign > 0 ? Tetrahedral.s : Tetrahedral.r;
             else
                 return sign > 0 ? Tetrahedral.S : Tetrahedral.R;
-
-
-
         }
-
         return General.UNKNOWN;
     }
 
 
     @Override
     public Descriptor perceive(PriorityRule<A> rule, SignCalculator<A> calculator) {
-
         return perceive(getLigands(), rule, calculator);
-
-
     }
 
 
