@@ -20,19 +20,23 @@ package uk.ac.ebi.centres.priority.descriptor;
 
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
+import org.openscience.cdk.interfaces.IAtom;
 import uk.ac.ebi.centres.Ligand;
 import uk.ac.ebi.centres.Priority;
 import uk.ac.ebi.centres.descriptor.General;
+import uk.ac.ebi.centres.descriptor.Tetrahedral;
 import uk.ac.ebi.centres.priority.AbstractPriorityRule;
 import uk.ac.ebi.centres.priority.access.DescriptorAccessor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NavigableSet;
 import java.util.Queue;
+import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -74,7 +78,7 @@ public class PairRule<A>
         // would be good to give an expected size
         Queue<Ligand<A>> queue = Lists.newLinkedList();
         queue.add(ligand);
-        return generate(queue);
+        return new TreeSet<DescriptorList>(generate(queue));
     }
 
 
@@ -94,31 +98,31 @@ public class PairRule<A>
      *
      * @return navigable set of descriptor lists
      */
-    protected NavigableSet<DescriptorList> generate(Queue<Ligand<A>> queue) {
+    protected Set<DescriptorList> generate(Queue<Ligand<A>> queue) {
 
-        NavigableSet<DescriptorList> lists = new TreeSet<DescriptorList>();
+        final Set<DescriptorList> lists = new HashSet<DescriptorList>();
 
         // create a descriptor list with given exclusions
         DescriptorList descriptors = new DescriptorList(null,
+                                                        Tetrahedral.s,
+                                                        Tetrahedral.r,
                                                         General.NONE,
                                                         General.UNSPECIFIED,
                                                         General.UNKNOWN);
 
-
+        
         while (!queue.isEmpty()) {
 
             Ligand<A> ligand = queue.poll();
+            
             descriptors.add(accessor.getDescriptor(ligand));
 
-            List<Ligand<A>> ligands = ligand.getLigands();
+            List<Ligand<A>> ligands = nonTerminalLigands(ligand.getLigands());
             Priority priority = prioritise(ligands);
             if (priority.isUnique()) {
-
                 // unique
-
                 for (Ligand<A> child : ligands)
                     queue.add(child);
-
 
             } else {
                 // non unique need to subdivide and combine
@@ -134,7 +138,6 @@ public class PairRule<A>
 
                 // queue was copied and delegated so we clear this instance
                 queue.clear();
-
             }
 
         }
@@ -143,8 +146,23 @@ public class PairRule<A>
             lists.add(descriptors);
 
         return lists;
+    }
 
-
+    /**
+     * Reduce the number of combinations by not including terminal ligands in
+     * the permuting. They can't be stereocentres and so won't contribute the
+     * the like / unlike list.
+     *
+     * @param ligands a list of ligands
+     * @return a list of non-terminal ligands
+     */
+    private List<Ligand<A>> nonTerminalLigands(List<Ligand<A>> ligands) {
+        List<Ligand<A>> filtered = new ArrayList<Ligand<A>>();
+        for (Ligand<A> ligand : ligands) {
+            if (!ligand.isTerminal() && ((IAtom) ligand.getAtom()).getAtomicNumber() != 1)
+                filtered.add(ligand);
+        }
+        return filtered;
     }
 
 
