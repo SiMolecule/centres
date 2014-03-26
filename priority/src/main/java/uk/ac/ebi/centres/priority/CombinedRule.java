@@ -25,6 +25,8 @@ import uk.ac.ebi.centres.Ligand;
 import uk.ac.ebi.centres.LigandComparison;
 import uk.ac.ebi.centres.LigandSorter;
 import uk.ac.ebi.centres.PriorityRule;
+import uk.ac.ebi.centres.ligand.TetrahedralCentre;
+import uk.ac.ebi.centres.priority.descriptor.PairRule;
 
 import java.util.List;
 
@@ -79,8 +81,8 @@ public class CombinedRule<A> extends AbstractPriorityRule<A> {
         rule.setSorter(createSorter(rules));
     }
 
-    public LigandSorter<A> createSorter(List<PriorityRule<A>> rules){
-        return new InsertionSorter<A>(rules, Type.CONSTITUTIONAL); // restriction should be configurable
+    public LigandSorter<A> createSorter(List<PriorityRule<A>> rules) {
+        return new InsertionSorter<A>(rules); // restriction should be configurable
     }
 
 
