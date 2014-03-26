@@ -27,7 +27,9 @@ import uk.ac.ebi.centres.Priority;
 import uk.ac.ebi.centres.PriorityRule;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * An abstract comparator that provides construction of the {@link Comparison}
@@ -73,13 +75,47 @@ public abstract class AbstractPriorityRule<A>
         this.halted = halt;
     }
 
+    public int recursiveCompare(Ligand<A> a, Ligand<A> b) {
 
-    public int recursiveCompare(Ligand<A> o1, Ligand<A> o2) {
+        int cmp = compare(a, b);
+        if (cmp != 0) return cmp;
 
-        int value = compare(o1, o2);
-        return value != 0 || halted ? value
-                                    : compare(o1.getLigands(), o2.getLigands());
+        Queue<Ligand<A>> aQueue = new LinkedList<Ligand<A>>();
+        Queue<Ligand<A>> bQueue = new LinkedList<Ligand<A>>();
 
+        aQueue.add(a);
+        bQueue.add(b);
+
+        while (!aQueue.isEmpty() && !bQueue.isEmpty()) {
+            a = aQueue.poll();
+            b = bQueue.poll();
+            List<Ligand<A>> as = a.getLigands();
+            List<Ligand<A>> bs = b.getLigands();
+
+            if (!a.isOrderedBy(getClass()))
+                prioritise(as);
+            if (!b.isOrderedBy(getClass()))
+                prioritise(bs);
+            a.markOrderedBy(getClass());
+            b.markOrderedBy(getClass());
+
+            Iterator<Ligand<A>> aIt = as.iterator();
+            Iterator<Ligand<A>> bIt = bs.iterator();
+            while (aIt.hasNext() && bIt.hasNext()) {
+                Ligand<A> aChild = aIt.next();
+                Ligand<A> bChild = bIt.next();
+                cmp = compare(aChild, bChild);
+                if (cmp != 0) return cmp;
+                aQueue.add(aChild);
+                bQueue.add(bChild);
+            }
+
+            int sizediff = as.size() - bs.size();
+
+            if (sizediff != 0)
+                return sizediff;
+        }
+        return 0;
     }
 
 
@@ -113,79 +149,19 @@ public abstract class AbstractPriorityRule<A>
         return sorter;
     }
 
-
     /**
      * Uses the injected ligand sorter to order the ligands.
      *
      * @param ligands the ligands that are to be sorted
-     *
      * @return whether the ligands are unique
      */
     public Priority prioritise(List<Ligand<A>> ligands) {
         return getSorter().prioritise(ligands);
     }
 
-
-    /**
-     * Compares two lists of ligands. The ligands are first sorted and then
-     * iteratively compared by the sub-class comparator. If no different is
-     * found whilst iterating through the list the larger of the two lists wins
-     * or a tie is determined.
-     *
-     * @param first  first list of ligands
-     * @param second second list of ligands
-     *
-     * @return the value of the comparison
-     */
-    public int compare(List<Ligand<A>> first, List<Ligand<A>> second) {
-
-        if (halted)
-            return 0;
-
-        // prioritise the ligands, unique isn't required
-        prioritise(first);
-        prioritise(second);
-
-        // the iterators allow us iterate over the list
-        Iterator<Ligand<A>> firstIt = first.iterator();
-        Iterator<Ligand<A>> secondIt = second.iterator();
-
-        // compare each element - at the first difference that ligand
-        // has priority
-        while (firstIt.hasNext() && secondIt.hasNext()) {
-            Ligand<A> firstLigand = firstIt.next();
-            Ligand<A> secondLigand = secondIt.next();
-            int value = compare(firstLigand, secondLigand);
-            if (value != 0) return value;
-        }
-
-        // no difference found yet, check for different size
-        int sizediff = first.size() - second.size();
-
-        if (sizediff != 0)
-            return sizediff;
-
-        // reiterate with recursive compare
-        firstIt = first.iterator();
-        secondIt = second.iterator();
-
-        // compare each element - at the first difference that ligand
-        // has priority
-        while (firstIt.hasNext() && secondIt.hasNext()) {
-            Ligand<A> firstLigand = firstIt.next();
-            Ligand<A> secondLigand = secondIt.next();
-            int value = recursiveCompare(firstLigand, secondLigand);
-            if (value != 0) return value;
-        }
-
-        return 0;
-    }
-
-
     public boolean isHalted() {
         return halted;
     }
-
 
     /**
      * @inheritDoc
