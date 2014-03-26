@@ -20,6 +20,7 @@ package uk.ac.ebi.centres.cdk;
 
 
 import org.openscience.cdk.config.IsotopeFactory;
+import org.openscience.cdk.config.Isotopes;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -52,7 +53,7 @@ public class CMLLoader {
                 for (IAtom atom : container.atoms()) {
                     atom.setAtomicNumber(PeriodicTable.getAtomicNumber(atom.getSymbol()));
                     if(!atom.getSymbol().equals("R"))
-                        atom.setMassNumber(IsotopeFactory.getInstance(atom.getBuilder()).getMajorIsotope(atom.getSymbol()).getMassNumber());
+                        atom.setMassNumber(Isotopes.getInstance().getMajorIsotope(atom.getSymbol()).getMassNumber());
                 }
                 AtomContainerManipulator.percieveAtomTypesAndConfigureUnsetProperties(container);
                 return container;
