@@ -32,6 +32,7 @@ import uk.ac.ebi.centres.priority.access.PsuedoAtomicNumberModifier;
 import uk.ac.ebi.centres.priority.access.descriptor.AuxiliaryDescriptor;
 import uk.ac.ebi.centres.priority.access.descriptor.PrimaryDescriptor;
 import uk.ac.ebi.centres.priority.descriptor.PairRule;
+import uk.ac.ebi.centres.priority.descriptor.PseudoRSRule;
 import uk.ac.ebi.centres.priority.descriptor.RSRule;
 import uk.ac.ebi.centres.priority.descriptor.ZERule;
 
@@ -50,7 +51,7 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
                                         return atom.getAtomicNumber();
                                     }
                                 })),
-                new DuplicateAtomRule<IAtom>(),
+                // new DuplicateAtomRule<IAtom>(),
                 new MassNumberRule<IAtom>(new MassNumberAccessor<IAtom>() {
                     @Override
                     public int getMassNumber(IAtom atom) {
@@ -59,6 +60,7 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
                 }),
                 new ZERule<IAtom>(),
                 new PairRule<IAtom>(new PrimaryDescriptor<IAtom>()),
+                new PseudoRSRule<IAtom>(new PrimaryDescriptor<IAtom>()),
                 new RSRule<IAtom>(new PrimaryDescriptor<IAtom>())
         ),
               new CombinedRule<IAtom>(
@@ -78,6 +80,7 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
                       }),
                       new ZERule<IAtom>(),
                       new PairRule<IAtom>(new AuxiliaryDescriptor<IAtom>()),
+                      new PseudoRSRule<IAtom>(new AuxiliaryDescriptor<IAtom>()),
                       new RSRule<IAtom>(new AuxiliaryDescriptor<IAtom>())
               ),
               calculator);
