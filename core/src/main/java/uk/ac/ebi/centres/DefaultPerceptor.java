@@ -54,7 +54,7 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
             @Override
             public Descriptor perceive(Centre<A> centre, Collection<Centre<A>> centres) {
                 // only attempt re-perception if there were auxiliary labels defined
-                return centre.perceiveAuxiliary(centres, rule, calculator) != 0
+                return centre.perceiveAuxiliary(centres, auxRule, calculator) > 0
                        ? centre.perceive(auxRule, calculator)
                        : General.UNKNOWN;
             }
@@ -79,7 +79,6 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
                 if (descriptor != General.UNKNOWN)
                     map.put(centre, descriptor);
 
-
             }
 
 
@@ -90,8 +89,7 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
                 entry.getKey().dispose();
                 entry.getKey().setDescriptor(entry.getValue());
             }
-
-
+                        
         } while (!map.isEmpty());
 
         return perceived;
@@ -113,8 +111,9 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
         List<Centre<A>> perceived = _perceive(unperceived, mainPerceptor);
 
         // no centres perceived, perform auxiliary perception
-        if (!unperceived.isEmpty() && perceived.isEmpty())
+        //if (!unperceived.isEmpty() && perceived.isEmpty()) {
             perceived.addAll(_perceive(unperceived, auxPerceptor));
+        //}
 
         // set all unperceived centres to 'none'
         for (Centre<A> centre : unperceived) {
