@@ -160,5 +160,11 @@ public interface Ligand<A> {
      * @return
      */
     public int getDepth();
+    
+    public void markOrderedBy(Class<?> rule);
+    
+    public boolean isOrderedBy(Class<?> rule);
+    
+    public void clearOrderedBy();
 
 }

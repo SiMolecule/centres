@@ -20,6 +20,7 @@ package uk.ac.ebi.centres.test;
 
 import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.PriorityRule;
 import uk.ac.ebi.centres.graph.Arc;
 
 import java.util.Collections;
@@ -148,7 +149,7 @@ public class TestLigand implements Ligand<TestAtom> {
         return null;
     }
 
-
+            
     @Override
     public int getDepth() {
         return 0;
@@ -158,5 +159,18 @@ public class TestLigand implements Ligand<TestAtom> {
     @Override
     public String toString() {
         return atom.toString();
+    }
+
+
+    @Override public void markOrderedBy(Class<?> rule) {
+        
+    }
+
+    @Override public boolean isOrderedBy(Class<?> rule) {
+        return false;
+    }
+
+    @Override public void clearOrderedBy() {
+
     }
 }

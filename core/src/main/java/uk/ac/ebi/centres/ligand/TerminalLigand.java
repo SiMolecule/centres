@@ -51,7 +51,7 @@ public class TerminalLigand<A> extends NonterminalLigand<A> {
 
     @Override
     public String toString() {
-        return super.toString() + "'";
+        return super.toString();
     }
 
     @Override

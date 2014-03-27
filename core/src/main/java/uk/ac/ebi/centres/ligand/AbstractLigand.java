@@ -19,14 +19,17 @@
 package uk.ac.ebi.centres.ligand;
 
 import com.google.common.collect.Sets;
+import org.openscience.cdk.interfaces.IAtom;
 import uk.ac.ebi.centres.ConnectionProvider;
 import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Ligand;
 import uk.ac.ebi.centres.MutableDescriptor;
+import uk.ac.ebi.centres.PriorityRule;
 import uk.ac.ebi.centres.descriptor.General;
 import uk.ac.ebi.centres.graph.Arc;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -41,8 +44,9 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
     private final MutableDescriptor     descriptor;
     private final int                   distance;
     private       boolean               duplicate;
-    private List<Ligand<A>> ligands;
-    private Descriptor descriptorCache;
+    private       List<Ligand<A>>       ligands;
+    private       Descriptor            descriptorCache;
+    private Set<Class<?>> orderedBy = new HashSet<Class<?>>();
 
 
     public AbstractLigand(ConnectionProvider<A> provider,
@@ -124,9 +128,9 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
 
     @Override
     public Descriptor getDescriptor() {
-        if(descriptorCache == null) {
+        if (descriptorCache == null) {
             Descriptor descriptor = this.descriptor.get();
-            if(descriptor == General.NONE)  // cache access to NONE descriptors
+            if (descriptor == General.NONE)  // cache access to NONE descriptors
                 descriptorCache = descriptor;
             return descriptor;
         }
@@ -139,7 +143,7 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
      */
     @Override
     public List<Ligand<A>> getLigands() {
-        if(ligands == null)
+        if (ligands == null)
             ligands = provider.getLigands(this);
         return ligands;
     }
@@ -201,5 +205,23 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
     @Override
     public boolean isTerminal() {
         return Boolean.FALSE;
+    }
+
+    @Override public void markOrderedBy(Class<?> rule) {
+        orderedBy.add(rule);
+    }
+
+    @Override public boolean isOrderedBy(Class<?> rule) {
+        return orderedBy.contains(rule);
+    }
+
+    @Override public void clearOrderedBy() {
+        orderedBy.clear();
+    }
+
+    @Override public String toString() {
+        IAtom iatom = (IAtom) getAtom();
+        int num = (iatom.getProperty("num", Integer.class) + 1);
+        return iatom.getSymbol().toLowerCase() + num + (isDuplicate() ? "_dup" : "") + "_" + System.identityHashCode(this) + (getDescriptor() != General.UNKNOWN ? "_" + getDescriptor() : "") + (getAuxiliary() != General.UNKNOWN ? "_" + getAuxiliary() + "aux" : "");
     }
 }
