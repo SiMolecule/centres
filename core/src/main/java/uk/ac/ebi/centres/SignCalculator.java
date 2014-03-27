@@ -23,6 +23,10 @@ package uk.ac.ebi.centres;
  */
 public interface SignCalculator<A> {
 
+    public abstract double getX(A atom);
+
+    public abstract double getY(A atom);
+    
     /**
      * When wedge and hatch bonds are involed
      *
