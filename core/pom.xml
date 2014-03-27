@@ -19,6 +19,11 @@
             <artifactId>guava</artifactId>
             <version>13.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-silent</artifactId>
+            <version>1.5.3</version>
+        </dependency>
 
 
         <!-- Testing -->
