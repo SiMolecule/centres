@@ -78,7 +78,7 @@ public interface Digraph<A> {
      *
      * @see #build()
      */
-    public List<Ligand<A>> getLigands(A atom);
+    public List<Ligand<A>> ligandInstancesForAtom(A atom);
 
     /**
      * Exhaustively expands from the root creating all ligands. Normally the
@@ -86,7 +86,7 @@ public interface Digraph<A> {
      * using auxiliary descriptors expanding the whole graph is often required
      * as centres need to be determined on remote regions.
      *
-     * @see #getLigands(A)
+     * @see #ligandInstancesForAtom(A)
      */
     public void build();
 
