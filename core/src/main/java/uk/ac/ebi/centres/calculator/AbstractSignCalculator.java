@@ -52,6 +52,12 @@ public abstract class AbstractSignCalculator<A> implements SignCalculator<A> {
 
     abstract double[] toVector(A base, A atom);
 
+    double[] normalise(double[] vector) {
+        final double mag = magnitude(vector);
+        return new double[]{vector[0] / mag,
+                            vector[1] / mag};
+    }
+
 
     /**
      * Copy pasta - http://www.roseindia.net/tutorial/java/core/finddeterminant.html

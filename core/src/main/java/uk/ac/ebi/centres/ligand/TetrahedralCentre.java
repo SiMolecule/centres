@@ -166,7 +166,8 @@ public class TetrahedralCentre<A>
             
             if (proximal.size() < 4) proximal.add(this);
             
-            int sign = calculator.getSign(proximal.get(0),
+            int sign = calculator.getSign(this,
+                                          proximal.get(0),
                                           proximal.get(1),
                                           proximal.get(2),
                                           proximal.get(3));

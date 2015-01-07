@@ -41,7 +41,7 @@ public interface SignCalculator<A> {
      *
      * @return
      */
-    public int getSign(Ligand<A> a1, Ligand<A> a2, Ligand<A> a3, Ligand<A> a4);
+    public int getSign(Ligand<A> centre, Ligand<A> a1, Ligand<A> a2, Ligand<A> a3, Ligand<A> a4);
 
     /**
      * For a simple triangle of atoms

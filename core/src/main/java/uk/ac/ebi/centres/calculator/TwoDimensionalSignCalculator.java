@@ -28,21 +28,32 @@ public abstract class TwoDimensionalSignCalculator<A>
 
 
     @Override
-    public int getSign(Ligand<A> a1, Ligand<A> a2, Ligand<A> a3, Ligand<A> a4) {
+    public int getSign(Ligand<A> centre, Ligand<A> a1, Ligand<A> a2, Ligand<A> a3, Ligand<A> a4) {
 
         // unspecified
         if (a1.getDepth() == 0 && a2.getDepth() == 0
                 && a3.getDepth() == 0 && a4.getDepth() == 0)
             return 0;
 
-        double[][] matrix = new double[][]{{getX(a1.getAtom()), getY(a1.getAtom()), 1, a1.getDepth()},
-                                           {getX(a2.getAtom()), getY(a2.getAtom()), 1, a2.getDepth()},
-                                           {getX(a3.getAtom()), getY(a3.getAtom()), 1, a3.getDepth()},
-                                           {getX(a4.getAtom()), getY(a4.getAtom()), 1, a4.getDepth()},
+        double[] a = normalise(toVector(centre.getAtom(), a1.getAtom()));
+        double[] b = normalise(toVector(centre.getAtom(), a2.getAtom()));
+        double[] c = normalise(toVector(centre.getAtom(), a3.getAtom()));
+        double[] d = normalise(toVector(centre.getAtom(), a4.getAtom()));
+
+        double[][] matrix = new double[][]{{a[0], a[1], 1, a1.getDepth()},
+                                           {b[0], b[1], 1, a2.getDepth()},
+                                           {c[0], c[1], 1, a3.getDepth()},
+                                           {d[0], d[1], 1, a4.getDepth()},
         };
 
         return (int) Math.signum(determinant(matrix));
 
+
+    }
+
+    @Override double magnitude(double[] vector) {
+        return Math.sqrt(vector[0] * vector[0] +
+                         vector[1] * vector[1]);
 
     }
 
@@ -55,8 +66,8 @@ public abstract class TwoDimensionalSignCalculator<A>
      */
     @Override
     public double[] toVector(A base, A atom) {
-        return new double[]{getX(base) - getX(base),
-                            getY(atom) - getY(atom)};
+        return new double[]{getX(atom) - getX(base),
+                            getY(atom) - getY(base)};
     }
 
 
