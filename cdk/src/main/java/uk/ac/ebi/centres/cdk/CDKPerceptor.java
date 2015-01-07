@@ -48,14 +48,20 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
                                 new AtomicNumberAccessor<IAtom>() {
                                     @Override
                                     public int getAtomicNumber(IAtom atom) {
-                                        return atom.getAtomicNumber();
+                                        Integer atomnum = atom.getAtomicNumber();
+                                        if (atomnum == null)
+                                            return 0;
+                                        return atomnum;
                                     }
                                 })),
                 // new DuplicateAtomRule<IAtom>(),
                 new MassNumberRule<IAtom>(new MassNumberAccessor<IAtom>() {
                     @Override
                     public int getMassNumber(IAtom atom) {
-                        return atom.getMassNumber();
+                        Integer massnum = atom.getMassNumber();
+                        if (massnum == null)
+                            return 0;
+                        return massnum;
                     }
                 }),
                 new ZERule<IAtom>(),

@@ -187,7 +187,7 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
             int order = getOrder(ligand.getAtom(), atom);
 
             // create ghost ligands (opened up from double bonds)
-            if (order > 1) {
+            if (order > 1 && ligand.getDistanceFromRoot() > 0) {
 
                 // preload the neighbour and add the call back ghost...
                 // bit confusing but this turns -c1-c2=c3-o into:
@@ -215,6 +215,9 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
             }
 
         }
+
+        // TODO: now add the implicit hydrogens
+
 
         return ligands;
 

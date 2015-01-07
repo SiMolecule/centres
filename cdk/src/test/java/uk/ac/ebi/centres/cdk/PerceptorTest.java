@@ -381,6 +381,35 @@ public class PerceptorTest {
         System.out.println(container.getAtom(1).getProperty("descriptor")); // check this one
         assertThat(container.getAtom(3).getProperty("descriptor"), CoreMatchers.<Object>is(Tetrahedral.S));
     }
+
+    @Test public void mixed_h_representation() {
+        String path = "mixed_h_representation.mol";
+        IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
+        perceptor.perceive(container);
+        System.out.println(container.getAtom(1).getProperty("descriptor"));
+        assertThat(container.getAtom(1).getProperty("descriptor"), CoreMatchers.<Object>is(General.NONE));
+    }
+
+    @Test public void bad_h_representation() {
+        String path = "bad_h_labels.mol";
+        IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
+        perceptor.perceive(container);
+        assertThat(container.getAtom(1).getProperty("descriptor"), CoreMatchers.<Object>is(General.NONE));
+    }
+
+    @Test public void r_sarin() {
+        String path = "r_sarin.mol";
+        IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
+        perceptor.perceive(container);
+        assertThat(container.getAtom(4).getProperty("descriptor"), CoreMatchers.<Object>is(Tetrahedral.R));
+    }
+
+    @Test public void s_sarin() {
+        String path = "s_sarin.mol";
+        IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
+        perceptor.perceive(container);
+        assertThat(container.getAtom(4).getProperty("descriptor"), CoreMatchers.<Object>is(Tetrahedral.S));
+    }
     
     @Test public void chebi_16419() {
         String path = "CHEBI_16419.xml";
