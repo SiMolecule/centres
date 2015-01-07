@@ -25,7 +25,9 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemFile;
+import org.openscience.cdk.interfaces.IPseudoAtom;
 import org.openscience.cdk.io.CMLReader;
+import org.openscience.cdk.io.MDLV2000Reader;
 import org.openscience.cdk.silent.AtomContainer;
 import org.openscience.cdk.silent.ChemFile;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
@@ -39,7 +41,7 @@ import java.util.Iterator;
 /**
  * @author John May
  */
-public class CMLLoader {
+public class MolLoader {
 
 
     public static IAtomContainer loadCML(InputStream in) {
@@ -62,6 +64,33 @@ public class CMLLoader {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (IOException e) {
             System.err.println(e.getMessage());
+        }
+        try {
+            if (reader != null)
+                reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return new AtomContainer();
+    }
+
+    public static IAtomContainer loadMolfile(InputStream in) {
+        MDLV2000Reader reader = new MDLV2000Reader(in);
+        try {
+            IAtomContainer container = reader.read(new AtomContainer(0,0,0,0));
+            AtomContainerManipulator.percieveAtomTypesAndConfigureUnsetProperties(container);
+            for (IAtom atom : container.atoms()) {
+                if (atom instanceof IPseudoAtom) {
+                    atom.setMassNumber(0);
+                } else {
+                    Isotopes.getInstance().configure(atom);
+                }
+            }
+            return container;
+        } catch (CDKException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         try {
             if (reader != null)

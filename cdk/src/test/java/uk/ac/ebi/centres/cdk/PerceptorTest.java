@@ -18,11 +18,11 @@
 
 package uk.ac.ebi.centres.cdk;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.openscience.cdk.config.Isotopes;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.graph.AtomContainerAtomPermutor;
-import org.openscience.cdk.graph.AtomContainerPermutor;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
@@ -57,7 +57,7 @@ public class PerceptorTest {
     @Test
     public void testAlliin() throws Exception {
 
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream("alliin.xml"));
+        IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream("alliin.xml"));
 
         assertNotNull("molecule was not loaded", container);
 
@@ -79,7 +79,7 @@ public class PerceptorTest {
      */
     @Test public void testMyoinositol() throws Exception {
 
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream("myo-inositol.xml"));
+        IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream("myo-inositol.xml"));
 
         assertNotNull("molecule was not loaded", container);
         AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);                                            
@@ -103,7 +103,7 @@ public class PerceptorTest {
     @Test
     public void testMyoinositol_inverse() throws Exception {
 
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream("myo-inositol.xml"));
+        IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream("myo-inositol.xml"));
 
         assertNotNull("molecule was not loaded", container);
 
@@ -130,7 +130,7 @@ public class PerceptorTest {
     public void testE22Furyl35nitro2furylacrylamide() {
 
         String path = "(E)-2-(2-Furyl)-3-(5-nitro-2-furyl)acrylamide.xml";
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+        IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream(path));
 
         assertNotNull("molecule was not loaded", container);
 
@@ -154,7 +154,7 @@ public class PerceptorTest {
     public void testZ22Furyl35nitro2furylacrylamide() {
 
         String path = "(Z)-2-(2-Furyl)-3-(5-nitro-2-furyl)acrylamide.xml";
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+        IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream(path));
 
         assertNotNull("molecule was not loaded", container);
 
@@ -179,7 +179,7 @@ public class PerceptorTest {
     @Test public void testImplicitPsuedo() {
 
         String path = "implicitPseudoCentre.xml";
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+        IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream(path));
 
         assertNotNull("molecule was not loaded", container);
 
@@ -198,7 +198,7 @@ public class PerceptorTest {
     @Test public void testExplicitPsuedo() {
 
         String path = "explicitPseudoCentre.xml";
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+        IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream(path));
 
         assertNotNull("molecule was not loaded", container);
 
@@ -214,7 +214,7 @@ public class PerceptorTest {
     @Test public void testVomifoliol() {
 
         String path = "(6R)-vomifoliol.xml";
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+        IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream(path));
 
         assertNotNull("molecule was not loaded", container);
 
@@ -229,7 +229,7 @@ public class PerceptorTest {
     @Test public void testCHEBI_73215() {
 
         String path = "CHEBI_73215.xml";
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+        IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream(path));
 
         perceptor.perceive(container);
 
@@ -257,7 +257,7 @@ public class PerceptorTest {
     @Test public void testIntradependants() throws CDKException {
         String path = "intradependants.xml";
         for (int i = 0; i < 20; i++) {
-            IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+            IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream(path));
             
             //new MDLV2000Writer(System.out).write(container);
 
@@ -279,7 +279,7 @@ public class PerceptorTest {
     @Test public void doubleIntradependant() throws CDKException {
         String path = "double-intradependant.xml";
         for (int i = 0; i < 1; i++) {
-            IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+            IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream(path));
             
             //new MDLV2000Writer(System.out).write(container);
 
@@ -301,7 +301,7 @@ public class PerceptorTest {
     @Test public void testIntradependants2() throws CDKException {
         String path = "unsolvable.xml";
         for (int i = 0; i < 1; i++) {
-            IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+            IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream(path));
             new MDLV2000Writer(System.out).write(container);
             perceptor.perceive(container);
 
@@ -321,7 +321,7 @@ public class PerceptorTest {
     @Test public void pairrule() throws CDKException {
         String path = "pairrule.xml";
         for (int i = 0; i < 10; i++) {
-            IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+            IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream(path));
 
             //new MDLV2000Writer(System.out).write(container);
             
@@ -342,7 +342,7 @@ public class PerceptorTest {
     
     @Test public void chebi_3353() {
         String path = "CHEBI_3353.xml";
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+        IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream(path));
         perceptor.perceive(container);
         System.out.println(container.getAtom(3).getProperty("descriptor"));
         System.out.println(container.getAtom(9).getProperty("descriptor"));
@@ -351,7 +351,7 @@ public class PerceptorTest {
 
     @Test public void chebi_15645() {
         String path = "CHEBI_15645.xml";
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+        IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream(path));
         perceptor.perceive(container);
         System.out.println(container.getAtom(12).getProperty("descriptor"));
         System.out.println(container.getAtom(14).getProperty("descriptor"));
@@ -361,31 +361,30 @@ public class PerceptorTest {
     
     @Test public void chebi_15406() {
         String path = "CHEBI_15406.xml";
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+        IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream(path));
         perceptor.perceive(container);
         System.out.println(container.getAtom(0).getProperty("descriptor"));
         System.out.println(container.getAtom(5).getProperty("descriptor"));
     }
     
     @Test public void chebi_2955() {
-        String path = "CHEBI_2955.xml";
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+        IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream("CHEBI_2955.mol"));
         perceptor.perceive(container);
         System.out.println(container.getAtom(7).getProperty("descriptor"));
     }
     
     @Test public void chebi_3049() {
-        String path = "CHEBI_3049.xml";
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+        String path = "CHEBI_3049.mol";
+        IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
         perceptor.perceive(container);
-        System.out.println(container.getAtom(0).getProperty("descriptor"));
-        System.out.println(container.getAtom(1).getProperty("descriptor"));
-        System.out.println(container.getAtom(3).getProperty("descriptor"));
+        assertThat(container.getAtom(0).getProperty("descriptor"), CoreMatchers.<Object>is(Tetrahedral.R));
+        System.out.println(container.getAtom(1).getProperty("descriptor")); // check this one
+        assertThat(container.getAtom(3).getProperty("descriptor"), CoreMatchers.<Object>is(Tetrahedral.S));
     }
     
     @Test public void chebi_16419() {
         String path = "CHEBI_16419.xml";
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+        IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream(path));
         AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);
         perceptor.perceive(container);
         System.out.println(container.getAtom(10).getProperty("descriptor"));
@@ -393,7 +392,7 @@ public class PerceptorTest {
 
     @Test public void demo() {
         String path = "demo.xml";
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+        IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream(path));
         AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);
         perceptor.perceive(container);
         System.out.println(container.getAtom(3).getProperty("descriptor"));
@@ -401,7 +400,7 @@ public class PerceptorTest {
     
     @Test public void priority_test() {
         String path = "priority-test.xml";
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream(path));
+        IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream(path));
         AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);
         perceptor.perceive(container);
         System.out.println(container.getAtom(2).getProperty("descriptor"));
@@ -409,7 +408,7 @@ public class PerceptorTest {
 
     @Test public void chebi_17268() throws Exception {
 
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream("CHEBI_17268.xml"));
+        IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream("CHEBI_17268.xml"));
 
         assertNotNull("molecule was not loaded", container);
 

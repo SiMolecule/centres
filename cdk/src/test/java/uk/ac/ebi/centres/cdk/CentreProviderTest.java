@@ -20,38 +20,16 @@ package uk.ac.ebi.centres.cdk;
 
 import junit.framework.Assert;
 import org.junit.Test;
-import org.openscience.cdk.config.IsotopeFactory;
-import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
-import org.openscience.cdk.tools.periodictable.PeriodicTable;
 import uk.ac.ebi.centres.Centre;
-import uk.ac.ebi.centres.DefaultPerceptor;
 import uk.ac.ebi.centres.Digraph;
-import uk.ac.ebi.centres.Perceptor;
-import uk.ac.ebi.centres.PriorityRule;
-import uk.ac.ebi.centres.graph.ConnectionTableDigraph;
-import uk.ac.ebi.centres.graph.DefaultDescriptorManager;
 import uk.ac.ebi.centres.io.CytoscapeWriter;
 import uk.ac.ebi.centres.ligand.AbstractLigand;
-import uk.ac.ebi.centres.priority.AtomicNumberRule;
-import uk.ac.ebi.centres.priority.CombinedRule;
-import uk.ac.ebi.centres.priority.MassNumberRule;
-import uk.ac.ebi.centres.priority.access.AtomicNumberAccessor;
-import uk.ac.ebi.centres.priority.access.MassNumberAccessor;
-import uk.ac.ebi.centres.priority.access.descriptor.AuxiliaryDescriptor;
-import uk.ac.ebi.centres.priority.access.descriptor.PrimaryDescriptor;
-import uk.ac.ebi.centres.priority.descriptor.PairRule;
-import uk.ac.ebi.centres.priority.descriptor.RSRule;
-import uk.ac.ebi.centres.priority.descriptor.ZERule;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -67,7 +45,7 @@ public class CentreProviderTest {
      */
     @Test public void testIminoethenol() {
 
-        IAtomContainer container = CMLLoader.loadCML(getClass().getResourceAsStream("2-iminoethen-1-ol.xml"));
+        IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream("2-iminoethen-1-ol.xml"));
 
         Collection<Centre<IAtom>> centres = new CDKCentreProvider(container).getCentres(new CDKManager(container));
 
