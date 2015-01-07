@@ -427,6 +427,15 @@ public class PerceptorTest {
         assertThat(container.getAtom(1).getProperty("descriptor"), CoreMatchers.<Object>is(Tetrahedral.S));
     }
 
+    @Test public void chebi_66261() {
+        String path = "CHEBI_66261.mol";
+        IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
+        AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);
+        perceptor.perceive(container);
+        assertThat(container.getAtom(0).getProperty("descriptor"), CoreMatchers.<Object>is(Tetrahedral.R));
+        assertThat(container.getAtom(2).getProperty("descriptor"), CoreMatchers.<Object>is(Tetrahedral.S));
+    }
+
     @Test public void demo() {
         String path = "demo.xml";
         IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream(path));
