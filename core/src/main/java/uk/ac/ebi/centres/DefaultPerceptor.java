@@ -68,6 +68,7 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
         List<Centre<A>> perceived = new ArrayList<Centre<A>>();
         Map<Centre<A>, Descriptor> map = new LinkedHashMap<Centre<A>, Descriptor>();
 
+
         do {
 
             map.clear();

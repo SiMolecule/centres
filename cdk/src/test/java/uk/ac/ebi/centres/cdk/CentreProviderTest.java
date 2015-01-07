@@ -163,7 +163,6 @@ public class CentreProviderTest {
         AbstractLigand<IAtom> ligand = ((AbstractLigand<IAtom>) centre);
         ligand.getProvider().build();
 
-
         Digraph digraph = (Digraph) ((AbstractLigand) centre).getProvider();
 
         CytoscapeWriter<IAtom> writer = new CytoscapeWriter<IAtom>(new File(name),
