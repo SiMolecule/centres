@@ -427,9 +427,16 @@ public class PerceptorTest {
         assertThat(container.getAtom(1).getProperty("descriptor"), CoreMatchers.<Object>is(Tetrahedral.S));
     }
 
-    // ChEBI 4991 throws an exception
+    // ChEBI 4991 used to throw an exception
     @Test public void chebi_4991() {
         String path = "CHEBI_4991.mol";
+        IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
+        AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);
+        perceptor.perceive(container);
+    }
+
+    @Test public void chebi_33517() {
+        String path = "CHEBI_33517.mol";
         IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
         AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);
         perceptor.perceive(container);

@@ -18,6 +18,7 @@
 
 package uk.ac.ebi.centres.cdk;
 
+import org.openscience.cdk.config.Elements;
 import org.openscience.cdk.config.Isotopes;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -37,60 +38,66 @@ import uk.ac.ebi.centres.priority.descriptor.PseudoRSRule;
 import uk.ac.ebi.centres.priority.descriptor.RSRule;
 import uk.ac.ebi.centres.priority.descriptor.ZERule;
 
+import java.io.IOException;
+
 /**
  * @author John May
  */
 public class CDKPerceptor extends DefaultPerceptor<IAtom> {
 
+    private static final MassNumberAccessor<IAtom> cdkMassNumberAccessor = new MassNumberAccessor<IAtom>() {
+        @Override
+        public int getMassNumber(IAtom atom) {
+            Integer massnum = atom.getMassNumber();
+            if (massnum == null) {
+                int elem = atomicNumber(atom);
+                if (elem == 0)
+                    return 0;
+                try {
+                    return Isotopes.getInstance().getMajorIsotope(Elements.ofNumber(elem)
+                                                                          .symbol())
+                                   .getMassNumber();
+                } catch (IOException e) {
+                    return 0;
+                }
+            }
+            return massnum;
+        }
+    };
+
+    private static int atomicNumber(IAtom atom) {
+        final Integer elem = atom.getAtomicNumber();
+        if (elem == null) return 0;
+        return elem;
+    }
+
     public CDKPerceptor(SignCalculator<IAtom> calculator) {
         super(new CombinedRule<IAtom>(
-                new AtomicNumberRule<IAtom>(
-                        new PsuedoAtomicNumberModifier<IAtom>(
-                                new AtomicNumberAccessor<IAtom>() {
-                                    @Override
-                                    public int getAtomicNumber(IAtom atom) {
-                                        Integer atomnum = atom.getAtomicNumber();
-                                        if (atomnum == null)
-                                            return 0;
-                                        return atomnum;
-                                    }
-                                })),
-                // new DuplicateAtomRule<IAtom>(),
-                new MassNumberRule<IAtom>(new MassNumberAccessor<IAtom>() {
-                    @Override
-                    public int getMassNumber(IAtom atom) {
-                        Integer massnum = atom.getMassNumber();
-                        if (massnum == null)
-                            return 0;
-                        return massnum;
-                    }
-                }),
-                new ZERule<IAtom>(),
-                new PairRule<IAtom>(new PrimaryDescriptor<IAtom>()),
-                new PseudoRSRule<IAtom>(new PrimaryDescriptor<IAtom>()),
-                new RSRule<IAtom>(new PrimaryDescriptor<IAtom>())
-        ),
+                      new AtomicNumberRule<IAtom>(
+                              new PsuedoAtomicNumberModifier<IAtom>(
+                                      new AtomicNumberAccessor<IAtom>() {
+                                          @Override
+                                          public int getAtomicNumber(IAtom atom) {
+                                              return atomicNumber(atom);
+                                          }
+                                      })),
+                      // new DuplicateAtomRule<IAtom>(),
+                      new MassNumberRule<IAtom>(cdkMassNumberAccessor),
+                      new ZERule<IAtom>(),
+                      new PairRule<IAtom>(new PrimaryDescriptor<IAtom>()),
+                      new PseudoRSRule<IAtom>(new PrimaryDescriptor<IAtom>()),
+                      new RSRule<IAtom>(new PrimaryDescriptor<IAtom>())
+              ),
               new CombinedRule<IAtom>(
                       new AtomicNumberRule<IAtom>(
                               new PsuedoAtomicNumberModifier<IAtom>(
                                       new AtomicNumberAccessor<IAtom>() {
                                           @Override
                                           public int getAtomicNumber(IAtom atom) {
-                                              Integer atomnum = atom.getAtomicNumber();
-                                              if (atomnum == null)
-                                                  return 0;
-                                              return atomnum;
+                                              return atomicNumber(atom);
                                           }
                                       })),
-                      new MassNumberRule<IAtom>(new MassNumberAccessor<IAtom>() {
-                          @Override
-                          public int getMassNumber(IAtom atom) {
-                              Integer massnum = atom.getMassNumber();
-                              if (massnum == null)
-                                  return 0; // lookup
-                              return massnum;
-                          }
-                      }),
+                      new MassNumberRule<IAtom>(cdkMassNumberAccessor),
                       new ZERule<IAtom>(),
                       new PairRule<IAtom>(new AuxiliaryDescriptor<IAtom>()),
                       new PseudoRSRule<IAtom>(new AuxiliaryDescriptor<IAtom>()),

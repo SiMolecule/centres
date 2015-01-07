@@ -79,18 +79,9 @@ public class MolLoader {
         try {
             IAtomContainer container = reader.read(new AtomContainer(0,0,0,0));
             AtomContainerManipulator.percieveAtomTypesAndConfigureUnsetProperties(container);
-            for (IAtom atom : container.atoms()) {
-                if (atom instanceof IPseudoAtom) {
-                    atom.setMassNumber(0);
-                } else {
-                    Isotopes.getInstance().configure(atom);
-                }
-            }
             return container;
         } catch (CDKException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         try {
             if (reader != null)
