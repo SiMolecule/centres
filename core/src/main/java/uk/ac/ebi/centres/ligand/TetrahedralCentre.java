@@ -152,28 +152,23 @@ public class TetrahedralCentre<A>
         }
 
         IAtom iatom = (IAtom) getAtom();
+
        
         Priority priority = rule.prioritise(proximal);
 
         if (priority.isUnique()) {
 
-            // remove hydrogen and 'duplicated' double-bond atoms (i.e. sulfoxide)
-            for (Ligand<A> ligand : new ArrayList<Ligand<A>>(proximal)) {
-                if (((IAtom) ligand.getAtom()).getPoint2d() == null) {
-                    proximal.remove(ligand);
-                }
-                if ((iatom.getSymbol().equals("S") || iatom.getSymbol().equals("P")) && ligand.isDuplicate()) {
-                    proximal.remove(ligand);
-                }
-            }
-            
-            if (proximal.size() < 4) proximal.add(this);
-            
+            // remove any H that were added with null coordinates
+            proximal = filterAddedHydrogens(proximal);
+
+            if (proximal.size() < 3)
+                return General.NONE;
+
             int sign = calculator.getSign(this,
                                           proximal.get(0),
                                           proximal.get(1),
                                           proximal.get(2),
-                                          proximal.get(3));
+                                          proximal.size() == 4 ? proximal.get(3) : this);
 
             boolean pseudo = priority.getType().equals(Descriptor.Type.PSEUDO_ASYMMETRIC);
 
@@ -188,6 +183,16 @@ public class TetrahedralCentre<A>
         return General.UNKNOWN;
     }
 
+    private List<Ligand<A>> filterAddedHydrogens(List<Ligand<A>> proximal) {
+        List<Ligand<A>> filtered = new ArrayList<Ligand<A>>();
+        // remove hydrogen and 'duplicated' double-bond atoms (i.e. sulfoxide)
+        for (Ligand<A> ligand : new ArrayList<Ligand<A>>(proximal)) {
+            if (((IAtom) ligand.getAtom()).getPoint2d() != null) {
+                filtered.add(ligand);
+            }
+        }
+        return filtered;
+    }
 
     @Override
     public Descriptor perceive(PriorityRule<A> rule, SignCalculator<A> calculator) {

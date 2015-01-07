@@ -442,6 +442,21 @@ public class PerceptorTest {
         perceptor.perceive(container);
     }
 
+    @Test public void chebi_82965() {
+        String path = "CHEBI_82965.mol";
+        IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
+        AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);
+        perceptor.perceive(container);
+    }
+
+    // previously causing stack overflow
+    @Test public void chebi_53643() {
+        String path = "CHEBI_53643.mol";
+        IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
+        AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);
+        perceptor.perceive(container);
+    }
+
     @Test public void chebi_66261() {
         String path = "CHEBI_66261.mol";
         IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
