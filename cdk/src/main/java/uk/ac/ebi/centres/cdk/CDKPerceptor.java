@@ -18,6 +18,7 @@
 
 package uk.ac.ebi.centres.cdk;
 
+import org.openscience.cdk.config.Isotopes;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import uk.ac.ebi.centres.DefaultPerceptor;
@@ -75,13 +76,19 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
                                       new AtomicNumberAccessor<IAtom>() {
                                           @Override
                                           public int getAtomicNumber(IAtom atom) {
-                                              return atom.getAtomicNumber();
+                                              Integer atomnum = atom.getAtomicNumber();
+                                              if (atomnum == null)
+                                                  return 0;
+                                              return atomnum;
                                           }
                                       })),
                       new MassNumberRule<IAtom>(new MassNumberAccessor<IAtom>() {
                           @Override
                           public int getMassNumber(IAtom atom) {
-                              return atom.getMassNumber();
+                              Integer massnum = atom.getMassNumber();
+                              if (massnum == null)
+                                  return 0; // lookup
+                              return massnum;
                           }
                       }),
                       new ZERule<IAtom>(),
