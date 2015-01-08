@@ -52,11 +52,12 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
     private ListMultimap<A, Ligand<A>> ligandMap = ArrayListMultimap.create();
     private DescriptorManager<A> manager;
 
+    // don't differentiate Kekule useful but not correct, atypical case CHEBI:521393
+    private static final boolean loose = Boolean.getBoolean("loose.mode");
 
     public AbstractDigraph(Ligand<A> root) {
         this(root, new DefaultDescriptorManager<A>());
     }
-
 
     public AbstractDigraph(Ligand<A> root, DescriptorManager<A> manager) {
         if (root == null)
@@ -187,7 +188,9 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
             int order = getOrder(ligand.getAtom(), atom);
 
             // create ghost ligands (opened up from double bonds)
-            if (order > 1 && ligand.getDistanceFromRoot() > 0) {
+            if (order > 1 &&
+                ligand.getDistanceFromRoot() > 0 &&
+                (!loose && !neighbour.isDuplicate())) {
 
                 // preload the neighbour and add the call back ghost...
                 // bit confusing but this turns -c1-c2=c3-o into:

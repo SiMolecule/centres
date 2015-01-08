@@ -44,8 +44,8 @@ public class BasicConnectionTable<A> implements ConnectionTable<A> {
         newConnection(first, second, order,
                       sign >= 1 ? 1 : sign <= -1 ? -1 : 0);
         newConnection(second, first, order,
-                      sign >= 1 ? -1 : sign <= -1 ? 1
-                                                  : 0); // note the sign is inverted
+                      //sign >= 1 ? -1 : sign <= -1 ? 1 : 0); // note the sign is inverted
+                      0);
     }
 
 

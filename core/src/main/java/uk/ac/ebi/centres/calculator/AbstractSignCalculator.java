@@ -54,6 +54,8 @@ public abstract class AbstractSignCalculator<A> implements SignCalculator<A> {
 
     double[] normalise(double[] vector) {
         final double mag = magnitude(vector);
+        if (mag == 0)
+            return vector;
         return new double[]{vector[0] / mag,
                             vector[1] / mag};
     }

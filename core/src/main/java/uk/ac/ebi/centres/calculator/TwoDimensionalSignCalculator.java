@@ -20,6 +20,8 @@ package uk.ac.ebi.centres.calculator;
 
 import uk.ac.ebi.centres.Ligand;
 
+import java.util.Arrays;
+
 /**
  * @author John May
  */

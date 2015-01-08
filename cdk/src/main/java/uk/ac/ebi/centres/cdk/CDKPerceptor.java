@@ -22,6 +22,7 @@ import org.openscience.cdk.config.Elements;
 import org.openscience.cdk.config.Isotopes;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IIsotope;
 import uk.ac.ebi.centres.DefaultPerceptor;
 import uk.ac.ebi.centres.SignCalculator;
 import uk.ac.ebi.centres.priority.AtomicNumberRule;
@@ -54,9 +55,10 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
                 if (elem == 0)
                     return 0;
                 try {
-                    return Isotopes.getInstance().getMajorIsotope(Elements.ofNumber(elem)
-                                                                          .symbol())
-                                   .getMassNumber();
+                    IIsotope isotope = Isotopes.getInstance().getMajorIsotope(Elements.ofNumber(elem).symbol());
+                    if (isotope == null)
+                        return 0;
+                    return isotope.getMassNumber();
                 } catch (IOException e) {
                     return 0;
                 }

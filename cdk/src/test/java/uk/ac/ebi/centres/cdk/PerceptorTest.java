@@ -457,6 +457,25 @@ public class PerceptorTest {
         perceptor.perceive(container);
     }
 
+    // previously causing NPE
+    @Test public void chebi_2639() {
+        String path = "CHEBI_2639.mol";
+        IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
+        AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);
+        perceptor.perceive(container);
+    }
+
+    // affected by Hydrogen representation???
+    @Test public void chebi_10642() {
+        String path = "chebi_10642.mol";
+        IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
+        //AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);
+        perceptor.perceive(container);
+        for (IAtom atom : container.atoms()) {
+            System.out.println(atom.getProperty("descriptor"));
+        }
+    }
+
     @Test public void chebi_66261() {
         String path = "CHEBI_66261.mol";
         IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));

@@ -87,23 +87,23 @@ public class CDKCentreProvider implements CentreProvider<IAtom> {
         }
 
 
-        // planar centres
-        for (IBond bond : container.bonds()) {
-            if (IBond.Order.DOUBLE.equals(bond.getOrder())
-                    && container.getConnectedAtomsCount(bond.getAtom(0)) > 1
-                    && container.getConnectedAtomsCount(bond.getAtom(1)) > 1
-                    && bond.getFlag(CDKConstants.ISAROMATIC) == Boolean.FALSE
-                    && onlyConnectedToSingleBonds(bond, container)
-                    && !getCyclicFragments().contains(bond)
-                    && !hasVariableBond(container, bond.getAtom(0))
-                    && !hasVariableBond(container, bond.getAtom(1))) {
-                PlanarCentre<IAtom> centre = new PlanarCentre<IAtom>(bond.getAtom(0), bond.getAtom(1),
-                                                                     manager.getDescriptor(bond.getAtom(0), bond.getAtom(1)));
-                centre.setProvider(new ConnectionTableDigraph<IAtom>(centre, manager, table));
-                centres.add(centre);
-
-            }
-        }
+//        // planar centres
+//        for (IBond bond : container.bonds()) {
+//            if (IBond.Order.DOUBLE.equals(bond.getOrder())
+//                    && container.getConnectedAtomsCount(bond.getAtom(0)) > 1
+//                    && container.getConnectedAtomsCount(bond.getAtom(1)) > 1
+//                    && bond.getFlag(CDKConstants.ISAROMATIC) == Boolean.FALSE
+//                    && onlyConnectedToSingleBonds(bond, container)
+//                    && !getCyclicFragments().contains(bond)
+//                    && !hasVariableBond(container, bond.getAtom(0))
+//                    && !hasVariableBond(container, bond.getAtom(1))) {
+//                PlanarCentre<IAtom> centre = new PlanarCentre<IAtom>(bond.getAtom(0), bond.getAtom(1),
+//                                                                     manager.getDescriptor(bond.getAtom(0), bond.getAtom(1)));
+//                centre.setProvider(new ConnectionTableDigraph<IAtom>(centre, manager, table));
+//                centres.add(centre);
+//
+//            }
+//        }
 
         return centres;
 

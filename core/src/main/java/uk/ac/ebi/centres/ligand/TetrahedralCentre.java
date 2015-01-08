@@ -87,13 +87,12 @@ public class TetrahedralCentre<A>
                                  PriorityRule<A> rule,
                                  SignCalculator<A> calculator) {
 
-        // ensure the entire digraph is built
-        getProvider().build();
-
         Map<Ligand<A>, Descriptor> auxiliary = new HashMap<Ligand<A>, Descriptor>(centres.size());
         Set<Ligand<A>> done = new HashSet<Ligand<A>>();
 
-        
+        // ensure the entire digraph is built
+        getProvider().build();
+
         for (Ligand<A> ligand : getProvider().ligands()) {
             ligand.setAuxiliary(General.UNKNOWN);
         }
@@ -156,13 +155,15 @@ public class TetrahedralCentre<A>
        
         Priority priority = rule.prioritise(proximal);
 
+
         if (priority.isUnique()) {
 
             // remove any H that were added with null coordinates
             proximal = filterAddedHydrogens(proximal);
 
-            if (proximal.size() < 3)
+            if (proximal.size() < 3) {
                 return General.NONE;
+            }
 
             int sign = calculator.getSign(this,
                                           proximal.get(0),
