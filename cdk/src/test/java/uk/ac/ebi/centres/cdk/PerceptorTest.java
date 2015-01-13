@@ -18,6 +18,7 @@
 
 package uk.ac.ebi.centres.cdk;
 
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.openscience.cdk.config.Isotopes;
@@ -499,6 +500,45 @@ public class PerceptorTest {
         AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);
         perceptor.perceive(container);
         System.out.println(container.getAtom(2).getProperty("descriptor"));
+    }
+
+    @Ignore public void pathological_case() {
+        String path = "pathological-case.mol";
+        IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
+        AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);
+        perceptor.perceive(container);
+        for (IAtom atom : container.atoms()){
+            System.out.println(atom.getProperty("number") + ": " + atom.getProperty("descriptor"));
+        }
+    }
+
+    @Test public void handbook_example_8() {
+        String path = "handbook_example_8.mol";
+        IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
+        AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);
+        perceptor.perceive(container);
+        for (IAtom atom : container.atoms()){
+            System.out.println(atom.getProperty("number") + ": " + atom.getProperty("descriptor"));
+        }
+    }
+
+    @Test public void handbook_example_9() {
+        String path = "handbook_example_9.mol";
+        IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
+        AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);
+        perceptor.perceive(container);
+        for (IAtom atom : container.atoms()){
+            System.out.println(atom.getProperty("number") + ": " + atom.getProperty("descriptor"));
+        }
+    }
+
+    @Test public void ligand_priorities() {
+        String path = "daniel.mol";
+        IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
+        AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);
+        perceptor.perceive(container);
+        assertThat(container.getAtom(1).getProperty("descriptor"),
+                   CoreMatchers.<Object>is(Tetrahedral.R));
     }
 
     @Test public void chebi_17268() throws Exception {
