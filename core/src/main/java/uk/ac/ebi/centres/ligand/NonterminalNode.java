@@ -27,35 +27,35 @@ import java.util.Set;
 /**
  * @author John May
  */
-public class NonterminalLigand<A> extends AbstractLigand<A> {
+public class NonterminalNode<A> extends AbstractNode<A> {
 
     private final A atom;
     private       A parent;
 
 
-    public NonterminalLigand(MutableDescriptor descriptor,
-                             A atom,
-                             A parent,
-                             int distance) {
+    public NonterminalNode(MutableDescriptor descriptor,
+                           A atom,
+                           A parent,
+                           int distance) {
         this(descriptor, Collections.EMPTY_SET, atom, parent, distance);
     }
 
 
-    public NonterminalLigand(ConnectionProvider<A> provider,
-                             MutableDescriptor descriptor,
-                             A atom,
-                             A parent,
-                             int distance) {
+    public NonterminalNode(ConnectionProvider<A> provider,
+                           MutableDescriptor descriptor,
+                           A atom,
+                           A parent,
+                           int distance) {
         this(provider, descriptor, Collections.EMPTY_SET, atom, parent, distance);
     }
 
 
-    public NonterminalLigand(ConnectionProvider<A> provider,
-                             MutableDescriptor descriptor,
-                             Set<A> visited,
-                             A atom,
-                             A parent,
-                             int distance) {
+    public NonterminalNode(ConnectionProvider<A> provider,
+                           MutableDescriptor descriptor,
+                           Set<A> visited,
+                           A atom,
+                           A parent,
+                           int distance) {
         super(provider,
               visited, descriptor, distance);
 
@@ -74,11 +74,11 @@ public class NonterminalLigand<A> extends AbstractLigand<A> {
     }
 
 
-    public NonterminalLigand(MutableDescriptor descriptor,
-                             Set<A> visited,
-                             A atom,
-                             A parent,
-                             int distance) {
+    public NonterminalNode(MutableDescriptor descriptor,
+                           Set<A> visited,
+                           A atom,
+                           A parent,
+                           int distance) {
 
         super(visited, descriptor, distance);
 

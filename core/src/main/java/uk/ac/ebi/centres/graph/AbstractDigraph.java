@@ -24,11 +24,11 @@ import com.google.common.collect.ListMultimap;
 import uk.ac.ebi.centres.ConnectionProvider;
 import uk.ac.ebi.centres.DescriptorManager;
 import uk.ac.ebi.centres.Digraph;
-import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Node;
 import uk.ac.ebi.centres.MutableDescriptor;
 import uk.ac.ebi.centres.TooManyNodesException;
-import uk.ac.ebi.centres.ligand.NonterminalLigand;
-import uk.ac.ebi.centres.ligand.TerminalLigand;
+import uk.ac.ebi.centres.ligand.NonterminalNode;
+import uk.ac.ebi.centres.ligand.TerminalNode;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,19 +47,19 @@ import java.util.Queue;
 public abstract class AbstractDigraph<A> implements Digraph<A>,
                                                     ConnectionProvider<A> {
     private static final int NODE_LIMIT = 1000000;
-    private Ligand<A> root;
-    private ArcMap                     arcs      = new ArcMap(); // Could set expected size
-    private ListMultimap<A, Ligand<A>> ligandMap = ArrayListMultimap.create();
+    private Node<A> root;
+    private ArcMap                   arcs      = new ArcMap(); // Could set expected size
+    private ListMultimap<A, Node<A>> ligandMap = ArrayListMultimap.create();
     private DescriptorManager<A> manager;
 
     // don't differentiate Kekule useful but not correct, atypical case CHEBI:521393
     private static final boolean loose = Boolean.getBoolean("loose.mode");
 
-    public AbstractDigraph(Ligand<A> root) {
+    public AbstractDigraph(Node<A> root) {
         this(root, new DefaultDescriptorManager<A>());
     }
 
-    public AbstractDigraph(Ligand<A> root, DescriptorManager<A> manager) {
+    public AbstractDigraph(Node<A> root, DescriptorManager<A> manager) {
         if (root == null)
             throw new IllegalArgumentException("Root cannot be null!");
         this.root = root;
@@ -68,19 +68,19 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
 
 
     @Override
-    public Ligand<A> getRoot() {
+    public Node<A> getRoot() {
         return root;
     }
 
 
     @Override
-    public List<Ligand<A>> getProximal() {
-        return root.getLigands();
+    public List<Node<A>> getProximal() {
+        return root.getNodes();
     }
 
 
     @Override
-    public List<Ligand<A>> ligandInstancesForAtom(A atom) {
+    public List<Node<A>> ligandInstancesForAtom(A atom) {
         return ligandMap.get(atom);
     }
 
@@ -89,15 +89,15 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
      * @inheritDoc
      */
     @Override
-    public void reroot(Ligand<A> ligand) {
+    public void reroot(Node<A> node) {
 
-        root = ligand;
-        ligand.reset();
+        root = node;
+        node.reset();
 
         Queue<Edge<A>> queue = new LinkedList<Edge<A>>();
 
         // get parent arcs
-        Edge<A> edge = arcs.getForHead(ligand);
+        Edge<A> edge = arcs.getForHead(node);
         while (edge != null) {
             arcs.remove(edge);
             Edge<A> next = arcs.getForHead(edge.getBeg());
@@ -110,10 +110,10 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
             arcs.add(transposedEdge);
         }
         
-        for (Ligand<A> l : ligands())
+        for (Node<A> l : ligands())
             l.clearOrderedBy();
 
-        ligand.setParent(ligand.getAtom());
+        node.setParent(node.getAtom());
 
     }
     
@@ -131,65 +131,65 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
         if (root == null)
             throw new IllegalArgumentException("Attempting build without a root");
 
-        Queue<Ligand<A>> queue = new LinkedList<Ligand<A>>();
+        Queue<Node<A>> queue = new LinkedList<Node<A>>();
 
-        queue.addAll(root.getLigands());
+        queue.addAll(root.getNodes());
 
         while (!queue.isEmpty()) {
-            queue.addAll(queue.poll().getLigands());
+            queue.addAll(queue.poll().getNodes());
         }
 
     }
 
 
     @Override
-    public List<Edge<A>> getArcs(Ligand<A> ligand) {
-        return arcs.getForTail(ligand);
+    public List<Edge<A>> getArcs(Node<A> node) {
+        return arcs.getForTail(node);
     }
 
 
     @Override
-    public Edge<A> getParentArc(Ligand<A> ligand) {
-        return arcs.getForHead(ligand);
+    public Edge<A> getParentArc(Node<A> node) {
+        return arcs.getForHead(node);
     }
 
 
     @Override
-    public List<Ligand<A>> getLigands(Ligand<A> ligand) {
+    public List<Node<A>> getLigands(Node<A> node) {
 
-        List<Ligand<A>> ligands = arcs.getHeads(ligand);
+        List<Node<A>> nodes = arcs.getHeads(node);
 
         // lots of ligands being created
         if(ligandMap.size() > NODE_LIMIT)
             throw new TooManyNodesException();
 
         // ligands already determined
-        if (!ligands.isEmpty())
-            return ligands;
+        if (!nodes.isEmpty())
+            return nodes;
 
 
         // ligands have not be built
-        for (A atom : getConnected(ligand.getAtom())) {
+        for (A atom : getConnected(node.getAtom())) {
 
-            if (ligand.isParent(atom))
+            if (node.isParent(atom))
                 continue;
 
             MutableDescriptor descriptor = manager.getDescriptor(atom);
 
             // create the new ligand - terminal ligands are created in cases of cyclic molecules
-            Ligand<A> neighbour = ligand.isVisited(atom)
-                                  ? new TerminalLigand<A>(this, descriptor, ligand.getVisited(), atom, ligand.getAtom(), ligand.getDistanceFromRoot() + 1)
-                                  : new NonterminalLigand<A>(this, descriptor, ligand.getVisited(), atom, ligand.getAtom(), ligand.getDistanceFromRoot() + 1);
-            arcs.add(newArc(ligand, neighbour));
+            Node<A> neighbour = node.isVisited(atom)
+                                  ? new TerminalNode<A>(this, descriptor, node.getVisited(), atom, node.getAtom(), node.getDistanceFromRoot() + 1)
+                                  : new NonterminalNode<A>(this, descriptor, node.getVisited(), atom, node.getAtom(), node.getDistanceFromRoot() + 1);
+            arcs.add(newArc(node, neighbour));
             ligandMap.put(atom, neighbour);
 
-            ligands.add(neighbour);
+            nodes.add(neighbour);
 
-            int order = getOrder(ligand.getAtom(), atom);
+            int order = getOrder(node.getAtom(), atom);
 
             // create ghost ligands (opened up from double bonds)
             if (order > 1 &&
-                ligand.getDistanceFromRoot() > 0 &&
+                node.getDistanceFromRoot() > 0 &&
                 (!loose && !neighbour.isDuplicate())) {
 
                 // preload the neighbour and add the call back ghost...
@@ -204,16 +204,16 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
                 
                 // create required number of ghost ligands
                 for (int i = 1; i < order; i++) {
-                    Ligand<A> neighbourGhost = new TerminalLigand<A>(this, descriptor, ligand.getVisited(), atom, ligand.getAtom(), ligand.getDistanceFromRoot() + 1);
-                    Ligand<A> ghost          = new TerminalLigand<A>(this, descriptor, ligand.getVisited(), ligand.getAtom(), atom, ligand.getDistanceFromRoot() + 1);
+                    Node<A> neighbourGhost = new TerminalNode<A>(this, descriptor, node.getVisited(), atom, node.getAtom(), node.getDistanceFromRoot() + 1);
+                    Node<A> ghost          = new TerminalNode<A>(this, descriptor, node.getVisited(), node.getAtom(), atom, node.getDistanceFromRoot() + 1);
                     
-                    arcs.add(newArc(ligand, neighbourGhost));
+                    arcs.add(newArc(node, neighbourGhost));
                     arcs.add(newArc(neighbour, ghost));
                     
                     ligandMap.put(atom, neighbourGhost);
-                    ligandMap.put(ligand.getAtom(), ghost);
+                    ligandMap.put(node.getAtom(), ghost);
 
-                    ligands.add(neighbourGhost);
+                    nodes.add(neighbourGhost);
                 }
             }
 
@@ -222,11 +222,11 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
         // TODO: now add the implicit hydrogens
 
 
-        return ligands;
+        return nodes;
 
     }
     
-    public Collection<Ligand<A>> ligands() {
+    public Collection<Node<A>> ligands() {
         return ligandMap.values();
     }
 
@@ -237,7 +237,7 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
     public abstract int getDepth(A first, A second);
 
 
-    private Edge<A> newArc(Ligand<A> tail, Ligand<A> head) {
+    private Edge<A> newArc(Node<A> tail, Node<A> head) {
         return new Edge<A>(tail, head,
                            manager.getDescriptor(tail.getAtom(), head.getAtom()),
                            getDepth(tail.getAtom(), head.getAtom()));
@@ -249,8 +249,8 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
      */
     class ArcMap {
 
-        private final ListMultimap<Ligand<A>, Edge<A>> tails = ArrayListMultimap.create();
-        private final Map<Ligand<A>, Edge<A>>          heads = new HashMap<Ligand<A>, Edge<A>>();
+        private final ListMultimap<Node<A>, Edge<A>> tails = ArrayListMultimap.create();
+        private final Map<Node<A>, Edge<A>>          heads = new HashMap<Node<A>, Edge<A>>();
 
 
         public void remove(Edge<A> edge) {
@@ -268,31 +268,31 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
         }
 
 
-        public Edge<A> getForHead(Ligand<A> head) {
+        public Edge<A> getForHead(Node<A> head) {
             return heads.get(head);
         }
 
 
-        public List<Edge<A>> getForTail(Ligand<A> tail) {
+        public List<Edge<A>> getForTail(Node<A> tail) {
             return tails.get(tail);
         }
 
 
-        public List<Ligand<A>> getHeads(Ligand<A> tail) {
+        public List<Node<A>> getHeads(Node<A> tail) {
 
             // this okay for now but should create a custom list that proxyies calls
             // to the arc list
-            List<Edge<A>>   edges   = tails.get(tail);
-            List<Ligand<A>> ligands = new ArrayList<Ligand<A>>(edges.size());
+            List<Edge<A>> edges = tails.get(tail);
+            List<Node<A>> nodes = new ArrayList<Node<A>>(edges.size());
             for (Edge<A> edge : edges) {
-                ligands.add(edge.getEnd());
+                nodes.add(edge.getEnd());
             }
-            return ligands;
+            return nodes;
 
         }
 
 
-        public Ligand<A> getTail(Ligand<A> head) {
+        public Node<A> getTail(Node<A> head) {
             Edge<A> edge = getForHead(head);
             if (edge == null)
                 throw new NoSuchElementException("No tail for provided head");

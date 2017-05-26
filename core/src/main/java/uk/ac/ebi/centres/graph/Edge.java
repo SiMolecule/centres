@@ -19,7 +19,7 @@
 package uk.ac.ebi.centres.graph;
 
 import uk.ac.ebi.centres.Descriptor;
-import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Node;
 import uk.ac.ebi.centres.MutableDescriptor;
 
 /**
@@ -27,13 +27,13 @@ import uk.ac.ebi.centres.MutableDescriptor;
  */
 public class Edge<A> {
 
-    private Ligand<A>         beg;
-    private Ligand<A>         end;
+    private Node<A>           beg;
+    private Node<A>           end;
     private MutableDescriptor descriptor;
     private int depth = 0;
 
 
-    public Edge(Ligand<A> beg, Ligand<A> head,
+    public Edge(Node<A> beg, Node<A> head,
                 MutableDescriptor descriptor) {
         this.beg = beg;
         this.end = head;
@@ -49,8 +49,8 @@ public class Edge<A> {
      *                   end, 0 = same plane. -1 = wedge bond when beg is root
      *                   atom
      */
-    public Edge(Ligand<A> beg,
-                Ligand<A> head,
+    public Edge(Node<A> beg,
+                Node<A> head,
                 MutableDescriptor descriptor,
                 int depth) {
         this.beg = beg;
@@ -72,18 +72,18 @@ public class Edge<A> {
     }
 
 
-    public Ligand<A> getEnd() {
+    public Node<A> getEnd() {
         return this.end;
     }
 
 
-    public Ligand<A> getBeg() {
+    public Node<A> getBeg() {
         return this.beg;
     }
 
 
     public void transpose() {
-        Ligand<A> tmp = beg;
+        Node<A> tmp = beg;
         beg = end;
         end = tmp;
         depth *= -1; // invert the sign

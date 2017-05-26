@@ -19,7 +19,7 @@
 package uk.ac.ebi.centres.ligand;
 
 import uk.ac.ebi.centres.ConnectionProvider;
-import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Node;
 import uk.ac.ebi.centres.MutableDescriptor;
 
 import java.util.Collections;
@@ -29,22 +29,22 @@ import java.util.Set;
 /**
  * @author John May
  */
-public class TerminalLigand<A> extends NonterminalLigand<A> {
+public class TerminalNode<A> extends NonterminalNode<A> {
 
-    public TerminalLigand(ConnectionProvider<A> provider, MutableDescriptor descriptor, A atom, A parent, int distance) {
+    public TerminalNode(ConnectionProvider<A> provider, MutableDescriptor descriptor, A atom, A parent, int distance) {
         super(provider, descriptor, atom, parent, distance);
         setDuplicate(Boolean.TRUE);
     }
 
 
-    public TerminalLigand(ConnectionProvider<A> provider, MutableDescriptor descriptor, Set<A> visited, A atom, A parent, int distance) {
+    public TerminalNode(ConnectionProvider<A> provider, MutableDescriptor descriptor, Set<A> visited, A atom, A parent, int distance) {
         super(provider, descriptor, visited, atom, parent, distance);
         setDuplicate(Boolean.TRUE);
     }
 
 
     @Override
-    public List<Ligand<A>> getLigands() {
+    public List<Node<A>> getNodes() {
         // suppress use of connection provider
         return Collections.emptyList();
     }

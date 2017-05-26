@@ -19,8 +19,7 @@
 package uk.ac.ebi.centres.priority;
 
 import uk.ac.ebi.centres.Comparison;
-import uk.ac.ebi.centres.Descriptor;
-import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Node;
 import uk.ac.ebi.centres.LigandSorter;
 import uk.ac.ebi.centres.Priority;
 import uk.ac.ebi.centres.PriorityRule;
@@ -57,23 +56,23 @@ public class InsertionSorter<A> implements LigandSorter<A> {
      * @inheritDoc
      */
     @Override
-    public Priority prioritise(List<Ligand<A>> ligands) {
+    public Priority prioritise(List<Node<A>> nodes) {
 
         Boolean unique = Boolean.TRUE;
         boolean pseudoAsym = false;
 //        Set<Set<Integer>> duplicates = null;
 
-        for (int i = 0; i < ligands.size(); i++)
+        for (int i = 0; i < nodes.size(); i++)
             for (int j = i; j > 0; j--) {
 
-                Comparison comparison = compareLigands(ligands.get(j - 1),
-                                                       ligands.get(j));
+                Comparison comparison = compareLigands(nodes.get(j - 1),
+                                                       nodes.get(j));
 
                 if (comparison.isPseduoAsym())
                     pseudoAsym = true;
 
                 if (comparison.getOrder() < 0) {
-                    swap(ligands, j, j - 1);
+                    swap(nodes, j, j - 1);
                 } else {
                     if (comparison.getOrder() == 0)
                         unique = Boolean.FALSE;
@@ -87,7 +86,7 @@ public class InsertionSorter<A> implements LigandSorter<A> {
     }
 
 
-    public Comparison compareLigands(Ligand<A> first, Ligand<A> second) {
+    public Comparison compareLigands(Node<A> first, Node<A> second) {
         for (PriorityRule<A> rule : rules) {
             Comparison comparison = rule.compareLigands(first, second);
             if (comparison.getOrder() != 0) return comparison;
@@ -103,20 +102,20 @@ public class InsertionSorter<A> implements LigandSorter<A> {
     }
 
 
-    public List<List<Ligand<A>>> getGroups(List<Ligand<A>> sorted) {
+    public List<List<Node<A>>> getGroups(List<Node<A>> sorted) {
 
         // would be nice to have this integrated whilst sorting - may provide a small speed increase
         // but as most of our lists are small we take use ugly sort then group approach
-        LinkedList<List<Ligand<A>>> groups = new LinkedList<List<Ligand<A>>>();
+        LinkedList<List<Node<A>>> groups = new LinkedList<List<Node<A>>>();
 
-        for (Ligand<A> ligand : sorted) {
+        for (Node<A> node : sorted) {
 
             if (groups.isEmpty()
                     || compareLigands(groups.getLast().iterator().next(),
-                                      ligand).getOrder() != 0)
-                groups.add(new ArrayList<Ligand<A>>());
+                                      node).getOrder() != 0)
+                groups.add(new ArrayList<Node<A>>());
 
-            groups.getLast().add(ligand);
+            groups.getLast().add(node);
 
         }
 

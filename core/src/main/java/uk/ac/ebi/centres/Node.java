@@ -32,7 +32,7 @@ import java.util.Set;
  * @author John May
  * @see Digraph
  */
-public interface Ligand<A> {
+public interface Node<A> {
 
     public boolean isTerminal();
 
@@ -83,7 +83,7 @@ public interface Ligand<A> {
      *
      * @return a list of the child ligands
      */
-    public List<Ligand<A>> getLigands();
+    public List<Node<A>> getNodes();
 
     /**
      * Access all previously visited atoms. For convenience the {@link

@@ -19,7 +19,7 @@
 package uk.ac.ebi.centres.test;
 
 import uk.ac.ebi.centres.Descriptor;
-import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Node;
 import uk.ac.ebi.centres.graph.Edge;
 
 import java.util.Collections;
@@ -31,7 +31,7 @@ import java.util.Set;
  * @author John May
  */
 @Deprecated
-public class TestLigand implements Ligand<TestAtom> {
+public class TestNode implements Node<TestAtom> {
 
     private TestAtom atom;
 
@@ -60,7 +60,7 @@ public class TestLigand implements Ligand<TestAtom> {
     }
 
 
-    public TestLigand(TestAtom atom) {
+    public TestNode(TestAtom atom) {
         this.atom = atom;
     }
 
@@ -84,7 +84,7 @@ public class TestLigand implements Ligand<TestAtom> {
 
 
     @Override
-    public List<Ligand<TestAtom>> getLigands() {
+    public List<Node<TestAtom>> getNodes() {
         return Collections.EMPTY_LIST;
     }
 

@@ -18,7 +18,7 @@
 
 package uk.ac.ebi.centres.priority;
 
-import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Node;
 
 public class Rule1b<A>
         extends AbstractPriorityRule<A> {
@@ -28,7 +28,7 @@ public class Rule1b<A>
     }
 
     @Override
-    public int compare(Ligand<A> o1, Ligand<A> o2) {
+    public int compare(Node<A> o1, Node<A> o2) {
         if (o1.isDuplicate() && !o2.isDuplicate()) {
             return 1;
         } else if (o2.isDuplicate() && !o1.isDuplicate()) {

@@ -19,10 +19,10 @@
 package uk.ac.ebi.centres.priority;
 
 import org.junit.Test;
-import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Node;
 import uk.ac.ebi.centres.priority.access.AtomicNumberAccessor;
 import uk.ac.ebi.centres.test.TestAtom;
-import uk.ac.ebi.centres.test.TestLigand;
+import uk.ac.ebi.centres.test.TestNode;
 
 import java.util.Arrays;
 import java.util.List;
@@ -58,8 +58,8 @@ public class Rule1aTest {
 
         rule.setSorter(new InsertionSorter<TestAtom>(rule));
 
-        Ligand<TestAtom> carbon1 = new TestLigand(new TestAtom("C", 6));
-        Ligand<TestAtom> carbon2 = new TestLigand(new TestAtom("C", 6));
+        Node<TestAtom> carbon1 = new TestNode(new TestAtom("C", 6));
+        Node<TestAtom> carbon2 = new TestNode(new TestAtom("C", 6));
 
         assertEquals(0, rule.compare(carbon1, carbon2));
         assertFalse(rule.prioritise(Arrays.asList(carbon1, carbon2)).isUnique());
@@ -72,8 +72,8 @@ public class Rule1aTest {
 
         rule.setSorter(new InsertionSorter<TestAtom>(rule));
 
-        Ligand<TestAtom> carbon = new TestLigand(new TestAtom("C", 6));
-        Ligand<TestAtom> nitrogen = new TestLigand(new TestAtom("None", 7));
+        Node<TestAtom> carbon   = new TestNode(new TestAtom("C", 6));
+        Node<TestAtom> nitrogen = new TestNode(new TestAtom("None", 7));
 
         assertThat("Higher priority in second argument should return < 0",
                    rule.compare(carbon, nitrogen),
@@ -95,16 +95,16 @@ public class Rule1aTest {
 
         rule.setSorter(new InsertionSorter<TestAtom>(rule));
 
-        Ligand<TestAtom> carbon = new TestLigand(new TestAtom("C", 6));
-        Ligand<TestAtom> nitrogen = new TestLigand(new TestAtom("None", 7));
-        Ligand<TestAtom> oxygen = new TestLigand(new TestAtom("O", 8));
+        Node<TestAtom> carbon   = new TestNode(new TestAtom("C", 6));
+        Node<TestAtom> nitrogen = new TestNode(new TestAtom("None", 7));
+        Node<TestAtom> oxygen   = new TestNode(new TestAtom("O", 8));
 
 
-        List<Ligand<TestAtom>> expected = Arrays.asList(oxygen, nitrogen, carbon);
+        List<Node<TestAtom>> expected = Arrays.asList(oxygen, nitrogen, carbon);
 
         // None, O, C -> O, C, None
         {
-            List<Ligand<TestAtom>> actual = Arrays.asList(nitrogen, oxygen, carbon);
+            List<Node<TestAtom>> actual = Arrays.asList(nitrogen, oxygen, carbon);
             assertThat("Lists were equal before sorting",
                        actual, not(expected));
             assertTrue("Non-unique items detected whilst sorting",
@@ -115,7 +115,7 @@ public class Rule1aTest {
 
         // None, C, O -> O, None, C
         {
-            List<Ligand<TestAtom>> actual = Arrays.asList(nitrogen, carbon, oxygen);
+            List<Node<TestAtom>> actual = Arrays.asList(nitrogen, carbon, oxygen);
             assertThat("Lists were equal before sorting",
                        actual, not(expected));
             assertTrue("Non-unique items detected whilst sorting",
@@ -126,7 +126,7 @@ public class Rule1aTest {
 
         // C, None, O -> O, None, C
         {
-            List<Ligand<TestAtom>> actual = Arrays.asList(carbon, nitrogen, oxygen);
+            List<Node<TestAtom>> actual = Arrays.asList(carbon, nitrogen, oxygen);
             assertThat("Lists were equal before sorting",
                        actual, not(expected));
             assertTrue("Non-unique items detected whilst sorting",
@@ -137,7 +137,7 @@ public class Rule1aTest {
 
         // C, O, None -> O, None, C
         {
-            List<Ligand<TestAtom>> actual = Arrays.asList(carbon, oxygen, nitrogen);
+            List<Node<TestAtom>> actual = Arrays.asList(carbon, oxygen, nitrogen);
             assertThat("Lists were equal before sorting",
                        actual, not(expected));
             assertTrue("Non-unique items detected whilst sorting",

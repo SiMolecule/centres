@@ -19,7 +19,7 @@
 package uk.ac.ebi.centres.priority.access.descriptor;
 
 import uk.ac.ebi.centres.Descriptor;
-import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Node;
 import uk.ac.ebi.centres.priority.access.DescriptorAccessor;
 
 /**
@@ -30,7 +30,7 @@ import uk.ac.ebi.centres.priority.access.DescriptorAccessor;
 public class ArcPrimaryDescriptor<A> implements DescriptorAccessor<A> {
 
     @Override
-    public Descriptor getDescriptor(Ligand<A> ligand) {
-        return ligand.getParentArc().getDescriptor();
+    public Descriptor getDescriptor(Node<A> node) {
+        return node.getParentArc().getDescriptor();
     }
 }

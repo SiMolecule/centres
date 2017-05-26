@@ -30,17 +30,17 @@ public interface ConnectionProvider<A> {
 
     public void build();
 
-    public List<Ligand<A>> ligandInstancesForAtom(A atom);
+    public List<Node<A>> ligandInstancesForAtom(A atom);
 
-    public List<Ligand<A>> getLigands(Ligand<A> ligand);
+    public List<Node<A>> getLigands(Node<A> node);
 
-    public List<Edge<A>> getArcs(Ligand<A> ligand);
+    public List<Edge<A>> getArcs(Node<A> node);
 
-    public Edge<A> getParentArc(Ligand<A> ligand);
+    public Edge<A> getParentArc(Node<A> node);
 
-    public void reroot(Ligand<A> ligand);
+    public void reroot(Node<A> node);
 
-    public Collection<Ligand<A>> ligands();
+    public Collection<Node<A>> ligands();
     
     /**
      * Clear the digraph ready for GC

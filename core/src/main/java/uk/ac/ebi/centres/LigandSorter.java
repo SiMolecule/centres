@@ -34,13 +34,13 @@ public interface LigandSorter<A> {
      * default {@link java.util.Collections#sort(java.util.List)} performs an
      * ascending order sort.
      *
-     * @param ligands the ligands that will be sorted
+     * @param nodes the ligands that will be sorted
      *
      * @return whether the ligands are all different and which type of rule was
      *         used
      */
-    public Priority prioritise(List<Ligand<A>> ligands);
+    public Priority prioritise(List<Node<A>> nodes);
 
-    public List<List<Ligand<A>>> getGroups(List<Ligand<A>> sorted);
+    public List<List<Node<A>>> getGroups(List<Node<A>> sorted);
 
 }

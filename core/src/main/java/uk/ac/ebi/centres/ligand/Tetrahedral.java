@@ -21,7 +21,7 @@ package uk.ac.ebi.centres.ligand;
 import org.openscience.cdk.interfaces.IAtom;
 import uk.ac.ebi.centres.Centre;
 import uk.ac.ebi.centres.Descriptor;
-import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Node;
 import uk.ac.ebi.centres.MutableDescriptor;
 import uk.ac.ebi.centres.Priority;
 import uk.ac.ebi.centres.PriorityRule;
@@ -39,7 +39,7 @@ import java.util.Set;
 /**
  * @author John May
  */
-public class Tetrahedral<A> extends AbstractLigand<A> implements Centre<A> {
+public class Tetrahedral<A> extends AbstractNode<A> implements Centre<A> {
 
     private final A atom;
     private       A parent;
@@ -82,14 +82,14 @@ public class Tetrahedral<A> extends AbstractLigand<A> implements Centre<A> {
                                  PriorityRule<A> rule,
                                  SignCalculator<A> calculator) {
 
-        Map<Ligand<A>, uk.ac.ebi.centres.Descriptor> auxiliary = new HashMap<Ligand<A>, uk.ac.ebi.centres.Descriptor>(centres.size());
-        Set<Ligand<A>>                               done      = new HashSet<Ligand<A>>();
+        Map<Node<A>, uk.ac.ebi.centres.Descriptor> auxiliary = new HashMap<Node<A>, uk.ac.ebi.centres.Descriptor>(centres.size());
+        Set<Node<A>>                               done      = new HashSet<Node<A>>();
 
         // ensure the entire digraph is built
         getProvider().build();
 
-        for (Ligand<A> ligand : getProvider().ligands()) {
-            ligand.setAuxiliary(Descriptor.Unknown);
+        for (Node<A> node : getProvider().ligands()) {
+            node.setAuxiliary(Descriptor.Unknown);
         }
         
         int size = 0;
@@ -105,19 +105,19 @@ public class Tetrahedral<A> extends AbstractLigand<A> implements Centre<A> {
                 // can only reroot on single atom centres
                 if (centre.getAtoms().size() == 1) {
 
-                    for (Ligand<A> ligand : getProvider().ligandInstancesForAtom(centre.getAtom())) {
+                    for (Node<A> node : getProvider().ligandInstancesForAtom(centre.getAtom())) {
 
-                        if (done.contains(ligand)) continue;
+                        if (done.contains(node)) continue;
                         
-                        getProvider().reroot(ligand);
+                        getProvider().reroot(node);
 
-                        uk.ac.ebi.centres.Descriptor descriptor = centre.perceive(getProvider().getLigands(ligand),
+                        uk.ac.ebi.centres.Descriptor descriptor = centre.perceive(getProvider().getLigands(node),
                                                                                   rule,
                                                                                   calculator);
                         
                         if (descriptor != Descriptor.Unknown) {
-                            auxiliary.put(ligand, descriptor);
-                            done.add(ligand);
+                            auxiliary.put(node, descriptor);
+                            done.add(node);
                         }
 
                     }
@@ -125,7 +125,7 @@ public class Tetrahedral<A> extends AbstractLigand<A> implements Centre<A> {
             }
 
             // transfer auxiliary descriptors to their respective ligands
-            for (Map.Entry<Ligand<A>, uk.ac.ebi.centres.Descriptor> entry : auxiliary.entrySet())
+            for (Map.Entry<Node<A>, uk.ac.ebi.centres.Descriptor> entry : auxiliary.entrySet())
                 entry.getKey().setAuxiliary(entry.getValue());
             size += auxiliary.size();
             
@@ -139,7 +139,7 @@ public class Tetrahedral<A> extends AbstractLigand<A> implements Centre<A> {
     }
 
     @Override
-    public uk.ac.ebi.centres.Descriptor perceive(List<Ligand<A>> proximal, PriorityRule<A> rule, SignCalculator<A> calculator) {
+    public uk.ac.ebi.centres.Descriptor perceive(List<Node<A>> proximal, PriorityRule<A> rule, SignCalculator<A> calculator) {
 
         if (proximal.size() < 3) {
             return Descriptor.None;
@@ -178,12 +178,12 @@ public class Tetrahedral<A> extends AbstractLigand<A> implements Centre<A> {
         return Descriptor.Unknown;
     }
 
-    private List<Ligand<A>> filterAddedHydrogens(List<Ligand<A>> proximal) {
-        List<Ligand<A>> filtered = new ArrayList<Ligand<A>>();
+    private List<Node<A>> filterAddedHydrogens(List<Node<A>> proximal) {
+        List<Node<A>> filtered = new ArrayList<Node<A>>();
         // remove hydrogen and 'duplicated' double-bond atoms (i.e. sulfoxide)
-        for (Ligand<A> ligand : new ArrayList<Ligand<A>>(proximal)) {
-            if (((IAtom) ligand.getAtom()).getPoint2d() != null) {
-                filtered.add(ligand);
+        for (Node<A> node : new ArrayList<Node<A>>(proximal)) {
+            if (((IAtom) node.getAtom()).getPoint2d() != null) {
+                filtered.add(node);
             }
         }
         return filtered;
@@ -191,7 +191,7 @@ public class Tetrahedral<A> extends AbstractLigand<A> implements Centre<A> {
 
     @Override
     public uk.ac.ebi.centres.Descriptor perceive(PriorityRule<A> rule, SignCalculator<A> calculator) {
-        return perceive(getLigands(), rule, calculator);
+        return perceive(getNodes(), rule, calculator);
     }
 
 

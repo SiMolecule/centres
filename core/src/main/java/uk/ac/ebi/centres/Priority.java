@@ -73,17 +73,17 @@ public class Priority {
     return pseudoAsym;
   }
 
-  public <A> List<List<Ligand<A>>> createBins(List<Ligand<A>> ligands)
+  public <A> List<List<Node<A>>> createBins(List<Node<A>> nodes)
   {
     if (duplicates == null)
       throw new IllegalArgumentException("No duplicates stored at time of sort!");
 
-    List<List<Ligand<A>>> bins = new ArrayList<List<Ligand<A>>>(ligands.size());
+    List<List<Node<A>>> bins = new ArrayList<List<Node<A>>>(nodes.size());
 
     // now need to place in bins
-    for (int i = 0; i < ligands.size(); i++) {
-      List<Ligand<A>> bin = new ArrayList<Ligand<A>>();
-      bin.add(ligands.get(0));
+    for (int i = 0; i < nodes.size(); i++) {
+      List<Node<A>> bin = new ArrayList<Node<A>>();
+      bin.add(nodes.get(0));
       bins.add(bin);
     }
 

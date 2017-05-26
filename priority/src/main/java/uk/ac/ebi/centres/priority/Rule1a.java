@@ -18,7 +18,7 @@
 
 package uk.ac.ebi.centres.priority;
 
-import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Node;
 import uk.ac.ebi.centres.priority.access.AtomicNumberAccessor;
 
 /**
@@ -55,7 +55,7 @@ public class Rule1a<A>
      * @inheritDoc
      */
     @Override
-    public int compare(Ligand<A> o1, Ligand<A> o2) {
+    public int compare(Node<A> o1, Node<A> o2) {
         return accessor.getAtomicNumber(o1.getAtom()) - accessor.getAtomicNumber(o2.getAtom());
     }
 

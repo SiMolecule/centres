@@ -22,7 +22,7 @@ import com.google.common.collect.Sets;
 import uk.ac.ebi.centres.Centre;
 import uk.ac.ebi.centres.ConnectionProvider;
 import uk.ac.ebi.centres.Descriptor;
-import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Node;
 import uk.ac.ebi.centres.MutableDescriptor;
 import uk.ac.ebi.centres.Priority;
 import uk.ac.ebi.centres.PriorityRule;
@@ -36,11 +36,11 @@ import java.util.Set;
 /**
  * @author John May
  */
-public class CisTrans<A> extends AbstractLigand<A> implements Centre<A> {
+public class CisTrans<A> extends AbstractNode<A> implements Centre<A> {
 
-    private final AbstractLigand<A> first;
-    private final AbstractLigand<A> second;
-    private final Set<A>            atoms;
+    private final AbstractNode<A> first;
+    private final AbstractNode<A> second;
+    private final Set<A>          atoms;
 
 
     @SuppressWarnings("unchecked")
@@ -49,11 +49,11 @@ public class CisTrans<A> extends AbstractLigand<A> implements Centre<A> {
 
         super(descriptor, 0);
 
-        Ligand<A> self = this;
+        Node<A> self = this;
 
         // create two ligand delegates
-        this.first = new NonterminalLigand<A>(descriptor, first, second, 0);
-        this.second = new NonterminalLigand<A>(descriptor, second, first, 0);
+        this.first = new NonterminalNode<A>(descriptor, first, second, 0);
+        this.second = new NonterminalNode<A>(descriptor, second, first, 0);
 
         atoms = Sets.newHashSet(first, second);
 
@@ -69,11 +69,11 @@ public class CisTrans<A> extends AbstractLigand<A> implements Centre<A> {
 
 
     @Override
-    public List<Ligand<A>> getLigands() {
-        List<Ligand<A>> ligands = new ArrayList<Ligand<A>>(16);
-        ligands.addAll(first.getLigands());
-        ligands.addAll(second.getLigands());
-        return ligands;
+    public List<Node<A>> getNodes() {
+        List<Node<A>> nodes = new ArrayList<Node<A>>(16);
+        nodes.addAll(first.getNodes());
+        nodes.addAll(second.getNodes());
+        return nodes;
     }
 
 
@@ -126,7 +126,7 @@ public class CisTrans<A> extends AbstractLigand<A> implements Centre<A> {
 
 
     @Override
-    public uk.ac.ebi.centres.Descriptor perceive(List<Ligand<A>> proximal, PriorityRule<A> rule, SignCalculator<A> calculator) {
+    public uk.ac.ebi.centres.Descriptor perceive(List<Node<A>> proximal, PriorityRule<A> rule, SignCalculator<A> calculator) {
         // can't do this type of perception for planar centres
         return Descriptor.Unknown;
     }
@@ -135,25 +135,25 @@ public class CisTrans<A> extends AbstractLigand<A> implements Centre<A> {
     @Override
     public uk.ac.ebi.centres.Descriptor perceive(PriorityRule<A> rule, SignCalculator<A> calculator) {
 
-        List<Ligand<A>> firstLigands = first.getLigands();
-        List<Ligand<A>> secondLigands = second.getLigands();
+        List<Node<A>> firstNodes  = first.getNodes();
+        List<Node<A>> secondNodes = second.getNodes();
 
-        if (firstLigands.isEmpty() || secondLigands.isEmpty())
+        if (firstNodes.isEmpty() || secondNodes.isEmpty())
             return Descriptor.None;
 
         // check for pseudo
-        Priority firstPriority = rule.prioritise(firstLigands);
-        Priority secondPriority = rule.prioritise(secondLigands);
+        Priority firstPriority = rule.prioritise(firstNodes);
+        Priority secondPriority = rule.prioritise(secondNodes);
 
         if (!firstPriority.isUnique() || !secondPriority.isUnique()) {
             // we don't know whether it is none yet...
             return Descriptor.Unknown;
         }
 
-        int firstSign = calculator.getSign(firstLigands.iterator().next().getAtom(),
+        int firstSign = calculator.getSign(firstNodes.iterator().next().getAtom(),
                                            first.getAtom(),
                                            second.getAtom());
-        int secondSign = calculator.getSign(secondLigands.iterator().next().getAtom(),
+        int secondSign = calculator.getSign(secondNodes.iterator().next().getAtom(),
                                             second.getAtom(),
                                             first.getAtom());
 

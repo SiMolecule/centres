@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  * Defines a comparator for ligands. The default {@link Comparator} can be used
- * to prioritise ligands however the {@link #compareLigands(Ligand, Ligand)}
+ * to prioritise ligands however the {@link #compareLigands(Node, Node)}
  * also adds meta data about the type of the descriptor via the {@link
  * Comparison}
  *
@@ -31,7 +31,7 @@ import java.util.List;
  * @see Comparison
  * @see Comparator
  */
-public interface PriorityRule<A> extends Comparator<Ligand<A>> {
+public interface PriorityRule<A> extends Comparator<Node<A>> {
 
     public enum Type {
         CONSTITUTIONAL,
@@ -40,17 +40,17 @@ public interface PriorityRule<A> extends Comparator<Ligand<A>> {
         COMBINED
     }
 
-    public int recursiveCompare(Ligand<A> o1, Ligand<A> o2);
+    public int recursiveCompare(Node<A> o1, Node<A> o2);
 
     /**
      * Prioritises ligands using the provided sorter and indicates whether the
      * ligands were unique.
      *
-     * @param ligands a list of ligands to prioritise
+     * @param nodes a list of ligands to prioritise
      *
      * @return whether the ligands were unique
      */
-    public Priority prioritise(List<Ligand<A>> ligands);
+    public Priority prioritise(List<Node<A>> nodes);
 
     /**
      * Allows injection of a ligand sorter. The ligand sort is used when two
@@ -76,7 +76,7 @@ public interface PriorityRule<A> extends Comparator<Ligand<A>> {
      *
      * @see #compare(Object, Object)
      */
-    public Comparison compareLigands(Ligand<A> o1, Ligand<A> o2);
+    public Comparison compareLigands(Node<A> o1, Node<A> o2);
 
     /**
      * Access the descriptor type this rule indicates. Normally rules will

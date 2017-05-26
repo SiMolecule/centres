@@ -19,8 +19,7 @@
 package uk.ac.ebi.centres.priority;
 
 import uk.ac.ebi.centres.Comparison;
-import uk.ac.ebi.centres.Descriptor;
-import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Node;
 import uk.ac.ebi.centres.LigandSorter;
 import uk.ac.ebi.centres.Priority;
 import uk.ac.ebi.centres.PriorityRule;
@@ -44,7 +43,7 @@ public abstract class AbstractPriorityRule<A>
 
   /**
    * The type is store here and appended with the {@link
-   * #compareLigands(uk.ac.ebi.centres.Ligand, uk.ac.ebi.centres.Ligand)}
+   * #compareLigands(Node, Node)}
    */
   private final boolean isPseudoAssymetric;
   private final Type    ordering;
@@ -77,14 +76,14 @@ public abstract class AbstractPriorityRule<A>
     this.halted = halt;
   }
 
-  public int recursiveCompare(Ligand<A> a, Ligand<A> b)
+  public int recursiveCompare(Node<A> a, Node<A> b)
   {
 
     int cmp = compare(a, b);
     if (cmp != 0) return cmp;
 
-    Queue<Ligand<A>> aQueue = new LinkedList<Ligand<A>>();
-    Queue<Ligand<A>> bQueue = new LinkedList<Ligand<A>>();
+    Queue<Node<A>> aQueue = new LinkedList<Node<A>>();
+    Queue<Node<A>> bQueue = new LinkedList<Node<A>>();
 
     aQueue.add(a);
     bQueue.add(b);
@@ -92,8 +91,8 @@ public abstract class AbstractPriorityRule<A>
     while (!aQueue.isEmpty() && !bQueue.isEmpty()) {
       a = aQueue.poll();
       b = bQueue.poll();
-      List<Ligand<A>> as = a.getLigands();
-      List<Ligand<A>> bs = b.getLigands();
+      List<Node<A>> as = a.getNodes();
+      List<Node<A>> bs = b.getNodes();
 
       if (!a.isOrderedBy(getClass()))
         prioritise(as);
@@ -102,11 +101,11 @@ public abstract class AbstractPriorityRule<A>
       a.markOrderedBy(getClass());
       b.markOrderedBy(getClass());
 
-      Iterator<Ligand<A>> aIt = as.iterator();
-      Iterator<Ligand<A>> bIt = bs.iterator();
+      Iterator<Node<A>> aIt = as.iterator();
+      Iterator<Node<A>> bIt = bs.iterator();
       while (aIt.hasNext() && bIt.hasNext()) {
-        Ligand<A> aChild = aIt.next();
-        Ligand<A> bChild = bIt.next();
+        Node<A> aChild = aIt.next();
+        Node<A> bChild = bIt.next();
         cmp = compare(aChild, bChild);
         if (cmp != 0) return cmp;
         aQueue.add(aChild);
@@ -126,7 +125,7 @@ public abstract class AbstractPriorityRule<A>
    * @inheritDoc
    */
   @Override
-  public Comparison compareLigands(Ligand<A> o1, Ligand<A> o2)
+  public Comparison compareLigands(Node<A> o1, Node<A> o2)
   {
     return new Comparison(recursiveCompare(o1, o2), isPseudoAssymetric);
   }
@@ -158,12 +157,12 @@ public abstract class AbstractPriorityRule<A>
   /**
    * Uses the injected ligand sorter to order the ligands.
    *
-   * @param ligands the ligands that are to be sorted
+   * @param nodes the ligands that are to be sorted
    * @return whether the ligands are unique
    */
-  public Priority prioritise(List<Ligand<A>> ligands)
+  public Priority prioritise(List<Node<A>> nodes)
   {
-    return getSorter().prioritise(ligands);
+    return getSorter().prioritise(nodes);
   }
 
   public boolean isHalted()

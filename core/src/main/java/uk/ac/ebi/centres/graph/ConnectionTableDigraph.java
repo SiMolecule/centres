@@ -20,7 +20,7 @@ package uk.ac.ebi.centres.graph;
 
 import uk.ac.ebi.centres.ConnectionTable;
 import uk.ac.ebi.centres.DescriptorManager;
-import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Node;
 
 import java.util.Collection;
 
@@ -34,7 +34,7 @@ public class ConnectionTableDigraph<A>
     private final ConnectionTable<A> table;
 
 
-    public ConnectionTableDigraph(Ligand<A> root,
+    public ConnectionTableDigraph(Node<A> root,
                                   DescriptorManager<A> manager,
                                   ConnectionTable<A> table) {
         super(root, manager);

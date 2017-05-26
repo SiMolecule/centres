@@ -19,7 +19,7 @@
 package uk.ac.ebi.centres.priority.access.descriptor;
 
 import uk.ac.ebi.centres.Descriptor;
-import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Node;
 
 /**
  * Access the primary descriptor on a ligand
@@ -30,7 +30,7 @@ public class PrimaryDescriptor<A> implements
                                    uk.ac.ebi.centres.priority.access.DescriptorAccessor<A> {
 
     @Override
-    public Descriptor getDescriptor(Ligand<A> ligand) {
-        return ligand.getDescriptor();
+    public Descriptor getDescriptor(Node<A> node) {
+        return node.getDescriptor();
     }
 }

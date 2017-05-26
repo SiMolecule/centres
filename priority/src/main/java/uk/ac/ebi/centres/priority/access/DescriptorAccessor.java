@@ -19,7 +19,7 @@
 package uk.ac.ebi.centres.priority.access;
 
 import uk.ac.ebi.centres.Descriptor;
-import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Node;
 
 /**
  * Provides access to a descriptor from the provided ligand. The accessor can be
@@ -36,7 +36,7 @@ public interface DescriptorAccessor<A> {
      * Access the descriptor for the provided ligand. If no descriptor is set
      * for the ligand this method should return {@link General#NONE}
      *
-     * @param ligand the ligand to get the descriptor for
+     * @param node the ligand to get the descriptor for
      *
      * @return the descriptor for the ligand
      *
@@ -46,6 +46,6 @@ public interface DescriptorAccessor<A> {
      * @see uk.ac.ebi.centres.descriptor.Descriptor
      * @see uk.ac.ebi.centres.descriptor.Trigonal
      */
-    public Descriptor getDescriptor(Ligand<A> ligand);
+    public Descriptor getDescriptor(Node<A> node);
 
 }

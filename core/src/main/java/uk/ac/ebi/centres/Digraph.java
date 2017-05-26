@@ -46,7 +46,7 @@ public interface Digraph<A> {
      *
      * @return the root ligand of the directed graph
      */
-    public Ligand<A> getRoot();
+    public Node<A> getRoot();
 
 
 
@@ -56,9 +56,9 @@ public interface Digraph<A> {
      *
      * @return list of proximal ligands
      *
-     * @see Ligand
+     * @see Node
      */
-    public List<Ligand<A>> getProximal();
+    public List<Node<A>> getProximal();
 
     /**
      * Access all created ligands for the provided atom. In acyclic structure
@@ -78,7 +78,7 @@ public interface Digraph<A> {
      *
      * @see #build()
      */
-    public List<Ligand<A>> ligandInstancesForAtom(A atom);
+    public List<Node<A>> ligandInstancesForAtom(A atom);
 
     /**
      * Exhaustively expands from the root creating all ligands. Normally the
@@ -97,7 +97,7 @@ public interface Digraph<A> {
      * root. This method is primarily used for generating auxiliary
      * descriptors.
      *
-     * @param ligand the ligand which will be the new root
+     * @param node the ligand which will be the new root
      */
-    public void reroot(Ligand<A> ligand);
+    public void reroot(Node<A> node);
 }

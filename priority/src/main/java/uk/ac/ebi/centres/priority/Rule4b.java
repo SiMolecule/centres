@@ -22,7 +22,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import org.openscience.cdk.interfaces.IAtom;
 import uk.ac.ebi.centres.Descriptor;
-import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Node;
 import uk.ac.ebi.centres.Priority;
 import uk.ac.ebi.centres.priority.access.DescriptorAccessor;
 
@@ -68,20 +68,20 @@ public class Rule4b<A>
      * ordering when multiple lists are present. This method is a wrapper for
      * adding the seeding ligand to the queue.
      *
-     * @param ligand the ligand on which to generate the descriptor lists for
+     * @param node the ligand on which to generate the descriptor lists for
      *
      * @return navigable set of descriptor lists
      */
-    protected NavigableSet<DescriptorList> generate(Ligand<A> ligand) {
+    protected NavigableSet<DescriptorList> generate(Node<A> node) {
         // would be good to give an expected size
-        Queue<Ligand<A>> queue = Lists.newLinkedList();
-        queue.add(ligand);
+        Queue<Node<A>> queue = Lists.newLinkedList();
+        queue.add(node);
         return new TreeSet<DescriptorList>(generate(queue));
     }
 
 
     @Override
-    public int recursiveCompare(Ligand<A> o1, Ligand<A> o2) {
+    public int recursiveCompare(Node<A> o1, Node<A> o2) {
         // can't/don't need to do recursive on the pair rule
         return compare(o1, o2);
     }
@@ -96,7 +96,7 @@ public class Rule4b<A>
      *
      * @return navigable set of descriptor lists
      */
-    protected Set<DescriptorList> generate(Queue<Ligand<A>> queue) {
+    protected Set<DescriptorList> generate(Queue<Node<A>> queue) {
 
         final Set<DescriptorList> lists = new HashSet<DescriptorList>();
 
@@ -110,22 +110,22 @@ public class Rule4b<A>
         
         while (!queue.isEmpty()) {
 
-            Ligand<A> ligand = queue.poll();
+            Node<A> node = queue.poll();
             
-            descriptors.add(accessor.getDescriptor(ligand));
+            descriptors.add(accessor.getDescriptor(node));
 
-            List<Ligand<A>> ligands = nonTerminalLigands(ligand.getLigands());
-            Priority priority = prioritise(ligands);
+            List<Node<A>> nodes    = nonTerminalLigands(node.getNodes());
+            Priority      priority = prioritise(nodes);
             if (priority.isUnique()) {
                 // unique
-                for (Ligand<A> child : ligands)
+                for (Node<A> child : nodes)
                     queue.add(child);
 
             } else {
                 // non unique need to subdivide and combine
-                for (List<Ligand<A>> combinated : permutate(getSorter().getGroups(ligands))) {
+                for (List<Node<A>> combinated : permutate(getSorter().getGroups(nodes))) {
 
-                    Queue<Ligand<A>> subqueue = new LinkedList<Ligand<A>>(queue);
+                    Queue<Node<A>> subqueue = new LinkedList<Node<A>>(queue);
                     subqueue.addAll(combinated);
 
                     // add to current descriptor list
@@ -150,14 +150,14 @@ public class Rule4b<A>
      * the permuting. They can't be stereocentres and so won't contribute the
      * the like / unlike list.
      *
-     * @param ligands a list of ligands
+     * @param nodes a list of ligands
      * @return a list of non-terminal ligands
      */
-    private List<Ligand<A>> nonTerminalLigands(List<Ligand<A>> ligands) {
-        List<Ligand<A>> filtered = new ArrayList<Ligand<A>>();
-        for (Ligand<A> ligand : ligands) {
-            if (!ligand.isTerminal() && ((IAtom) ligand.getAtom()).getAtomicNumber() != 1)
-                filtered.add(ligand);
+    private List<Node<A>> nonTerminalLigands(List<Node<A>> nodes) {
+        List<Node<A>> filtered = new ArrayList<Node<A>>();
+        for (Node<A> node : nodes) {
+            if (!node.isTerminal() && ((IAtom) node.getAtom()).getAtomicNumber() != 1)
+                filtered.add(node);
         }
         return filtered;
     }
@@ -251,7 +251,7 @@ public class Rule4b<A>
      * @return the value of the comparison
      */
     @Override
-    public int compare(Ligand<A> o1, Ligand<A> o2) {
+    public int compare(Node<A> o1, Node<A> o2) {
 
         // produced pair lists are in order
         Iterator<DescriptorList> list1It = generate(o1).iterator();

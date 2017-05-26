@@ -19,10 +19,10 @@
 package uk.ac.ebi.centres.priority;
 
 import org.junit.Test;
-import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Node;
 import uk.ac.ebi.centres.priority.access.MassNumberAccessor;
 import uk.ac.ebi.centres.test.TestAtom;
-import uk.ac.ebi.centres.test.TestLigand;
+import uk.ac.ebi.centres.test.TestNode;
 
 import java.util.Arrays;
 
@@ -54,8 +54,8 @@ public class Rule2Test {
 
         rule.setSorter(new InsertionSorter<TestAtom>(rule));
 
-        Ligand<TestAtom> carbon1 = new TestLigand(new TestAtom("C", 6, 12));
-        Ligand<TestAtom> carbon2 = new TestLigand(new TestAtom("C", 6, 12));
+        Node<TestAtom> carbon1 = new TestNode(new TestAtom("C", 6, 12));
+        Node<TestAtom> carbon2 = new TestNode(new TestAtom("C", 6, 12));
 
         assertEquals(0, rule.compare(carbon1, carbon2));
         assertFalse(rule.prioritise(Arrays.asList(carbon1, carbon2)).isUnique());
@@ -68,8 +68,8 @@ public class Rule2Test {
 
         rule.setSorter(new InsertionSorter<TestAtom>(rule));
 
-        Ligand<TestAtom> carbon12 = new TestLigand(new TestAtom("C", 6, 12));
-        Ligand<TestAtom> carbon13 = new TestLigand(new TestAtom("C", 6, 13));
+        Node<TestAtom> carbon12 = new TestNode(new TestAtom("C", 6, 12));
+        Node<TestAtom> carbon13 = new TestNode(new TestAtom("C", 6, 13));
 
         assertThat("Higher priority in second argument should return < 0",
                    rule.compare(carbon12, carbon13),

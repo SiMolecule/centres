@@ -19,7 +19,7 @@
 package uk.ac.ebi.centres.io;
 
 import uk.ac.ebi.centres.Digraph;
-import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Node;
 
 import java.io.Closeable;
 import java.io.File;
@@ -102,11 +102,11 @@ public abstract class CytoscapeWriter<A> implements Closeable {
     }
 
 
-    private void write(List<Ligand<A>> ligands, String sourceId) throws IOException {
+    private void write(List<Node<A>> nodes, String sourceId) throws IOException {
 
-        for (int i = 0; i < ligands.size(); i++) {
+        for (int i = 0; i < nodes.size(); i++) {
 
-            Ligand<A> ligand = ligands.get(i);
+            Node<A> node = nodes.get(i);
 
             String targetId = sourceId + (Integer.toString(i + 1));
 
@@ -114,7 +114,7 @@ public abstract class CytoscapeWriter<A> implements Closeable {
 
             // invert map properties
             Map<String, String> map = new HashMap<String, String>();
-            mapAttributes(ligand.getAtom(), map);
+            mapAttributes(node.getAtom(), map);
             for (Map.Entry<String, String> e : map.entrySet()) {
                 if (!attributes.containsKey(e.getKey())) {
                     attributes.put(e.getKey(), new HashMap<String, String>());
@@ -122,7 +122,7 @@ public abstract class CytoscapeWriter<A> implements Closeable {
                 attributes.get(e.getKey()).put(targetId, e.getValue());
             }
 
-            write(ligands.get(i).getLigands(), targetId);
+            write(nodes.get(i).getNodes(), targetId);
 
         }
 

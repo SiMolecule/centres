@@ -20,7 +20,7 @@ package uk.ac.ebi.centres.priority;
 
 import com.google.common.collect.Lists;
 import uk.ac.ebi.centres.Comparison;
-import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Node;
 import uk.ac.ebi.centres.LigandSorter;
 import uk.ac.ebi.centres.PriorityRule;
 
@@ -91,7 +91,7 @@ public class Rules<A> extends AbstractPriorityRule<A> {
      * @see uk.ac.ebi.centres.PriorityRule#getType()
      */
     @Override
-    public int compare(Ligand<A> o1, Ligand<A> o2) {
+    public int compare(Node<A> o1, Node<A> o2) {
 
         // Try using each rule. The rules will expand the search exhaustively
         // to all child ligands
@@ -121,7 +121,7 @@ public class Rules<A> extends AbstractPriorityRule<A> {
      * @see uk.ac.ebi.centres.PriorityRule#getType()
      */
     @Override
-    public Comparison compareLigands(Ligand<A> o1, Ligand<A> o2) {
+    public Comparison compareLigands(Node<A> o1, Node<A> o2) {
 
         // Try using each rule. The rules will expand the search exhaustively
         // to all child ligands

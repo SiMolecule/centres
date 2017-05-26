@@ -22,7 +22,7 @@ import com.google.common.collect.Sets;
 import org.openscience.cdk.interfaces.IAtom;
 import uk.ac.ebi.centres.ConnectionProvider;
 import uk.ac.ebi.centres.Descriptor;
-import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Node;
 import uk.ac.ebi.centres.MutableDescriptor;
 import uk.ac.ebi.centres.graph.Edge;
 
@@ -34,7 +34,7 @@ import java.util.Set;
 /**
  * @author John May
  */
-public abstract class AbstractLigand<A> implements Ligand<A> {
+public abstract class AbstractNode<A> implements Node<A> {
 
   private Descriptor auxiliary = Descriptor.Unknown;
   private       ConnectionProvider<A> provider;
@@ -42,15 +42,15 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
   private final MutableDescriptor     descriptor;
   private final int                   distance;
   private       boolean               duplicate;
-  private       List<Ligand<A>>       ligands;
+  private       List<Node<A>>         nodes;
   private       Descriptor            descriptorCache;
   private Set<Class<?>> orderedBy = new HashSet<Class<?>>();
 
 
-  public AbstractLigand(ConnectionProvider<A> provider,
-                        Set<A> visited,
-                        MutableDescriptor descriptor,
-                        int distance)
+  public AbstractNode(ConnectionProvider<A> provider,
+                      Set<A> visited,
+                      MutableDescriptor descriptor,
+                      int distance)
   {
 
     this.provider = provider;
@@ -63,9 +63,9 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
   }
 
 
-  public AbstractLigand(Set<A> visited,
-                        MutableDescriptor descriptor,
-                        int distance)
+  public AbstractNode(Set<A> visited,
+                      MutableDescriptor descriptor,
+                      int distance)
   {
 
     this.descriptor = descriptor;
@@ -77,8 +77,8 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
   }
 
 
-  public AbstractLigand(MutableDescriptor descriptor,
-                        int distance)
+  public AbstractNode(MutableDescriptor descriptor,
+                      int distance)
   {
 
     this.descriptor = descriptor;
@@ -151,16 +151,16 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
    * @inheritDoc
    */
   @Override
-  public List<Ligand<A>> getLigands()
+  public List<Node<A>> getNodes()
   {
-    if (ligands == null)
-      ligands = provider.getLigands(this);
-    return ligands;
+    if (nodes == null)
+      nodes = provider.getLigands(this);
+    return nodes;
   }
 
   public void reset()
   {
-    ligands = null;
+    nodes = null;
   }
 
 

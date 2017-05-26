@@ -18,7 +18,7 @@
 
 package uk.ac.ebi.centres.calculator;
 
-import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Node;
 
 /**
  * @author John May
@@ -38,7 +38,7 @@ public abstract class ThreeDimensionalSignCalculator<A>
 
 
     @Override
-    public int getSign(Ligand<A> centre, Ligand<A> a1, Ligand<A> a2, Ligand<A> a3, Ligand<A> a4) {
+    public int getSign(Node<A> centre, Node<A> a1, Node<A> a2, Node<A> a3, Node<A> a4) {
 
         // unspecified
         if (a1.getDepth() == 0 && a2.getDepth() == 0

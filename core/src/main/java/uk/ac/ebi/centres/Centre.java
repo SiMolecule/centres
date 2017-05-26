@@ -36,7 +36,7 @@ import java.util.Set;
  * @see uk.ac.ebi.centres.descriptor.Descriptor
  * @see uk.ac.ebi.centres.descriptor.Trigonal
  */
-public interface Centre<A> extends Ligand<A> {
+public interface Centre<A> extends Node<A> {
 
 
     /**
@@ -63,7 +63,7 @@ public interface Centre<A> extends Ligand<A> {
      */
     public Descriptor perceive(PriorityRule<A> rule, SignCalculator<A> calculator);
 
-    public Descriptor perceive(List<Ligand<A>> proximal, PriorityRule<A> rule, SignCalculator<A> calculator);
+    public Descriptor perceive(List<Node<A>> proximal, PriorityRule<A> rule, SignCalculator<A> calculator);
 
     public int perceiveAuxiliary(Collection<Centre<A>> centres,
                                   PriorityRule<A> rule,

@@ -20,8 +20,7 @@ package uk.ac.ebi.centres.priority;
 
 import com.google.common.collect.Maps;
 import uk.ac.ebi.centres.Descriptor;
-import uk.ac.ebi.centres.Ligand;
-import uk.ac.ebi.centres.priority.AbstractPriorityRule;
+import uk.ac.ebi.centres.Node;
 import uk.ac.ebi.centres.priority.access.DescriptorAccessor;
 
 import java.util.Map;
@@ -84,13 +83,13 @@ public class DescriptorRule<A> extends AbstractPriorityRule<A> {
     /**
      * Access the rank using the accessor and the map.
      *
-     * @param ligand the ligand which to access the rank of it's descriptor
+     * @param node the ligand which to access the rank of it's descriptor
      *
      * @return an integer ranking (higher number=higher priority), will default
      *         to 0.
      */
-    private int getRank(Ligand<A> ligand) {
-        Descriptor descriptor = accessor.getDescriptor(ligand);
+    private int getRank(Node<A> node) {
+        Descriptor descriptor = accessor.getDescriptor(node);
         Integer rank = ranking.get(descriptor);
         return rank == null ? 0 : rank;
     }
@@ -102,7 +101,7 @@ public class DescriptorRule<A> extends AbstractPriorityRule<A> {
      * @inheritDoc
      */
     @Override
-    public int compare(Ligand<A> o1, Ligand<A> o2) {
+    public int compare(Node<A> o1, Node<A> o2) {
         return getRank(o1) - getRank(o2);
     }
 

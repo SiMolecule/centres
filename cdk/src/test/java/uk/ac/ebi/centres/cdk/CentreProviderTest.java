@@ -25,7 +25,7 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import uk.ac.ebi.centres.Centre;
 import uk.ac.ebi.centres.Digraph;
 import uk.ac.ebi.centres.io.CytoscapeWriter;
-import uk.ac.ebi.centres.ligand.AbstractLigand;
+import uk.ac.ebi.centres.ligand.AbstractNode;
 
 import java.io.File;
 import java.io.IOException;
@@ -160,10 +160,10 @@ public class CentreProviderTest {
      */
     public void write(String name, Centre centre) throws IOException {
 
-        AbstractLigand<IAtom> ligand = ((AbstractLigand<IAtom>) centre);
+        AbstractNode<IAtom> ligand = ((AbstractNode<IAtom>) centre);
         ligand.getProvider().build();
 
-        Digraph digraph = (Digraph) ((AbstractLigand) centre).getProvider();
+        Digraph digraph = (Digraph) ((AbstractNode) centre).getProvider();
 
         CytoscapeWriter<IAtom> writer = new CytoscapeWriter<IAtom>(new File(name),
                                                                    digraph) {
