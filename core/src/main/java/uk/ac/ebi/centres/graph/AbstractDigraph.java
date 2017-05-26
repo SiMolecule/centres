@@ -46,7 +46,7 @@ import java.util.Queue;
  */
 public abstract class AbstractDigraph<A> implements Digraph<A>,
                                                     ConnectionProvider<A> {
-    private static final int NODE_LIMIT = 10000;
+    private static final int NODE_LIMIT = 1000000;
     private Ligand<A> root;
     private ArcMap                     arcs      = new ArcMap(); // Could set expected size
     private ListMultimap<A, Ligand<A>> ligandMap = ArrayListMultimap.create();
