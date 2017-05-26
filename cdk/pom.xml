@@ -29,6 +29,10 @@
 
     <artifactId>centres-cdk</artifactId>
 
+    <properties>
+      <cdk.version>2.0</cdk.version>
+    </properties>
+
     <dependencies>
 
         <dependency>
@@ -41,32 +45,40 @@
             <artifactId>centres-priority</artifactId>
             <version>${project.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>19.0</version>
+        </dependency>
         <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-interfaces</artifactId>
-            <version>1.5.10</version>
+            <version>${cdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-sdg</artifactId>
+            <version>${cdk.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-io</artifactId>
-            <version>1.5.10</version>
+            <version>${cdk.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-standard</artifactId>
-            <version>1.5.10</version>
+            <version>${cdk.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-smiles</artifactId>
-            <version>1.5.10</version>
+            <version>${cdk.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-silent</artifactId>
-            <version>1.5.10</version>
+            <version>${cdk.version}</version>
         </dependency>
 
         <dependency>
