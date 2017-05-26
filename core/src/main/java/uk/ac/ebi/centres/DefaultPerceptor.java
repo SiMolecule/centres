@@ -53,48 +53,64 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
         this.auxPerceptor = new CentrePerceptor<A>(auxRule) {
             @Override
             public Descriptor perceive(Centre<A> centre, Collection<Centre<A>> centres) {
-                // only attempt re-perception if there were auxiliary labels defined
-                return centre.perceiveAuxiliary(centres, auxRule, calculator) > 0
-                       ? centre.perceive(auxRule, calculator)
-                       : General.UNKNOWN;
+                System.err.println("Perceive aux");
+                if (centre.perceiveAuxiliary(centres, rule, calculator) > 0) {
+                    System.err.println("Using Aux for...");
+                    // only attempt re-perception if there were auxiliary labels defined
+                    return centre.perceive(auxRule, calculator);
+                }
+                return General.UNKNOWN;
             }
         };
     }
 
 
     private List<Centre<A>> _perceive(Collection<Centre<A>> unperceived,
-                                      CentrePerceptor<A> perceptor) {
+                                      CentrePerceptor<A> perceptor,
+                                      CentrePerceptor<A> auxperceptor) {
 
         List<Centre<A>> perceived = new ArrayList<Centre<A>>();
         Map<Centre<A>, Descriptor> map = new LinkedHashMap<Centre<A>, Descriptor>();
 
-
+        OUTER:
         do {
+            do {
+                map.clear();
 
-            map.clear();
+                for (Centre<A> centre : unperceived) {
+                    Descriptor descriptor = perceptor.perceive(centre, unperceived);
+                    if (descriptor != General.UNKNOWN)
+                        map.put(centre, descriptor);
+                }
+                transferLabels(unperceived, perceived, map);
+                if (unperceived.isEmpty())
+                    break OUTER;
+            } while (!map.isEmpty());
 
-            for (Centre<A> centre : unperceived) {
-
-                Descriptor descriptor = perceptor.perceive(centre, unperceived);
-
-                if (descriptor != General.UNKNOWN)
-                    map.put(centre, descriptor);
-
+            if (!unperceived.isEmpty()) {
+                for (Centre<A> centre : unperceived) {
+                    Descriptor descriptor = auxperceptor.perceive(centre, unperceived);
+                    if (descriptor != General.UNKNOWN)
+                        map.put(centre, descriptor);
+                }
+                transferLabels(unperceived, perceived, map);
             }
-
-
-            // transfer descriptors
-            for (Map.Entry<Centre<A>, Descriptor> entry : map.entrySet()) {
-                unperceived.remove(entry.getKey());
-                perceived.add(entry.getKey());
-                entry.getKey().dispose();
-                entry.getKey().setDescriptor(entry.getValue());
-            }
-                        
         } while (!map.isEmpty());
 
         return perceived;
 
+    }
+
+    private void transferLabels(Collection<Centre<A>> unperceived, List<Centre<A>> perceived,
+                                Map<Centre<A>, Descriptor> map)
+    {
+        // transfer descriptors
+        for (Map.Entry<Centre<A>, Descriptor> entry : map.entrySet()) {
+            unperceived.remove(entry.getKey());
+            perceived.add(entry.getKey());
+            entry.getKey().dispose();
+            entry.getKey().setDescriptor(entry.getValue());
+        }
     }
 
 
@@ -108,13 +124,7 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
         if (unperceived.isEmpty())
             return;
 
-        // could switch to only use this on large molecule
-        List<Centre<A>> perceived = _perceive(unperceived, mainPerceptor);
-
-        // no centres perceived, perform auxiliary perception
-        //if (!unperceived.isEmpty() && perceived.isEmpty()) {
-            perceived.addAll(_perceive(unperceived, auxPerceptor));
-        //}
+        _perceive(unperceived, mainPerceptor, auxPerceptor);
 
         // set all unperceived centres to 'none'
         for (Centre<A> centre : unperceived) {
