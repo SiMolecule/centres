@@ -41,7 +41,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author John May
  */
-public class AtomicNumberRuleTest {
+public class Rule1aTest {
 
     private AtomicNumberAccessor<TestAtom> accessor = new AtomicNumberAccessor<TestAtom>() {
         @Override
@@ -50,7 +50,7 @@ public class AtomicNumberRuleTest {
         }
     };
 
-    private AtomicNumberRule<TestAtom> rule = new AtomicNumberRule<TestAtom>(accessor);
+    private Rule1a<TestAtom> rule = new Rule1a<TestAtom>(accessor);
 
 
     @Test

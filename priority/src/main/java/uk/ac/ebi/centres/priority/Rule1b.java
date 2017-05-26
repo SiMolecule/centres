@@ -16,25 +16,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-package uk.ac.ebi.centres.priority.descriptor;
+package uk.ac.ebi.centres.priority;
 
-import uk.ac.ebi.centres.Descriptor;
-import uk.ac.ebi.centres.descriptor.Tetrahedral;
-import uk.ac.ebi.centres.priority.access.DescriptorAccessor;
+import uk.ac.ebi.centres.Ligand;
 
-/**
- * A rule with prioritises ligands in R configuration over those in S
- * configuration. This rule is pseudo-asymmetric
- *
- * @author John May
- */
-public class RSRule<A> extends DescriptorRule<A> {
+public class Rule1b<A>
+        extends AbstractPriorityRule<A> {
 
-    public RSRule(DescriptorAccessor<A> accessor) {
-        super(Descriptor.Type.PSEUDO_ASYMMETRIC,
-              Type.TOPOGRAPHICAL,
-              accessor,
-              Tetrahedral.S, Tetrahedral.R);
+    public Rule1b(){
+        super(Type.CONSTITUTIONAL);
+    }
+
+    @Override
+    public int compare(Ligand<A> o1, Ligand<A> o2) {
+        if (o1.isDuplicate() && !o2.isDuplicate()) {
+            return 1;
+        } else if (o2.isDuplicate() && !o1.isDuplicate()) {
+            return -1;
+        } else
+            return 0;
     }
 
 }

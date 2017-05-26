@@ -37,7 +37,7 @@ import static org.junit.Assert.assertThat;
 /**
  * @author John May
  */
-public class MassNumberRuleTest {
+public class Rule2Test {
 
     private MassNumberAccessor<TestAtom> accessor = new MassNumberAccessor<TestAtom>() {
         @Override
@@ -46,7 +46,7 @@ public class MassNumberRuleTest {
         }
     };
 
-    private MassNumberRule<TestAtom> rule = new MassNumberRule<TestAtom>(accessor);
+    private Rule2<TestAtom> rule = new Rule2<TestAtom>(accessor);
 
 
     @Test

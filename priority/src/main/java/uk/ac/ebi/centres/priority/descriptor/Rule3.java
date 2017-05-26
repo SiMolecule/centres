@@ -27,9 +27,9 @@ import uk.ac.ebi.centres.priority.access.descriptor.ArcPrimaryDescriptor;
  *
  * @author John May
  */
-public class ZERule<A> extends DescriptorRule<A> {
+public class Rule3<A> extends DescriptorRule<A> {
 
-    public ZERule() {
+    public Rule3() {
         super(new ArcPrimaryDescriptor<A>(), Type.GEOMETRICAL, Planar.E, Planar.Z);
     }
 

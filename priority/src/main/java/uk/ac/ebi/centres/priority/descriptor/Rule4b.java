@@ -45,7 +45,7 @@ import java.util.TreeSet;
  *
  * @author John May
  */
-public class PairRule<A>
+public class Rule4b<A>
         extends AbstractPriorityRule<A> {
 
     private final DescriptorAccessor<A> accessor;
@@ -58,7 +58,7 @@ public class PairRule<A>
      *
      * @param accessor access to a descriptor on a ligand
      */
-    public PairRule(DescriptorAccessor<A> accessor) {
+    public Rule4b(DescriptorAccessor<A> accessor) {
         super(Type.GEOMETRICAL);
         this.accessor = accessor;
     }

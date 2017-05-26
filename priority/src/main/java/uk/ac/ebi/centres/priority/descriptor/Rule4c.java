@@ -26,8 +26,8 @@ import uk.ac.ebi.centres.priority.access.DescriptorAccessor;
  *
  * @author John May
  */
-public class PseudoRSRule<A> extends DescriptorRule<A> {
-    public PseudoRSRule(DescriptorAccessor<A> accessor) {
+public class Rule4c<A> extends DescriptorRule<A> {
+    public Rule4c(DescriptorAccessor<A> accessor) {
         super(accessor, Type.GEOMETRICAL, Tetrahedral.s, Tetrahedral.r);
     }
 }

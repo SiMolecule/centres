@@ -19,44 +19,44 @@
 package uk.ac.ebi.centres.priority;
 
 import uk.ac.ebi.centres.Ligand;
-import uk.ac.ebi.centres.priority.access.AtomicNumberAccessor;
+import uk.ac.ebi.centres.priority.access.MassNumberAccessor;
 
 /**
- * An abstract class for constitutional priority based on atomic number. An
- * atomic number accessor ({@link AtomicNumberAccessor}) can be provided to
- * allow the comparator to work on a custom atom type.
+ * An abstract class for constitutional priority based on mass number. A mass
+ * number accessor ({@link uk.ac.ebi.centres.priority.access.MassNumberAccessor})
+ * can be provided to allow the comparator to work on a custom atom type.
  *
  * @author John May
  */
-public class AtomicNumberRule<A>
+public class Rule2<A>
         extends AbstractPriorityRule<A> {
 
     /**
      * Accessor used to get the atomic number from an atom.
      */
-    private final AtomicNumberAccessor<A> accessor;
+    private final MassNumberAccessor<A> accessor;
 
 
     /**
-     * Constructs an atomic number comparator that uses the provided accessor to
-     * fetch the atomic number for a given atom.
+     * Constructs an mass number comparator that uses the provided accessor to
+     * fetch the mass number for a given atom.
      *
-     * @param accessor an accessor for the atom's atomic number
+     * @param accessor an accessor for the atom's mass number
      */
-    public AtomicNumberRule(AtomicNumberAccessor<A> accessor) {
+    public Rule2(MassNumberAccessor<A> accessor) {
         super(Type.CONSTITUTIONAL);
         this.accessor = accessor;
     }
 
 
     /**
-     * Compares the ligands by their atoms atomic numbers.
+     * Compares the ligands by their atoms mass numbers.
      *
      * @inheritDoc
      */
     @Override
     public int compare(Ligand<A> o1, Ligand<A> o2) {
-        return accessor.getAtomicNumber(o1.getAtom()) - accessor.getAtomicNumber(o2.getAtom());
+        return accessor.getMassNumber(o1.getAtom()) - accessor.getMassNumber(o2.getAtom());
     }
 
 }

@@ -25,19 +25,19 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IIsotope;
 import uk.ac.ebi.centres.DefaultPerceptor;
 import uk.ac.ebi.centres.SignCalculator;
-import uk.ac.ebi.centres.priority.AtomicNumberRule;
+import uk.ac.ebi.centres.priority.Rule1a;
 import uk.ac.ebi.centres.priority.CombinedRule;
-import uk.ac.ebi.centres.priority.DuplicateAtomRule;
-import uk.ac.ebi.centres.priority.MassNumberRule;
+import uk.ac.ebi.centres.priority.Rule1b;
+import uk.ac.ebi.centres.priority.Rule2;
 import uk.ac.ebi.centres.priority.access.AtomicNumberAccessor;
 import uk.ac.ebi.centres.priority.access.MassNumberAccessor;
 import uk.ac.ebi.centres.priority.access.PsuedoAtomicNumberModifier;
 import uk.ac.ebi.centres.priority.access.descriptor.PrimaryOrAuxiliary;
 import uk.ac.ebi.centres.priority.access.descriptor.PrimaryDescriptor;
-import uk.ac.ebi.centres.priority.descriptor.PairRule;
-import uk.ac.ebi.centres.priority.descriptor.PseudoRSRule;
-import uk.ac.ebi.centres.priority.descriptor.RSRule;
-import uk.ac.ebi.centres.priority.descriptor.ZERule;
+import uk.ac.ebi.centres.priority.descriptor.Rule4b;
+import uk.ac.ebi.centres.priority.descriptor.Rule4c;
+import uk.ac.ebi.centres.priority.descriptor.Rule5;
+import uk.ac.ebi.centres.priority.descriptor.Rule3;
 
 import java.io.IOException;
 
@@ -75,7 +75,7 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
 
     public CDKPerceptor(SignCalculator<IAtom> calculator) {
         super(new CombinedRule<IAtom>(
-                      new AtomicNumberRule<IAtom>(
+                      new Rule1a<IAtom>(
                               new PsuedoAtomicNumberModifier<IAtom>(
                                       new AtomicNumberAccessor<IAtom>() {
                                           @Override
@@ -84,15 +84,15 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
                                           }
                                       }))
                       ,
-                      new DuplicateAtomRule<IAtom>(),
-                      new MassNumberRule<IAtom>(cdkMassNumberAccessor),
-                      new ZERule<IAtom>(),
-                      new PairRule<IAtom>(new PrimaryDescriptor<IAtom>()),
-                      new PseudoRSRule<IAtom>(new PrimaryDescriptor<IAtom>()),
-                      new RSRule<IAtom>(new PrimaryDescriptor<IAtom>())
+                      new Rule1b<IAtom>(),
+                      new Rule2<IAtom>(cdkMassNumberAccessor),
+                      new Rule3<IAtom>(),
+                      new Rule4b<IAtom>(new PrimaryDescriptor<IAtom>()),
+                      new Rule4c<IAtom>(new PrimaryDescriptor<IAtom>()),
+                      new Rule5<IAtom>(new PrimaryDescriptor<IAtom>())
               ),
               new CombinedRule<IAtom>(
-                      new AtomicNumberRule<IAtom>(
+                      new Rule1a<IAtom>(
                               new PsuedoAtomicNumberModifier<IAtom>(
                                       new AtomicNumberAccessor<IAtom>() {
                                           @Override
@@ -100,11 +100,11 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
                                               return atomicNumber(atom);
                                           }
                                       })),
-                      new MassNumberRule<IAtom>(cdkMassNumberAccessor),
-                      new ZERule<IAtom>(),
-                      new PairRule<IAtom>(new PrimaryOrAuxiliary<IAtom>()),
-                      new PseudoRSRule<IAtom>(new PrimaryOrAuxiliary<IAtom>()),
-                      new RSRule<IAtom>(new PrimaryOrAuxiliary<IAtom>())
+                      new Rule2<IAtom>(cdkMassNumberAccessor),
+                      new Rule3<IAtom>(),
+                      new Rule4b<IAtom>(new PrimaryOrAuxiliary<IAtom>()),
+                      new Rule4c<IAtom>(new PrimaryOrAuxiliary<IAtom>()),
+                      new Rule5<IAtom>(new PrimaryOrAuxiliary<IAtom>())
               ),
               calculator);
     }

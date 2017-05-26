@@ -25,8 +25,6 @@ import uk.ac.ebi.centres.Ligand;
 import uk.ac.ebi.centres.LigandComparison;
 import uk.ac.ebi.centres.LigandSorter;
 import uk.ac.ebi.centres.PriorityRule;
-import uk.ac.ebi.centres.ligand.TetrahedralCentre;
-import uk.ac.ebi.centres.priority.descriptor.PairRule;
 
 import java.util.List;
 

@@ -16,25 +16,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-package uk.ac.ebi.centres.priority;
+package uk.ac.ebi.centres.priority.descriptor;
 
-import uk.ac.ebi.centres.Ligand;
+import uk.ac.ebi.centres.Descriptor;
+import uk.ac.ebi.centres.descriptor.Tetrahedral;
+import uk.ac.ebi.centres.priority.access.DescriptorAccessor;
 
-public class DuplicateAtomRule<A>
-        extends AbstractPriorityRule<A> {
+/**
+ * A rule with prioritises ligands in R configuration over those in S
+ * configuration. This rule is pseudo-asymmetric
+ *
+ * @author John May
+ */
+public class Rule5<A> extends DescriptorRule<A> {
 
-    public DuplicateAtomRule(){
-        super(Type.CONSTITUTIONAL);
-    }
-
-    @Override
-    public int compare(Ligand<A> o1, Ligand<A> o2) {
-        if (o1.isDuplicate() && !o2.isDuplicate()) {
-            return 1;
-        } else if (o2.isDuplicate() && !o1.isDuplicate()) {
-            return -1;
-        } else
-            return 0;
+    public Rule5(DescriptorAccessor<A> accessor) {
+        super(Descriptor.Type.PSEUDO_ASYMMETRIC,
+              Type.TOPOGRAPHICAL,
+              accessor,
+              Tetrahedral.S, Tetrahedral.R);
     }
 
 }
