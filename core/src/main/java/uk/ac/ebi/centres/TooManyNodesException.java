@@ -16,21 +16,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-package uk.ac.ebi.centres.priority.descriptor;
-
-import uk.ac.ebi.centres.descriptor.Planar;
-import uk.ac.ebi.centres.priority.access.descriptor.ArcPrimaryDescriptor;
+package uk.ac.ebi.centres;
 
 /**
- * A rule with prioritises ligands in Z (cis) configuration over those in E
- * (trans) configuration.
- *
  * @author John May
  */
-public class Rule3<A> extends DescriptorRule<A> {
+public class TooManyNodesException extends RuntimeException {
 
-    public Rule3() {
-        super(new ArcPrimaryDescriptor<A>(), Type.GEOMETRICAL, Planar.E, Planar.Z);
+    public TooManyNodesException() {
+        super("Too many nodes in the digraph were created");
     }
 
 }

@@ -28,11 +28,11 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.io.MDLV2000Writer;
+import org.openscience.cdk.layout.StructureDiagramGenerator;
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
+import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import uk.ac.ebi.centres.Descriptor;
-import uk.ac.ebi.centres.descriptor.General;
-import uk.ac.ebi.centres.descriptor.Planar;
-import uk.ac.ebi.centres.descriptor.Tetrahedral;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
@@ -65,10 +65,10 @@ public class PerceptorTest {
         perceptor.perceive(container);
 
         assertEquals("incorrect descriptor for c7 of alliin",
-                     Tetrahedral.R,
+                     Descriptor.R,
                      container.getAtom(6).getProperty("descriptor"));
         assertEquals("invariance due to lone pair was not perceived",
-                     Tetrahedral.S,
+                     Descriptor.S,
                      container.getAtom(3).getProperty("descriptor"));
 
     }
@@ -86,12 +86,12 @@ public class PerceptorTest {
         AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);                                            
         perceptor.perceive(container);
 
-        assertEquals(Tetrahedral.r, container.getAtom(0).getProperty("descriptor"));
-        assertEquals(Tetrahedral.R, container.getAtom(1).getProperty("descriptor"));
-        assertEquals(Tetrahedral.S, container.getAtom(2).getProperty("descriptor"));
-        assertEquals(Tetrahedral.s, container.getAtom(3).getProperty("descriptor"));
-        assertEquals(Tetrahedral.R, container.getAtom(4).getProperty("descriptor"));
-        assertEquals(Tetrahedral.S, container.getAtom(5).getProperty("descriptor"));
+        assertEquals(Descriptor.r, container.getAtom(0).getProperty("descriptor"));
+        assertEquals(Descriptor.R, container.getAtom(1).getProperty("descriptor"));
+        assertEquals(Descriptor.S, container.getAtom(2).getProperty("descriptor"));
+        assertEquals(Descriptor.s, container.getAtom(3).getProperty("descriptor"));
+        assertEquals(Descriptor.R, container.getAtom(4).getProperty("descriptor"));
+        assertEquals(Descriptor.S, container.getAtom(5).getProperty("descriptor"));
 
     }
 
@@ -117,12 +117,12 @@ public class PerceptorTest {
 
         perceptor.perceive(container);
 
-        assertEquals(Tetrahedral.r, container.getAtom(0).getProperty("descriptor"));
-        assertEquals(Tetrahedral.S, container.getAtom(1).getProperty("descriptor")); // maps to atom 6 non inverse
-        assertEquals(Tetrahedral.R, container.getAtom(2).getProperty("descriptor")); // maps to atom 5 non inverse
-        assertEquals(Tetrahedral.s, container.getAtom(3).getProperty("descriptor"));
-        assertEquals(Tetrahedral.S, container.getAtom(4).getProperty("descriptor")); // maps to atom 3 non inverse
-        assertEquals(Tetrahedral.R, container.getAtom(5).getProperty("descriptor")); // maps to atom 2 non inverse
+        assertEquals(Descriptor.r, container.getAtom(0).getProperty("descriptor"));
+        assertEquals(Descriptor.S, container.getAtom(1).getProperty("descriptor")); // maps to atom 6 non inverse
+        assertEquals(Descriptor.R, container.getAtom(2).getProperty("descriptor")); // maps to atom 5 non inverse
+        assertEquals(Descriptor.s, container.getAtom(3).getProperty("descriptor"));
+        assertEquals(Descriptor.S, container.getAtom(4).getProperty("descriptor")); // maps to atom 3 non inverse
+        assertEquals(Descriptor.R, container.getAtom(5).getProperty("descriptor")); // maps to atom 2 non inverse
 
     }
 
@@ -144,7 +144,7 @@ public class PerceptorTest {
         perceptor.perceive(container);
 
         assertEquals("Expected E conformation",
-                     Planar.E, container.getBond(6).getProperty("descriptor"));
+                     Descriptor.E, container.getBond(6).getProperty("descriptor"));
 
     }
 
@@ -169,7 +169,7 @@ public class PerceptorTest {
         perceptor3D.perceive(container);
 
         assertEquals("Expected Z conformation",
-                     Planar.Z, container.getBond(6).getProperty("descriptor"));
+                     Descriptor.Z, container.getBond(6).getProperty("descriptor"));
 
     }
 
@@ -187,7 +187,7 @@ public class PerceptorTest {
         perceptor.perceive(container);
 
         assertEquals("Expected S conformation",
-                     Tetrahedral.S, container.getAtom(0).getProperty("descriptor"));
+                     Descriptor.S, container.getAtom(0).getProperty("descriptor"));
 
 
     }
@@ -206,7 +206,7 @@ public class PerceptorTest {
         perceptor.perceive(container);
 
         assertEquals("Expected S conformation",
-                     Tetrahedral.S, container.getAtom(0).getProperty("descriptor"));
+                     Descriptor.S, container.getAtom(0).getProperty("descriptor"));
 
 
     }
@@ -222,7 +222,7 @@ public class PerceptorTest {
         perceptor.perceive(container);
 
         assertEquals("expected R conformation",
-                     Tetrahedral.R, container.getAtom(12).getProperty("descriptor"));
+                     Descriptor.R, container.getAtom(12).getProperty("descriptor"));
 
 
     }
@@ -234,24 +234,24 @@ public class PerceptorTest {
 
         perceptor.perceive(container);
 
-        assertThat(container.getBond(48).getProperty("descriptor", Planar.class),
-                   is(Planar.Z));
+        assertThat(container.getBond(48).getProperty("descriptor", Descriptor.class),
+                   is(Descriptor.Z));
 
-        assertThat(container.getAtom(0).getProperty("descriptor", Tetrahedral.class),
-                   is(Tetrahedral.R));
-        assertThat(container.getAtom(1).getProperty("descriptor", Tetrahedral.class),
-                   is(Tetrahedral.S));
-        assertThat(container.getAtom(2).getProperty("descriptor", Tetrahedral.class),
-                   is(Tetrahedral.R));
-        assertThat(container.getAtom(3).getProperty("descriptor", Tetrahedral.class),
-                   is(Tetrahedral.R));
-        assertThat(container.getAtom(4).getProperty("descriptor", Tetrahedral.class),
-                   is(Tetrahedral.S));
-        assertThat(container.getAtom(5).getProperty("descriptor", Tetrahedral.class),
-                   is(Tetrahedral.S));
+        assertThat(container.getAtom(0).getProperty("descriptor", Descriptor.class),
+                   is(Descriptor.R));
+        assertThat(container.getAtom(1).getProperty("descriptor", Descriptor.class),
+                   is(Descriptor.S));
+        assertThat(container.getAtom(2).getProperty("descriptor", Descriptor.class),
+                   is(Descriptor.R));
+        assertThat(container.getAtom(3).getProperty("descriptor", Descriptor.class),
+                   is(Descriptor.R));
+        assertThat(container.getAtom(4).getProperty("descriptor", Descriptor.class),
+                   is(Descriptor.S));
+        assertThat(container.getAtom(5).getProperty("descriptor", Descriptor.class),
+                   is(Descriptor.S));
 
-        assertThat(container.getAtom(17).getProperty("descriptor", Tetrahedral.class),
-                   is(Tetrahedral.R));
+        assertThat(container.getAtom(17).getProperty("descriptor", Descriptor.class),
+                   is(Descriptor.R));
 
     }
 
@@ -266,8 +266,8 @@ public class PerceptorTest {
 
             int j = 0;
             for (IAtom a : container.atoms()) {
-                Descriptor descriptor = a.getProperty("descriptor");
-                if (descriptor != General.UNKNOWN) {
+                uk.ac.ebi.centres.Descriptor descriptor = a.getProperty("descriptor");
+                if (descriptor != Descriptor.Unknown) {
                     if (j++ > 0)
                         System.out.print(", ");
                     System.out.print(a.getSymbol() + ((container.getAtomNumber(a) + 1)) + ": " + descriptor);
@@ -288,8 +288,8 @@ public class PerceptorTest {
 
             int j = 0;
             for (IAtom a : container.atoms()) {
-                Descriptor descriptor = a.getProperty("descriptor");
-                if (descriptor != General.UNKNOWN) {
+                uk.ac.ebi.centres.Descriptor descriptor = a.getProperty("descriptor");
+                if (descriptor != Descriptor.Unknown) {
                     if (j++ > 0)
                         System.out.print(", ");
                     System.out.print(a.getSymbol() + ((container.getAtomNumber(a) + 1)) + ": " + descriptor);
@@ -308,8 +308,8 @@ public class PerceptorTest {
 
             int j = 0;
             for (IAtom a : container.atoms()) {
-                Descriptor descriptor = a.getProperty("descriptor");
-                if (descriptor != General.UNKNOWN) {
+                uk.ac.ebi.centres.Descriptor descriptor = a.getProperty("descriptor");
+                if (descriptor != Descriptor.Unknown) {
                     if (j++ > 0)
                         System.out.print(", ");
                     System.out.print(a.getSymbol() + ((container.getAtomNumber(a) + 1)) + ": " + descriptor);
@@ -330,8 +330,8 @@ public class PerceptorTest {
 
             int j = 0;
             for (IAtom a : container.atoms()) {
-                Descriptor descriptor = a.getProperty("descriptor");
-                if (descriptor != General.UNKNOWN) {
+                uk.ac.ebi.centres.Descriptor descriptor = a.getProperty("descriptor");
+                if (descriptor != Descriptor.Unknown) {
                     if (j++ > 0)
                         System.out.print(", ");
                     System.out.print(a.getSymbol() + ((container.getAtomNumber(a) + 1)) + ": " + descriptor);
@@ -378,9 +378,9 @@ public class PerceptorTest {
         String path = "CHEBI_3049.mol";
         IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
         perceptor.perceive(container);
-        assertThat(container.getAtom(0).getProperty("descriptor"), CoreMatchers.<Object>is(Tetrahedral.R));
+        assertThat(container.getAtom(0).getProperty("descriptor"), CoreMatchers.<Object>is(Descriptor.R));
         System.out.println(container.getAtom(1).getProperty("descriptor")); // check this one
-        assertThat(container.getAtom(3).getProperty("descriptor"), CoreMatchers.<Object>is(Tetrahedral.S));
+        assertThat(container.getAtom(3).getProperty("descriptor"), CoreMatchers.<Object>is(Descriptor.S));
     }
 
     @Test public void mixed_h_representation() {
@@ -388,28 +388,28 @@ public class PerceptorTest {
         IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
         perceptor.perceive(container);
         System.out.println(container.getAtom(1).getProperty("descriptor"));
-        assertThat(container.getAtom(1).getProperty("descriptor"), CoreMatchers.<Object>is(General.NONE));
+        assertThat(container.getAtom(1).getProperty("descriptor"), CoreMatchers.<Object>is(Descriptor.None));
     }
 
     @Test public void bad_h_representation() {
         String path = "bad_h_labels.mol";
         IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
         perceptor.perceive(container);
-        assertThat(container.getAtom(1).getProperty("descriptor"), CoreMatchers.<Object>is(General.NONE));
+        assertThat(container.getAtom(1).getProperty("descriptor"), CoreMatchers.<Object>is(Descriptor.None));
     }
 
     @Test public void r_sarin() {
         String path = "r_sarin.mol";
         IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
         perceptor.perceive(container);
-        assertThat(container.getAtom(4).getProperty("descriptor"), CoreMatchers.<Object>is(Tetrahedral.R));
+        assertThat(container.getAtom(4).getProperty("descriptor"), CoreMatchers.<Object>is(Descriptor.R));
     }
 
     @Test public void s_sarin() {
         String path = "s_sarin.mol";
         IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
         perceptor.perceive(container);
-        assertThat(container.getAtom(4).getProperty("descriptor"), CoreMatchers.<Object>is(Tetrahedral.S));
+        assertThat(container.getAtom(4).getProperty("descriptor"), CoreMatchers.<Object>is(Descriptor.S));
     }
     
     @Test public void chebi_16419() {
@@ -425,7 +425,7 @@ public class PerceptorTest {
         IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
         AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);
         perceptor.perceive(container);
-        assertThat(container.getAtom(1).getProperty("descriptor"), CoreMatchers.<Object>is(Tetrahedral.S));
+        assertThat(container.getAtom(1).getProperty("descriptor"), CoreMatchers.<Object>is(Descriptor.S));
     }
 
     // ChEBI 4991 used to throw an exception
@@ -482,8 +482,8 @@ public class PerceptorTest {
         IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
         AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);
         perceptor.perceive(container);
-        assertThat(container.getAtom(0).getProperty("descriptor"), CoreMatchers.<Object>is(Tetrahedral.R));
-        assertThat(container.getAtom(2).getProperty("descriptor"), CoreMatchers.<Object>is(Tetrahedral.S));
+        assertThat(container.getAtom(0).getProperty("descriptor"), CoreMatchers.<Object>is(Descriptor.R));
+        assertThat(container.getAtom(2).getProperty("descriptor"), CoreMatchers.<Object>is(Descriptor.S));
     }
 
     @Test public void demo() {
@@ -537,8 +537,10 @@ public class PerceptorTest {
         IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
         AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);
         perceptor.perceive(container);
+        for (IAtom atom : container.atoms())
+            System.out.println(atom.getProperty("descriptor"));
         assertThat(container.getAtom(1).getProperty("descriptor"),
-                   CoreMatchers.<Object>is(Tetrahedral.R));
+                   CoreMatchers.<Object>is(Descriptor.R));
     }
 
     @Test public void chebi_17268() throws Exception {
@@ -565,13 +567,123 @@ public class PerceptorTest {
             System.out.print(container.getAtom(4).getProperty("descriptor") + ", ");
             System.out.println(container.getAtom(5).getProperty("descriptor"));
 
-            assertEquals(Tetrahedral.R, container.getAtom(0).getProperty("descriptor"));
-            assertEquals(Tetrahedral.s, container.getAtom(1).getProperty("descriptor"));
-            assertEquals(Tetrahedral.S, container.getAtom(2).getProperty("descriptor"));
-            assertEquals(Tetrahedral.R, container.getAtom(3).getProperty("descriptor"));
-            assertEquals(Tetrahedral.r, container.getAtom(4).getProperty("descriptor"));
-            assertEquals(Tetrahedral.S, container.getAtom(5).getProperty("descriptor"));
+            assertEquals(uk.ac.ebi.centres.Descriptor.R, container.getAtom(0).getProperty("descriptor"));
+            assertEquals(uk.ac.ebi.centres.Descriptor.s, container.getAtom(1).getProperty("descriptor"));
+            assertEquals(uk.ac.ebi.centres.Descriptor.S, container.getAtom(2).getProperty("descriptor"));
+            assertEquals(uk.ac.ebi.centres.Descriptor.R, container.getAtom(3).getProperty("descriptor"));
+            assertEquals(uk.ac.ebi.centres.Descriptor.r, container.getAtom(4).getProperty("descriptor"));
+            assertEquals(uk.ac.ebi.centres.Descriptor.S, container.getAtom(5).getProperty("descriptor"));
         }
 
+    }
+
+    @Test public void hydroxycyclobutane() throws Exception {
+
+        IAtomContainer container = MolLoader.loadCML(getClass().getResourceAsStream("hydroxy-cyclobutane.cml"));
+
+        assertNotNull("molecule was not loaded", container);
+
+        AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);
+        Isotopes.getInstance().configureAtoms(container);
+
+        perceptor.perceive(container);
+        for (IAtom atom : container.atoms()) {
+            System.out.println(atom.getProperty("descriptor"));
+        }
+
+        int i = 0;
+        AtomContainerAtomPermutor acap = new AtomContainerAtomPermutor(container);
+        while (acap.hasNext()) {
+            IAtomContainer permuted = acap.next();
+
+            perceptor.perceive(permuted);
+
+            System.out.print(i++ + " ");
+            System.out.print(container.getAtom(0).getProperty("descriptor") + ", ");
+            System.out.print(container.getAtom(2).getProperty("descriptor"));
+            System.out.println();
+        }
+
+    }
+
+    @Test
+    public void testBobExample() throws Exception {
+        SmilesParser smipar = new SmilesParser(SilentChemObjectBuilder.getInstance());
+        IAtomContainer mol = smipar.parseSmiles("[13C@@H]12C3C1.C2=CC3");
+        StructureDiagramGenerator sdg = new StructureDiagramGenerator();
+        sdg.generateCoordinates(mol);
+        AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(mol);
+        perceptor.perceive(mol);
+        for (IAtom atom : mol.atoms()) {
+            //if (atom.getProperty("descriptor") != null && atom.getProperty("descriptor") != General.UNKNOWN)
+            System.err.println(mol.getAtomNumber(atom) + " : " + atom.getProperty("descriptor") );
+        }
+    }
+
+    @Test
+    public void testHandBook() throws Exception {
+        SmilesParser              smipar = new SmilesParser(SilentChemObjectBuilder.getInstance());
+        String                    smi = "C[C@H]1[C@@H](C)[C@@H](C)[C@@H](C)[C@H](C)[C@H](C)[C@H](C)[C@@H]1C";
+        label(smipar, smi);
+
+    }
+
+    @Test
+    public void testCHEBI17521() throws Exception {
+        SmilesParser              smipar = new SmilesParser(SilentChemObjectBuilder.getInstance());
+        String                    smi = "O[C@@H]1C[C@@](O)(C[C@@H](O)[C@H]1O)C(O)=O\n";
+        label(smipar, smi);
+    }
+
+    private void label(SmilesParser smipar, String smi1) throws CDKException
+    {
+        IAtomContainer            mol = smipar.parseSmiles(smi1);
+        StructureDiagramGenerator sdg = new StructureDiagramGenerator();
+        sdg.generateCoordinates(mol);
+        AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(mol);
+        perceptor.perceive(mol);
+        for (IAtom atom : mol.atoms()) {
+            if (atom.getProperty("descriptor") != null && atom.getProperty("descriptor") != Descriptor.Unknown)
+                System.out.println(mol.getAtomNumber(atom) + " : " + atom.getProperty("descriptor"));
+        }
+    }
+
+    @Test
+    public void mancudeRingSystems() throws Exception {
+        IAtomContainer mol1 = MolLoader.loadMolfile(getClass().getResourceAsStream("Daniel_Macude_1.mol"));
+        IAtomContainer mol2 = MolLoader.loadMolfile(getClass().getResourceAsStream("Daniel_Macude_2.mol"));
+        IAtomContainer mol3 = MolLoader.loadMolfile(getClass().getResourceAsStream("Daniel_Macude_3.mol"));
+        IAtomContainer mol4 = MolLoader.loadMolfile(getClass().getResourceAsStream("Daniel_Macude_4.mol"));
+        AtomContainerManipulator.convertImplicitToExplicitHydrogens(mol1);
+        AtomContainerManipulator.convertImplicitToExplicitHydrogens(mol2);
+        AtomContainerManipulator.convertImplicitToExplicitHydrogens(mol3);
+        AtomContainerManipulator.convertImplicitToExplicitHydrogens(mol4);
+
+
+        perceptor.perceive(mol1);
+        perceptor.perceive(mol2);
+        perceptor.perceive(mol3);
+        perceptor.perceive(mol4);
+
+        System.err.println("1:");
+        for (IAtom atom : mol1.atoms()) {
+            if (atom.getProperty("descriptor") != null && atom.getProperty("descriptor") != Descriptor.Unknown)
+                System.err.println(mol1.getAtomNumber(atom) + " : " + atom.getProperty("descriptor") );
+        }
+        System.err.println("2:");
+        for (IAtom atom : mol2.atoms()) {
+            if (atom.getProperty("descriptor") != null && atom.getProperty("descriptor") != Descriptor.Unknown)
+                System.err.println(mol2.getAtomNumber(atom) + " : " + atom.getProperty("descriptor"));
+        }
+        System.err.println("3:");
+        for (IAtom atom : mol3.atoms()) {
+            if (atom.getProperty("descriptor") != null && atom.getProperty("descriptor") != Descriptor.Unknown)
+                System.err.println(mol3.getAtomNumber(atom) + " : " + atom.getProperty("descriptor"));
+        }
+        System.err.println("4:");
+        for (IAtom atom : mol4.atoms()) {
+            if (atom.getProperty("descriptor") != null && atom.getProperty("descriptor") != Descriptor.Unknown)
+                System.err.println(mol4.getAtomNumber(atom) + " : " + atom.getProperty("descriptor"));
+        }
     }
 }

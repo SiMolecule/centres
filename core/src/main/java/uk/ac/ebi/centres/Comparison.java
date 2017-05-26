@@ -25,7 +25,16 @@ package uk.ac.ebi.centres;
  *
  * @author John May
  */
-public interface Comparison {
+public final class Comparison {
+
+    private final int cmp;
+    private final boolean asym;
+
+    public Comparison(int cmp, boolean asym)
+    {
+        this.cmp = cmp;
+        this.asym = asym;
+    }
 
     /**
      * Access the order of the comparison between two ligands. The order is the
@@ -38,7 +47,9 @@ public interface Comparison {
      *
      * @see java.util.Comparator
      */
-    public Integer getOrder();
+    public int getOrder() {
+        return cmp;
+    }
 
     /**
      * Access the type of the comparison. The type is defined by the method used
@@ -50,6 +61,8 @@ public interface Comparison {
      *
      * @return the inferred type that this comparison produces
      */
-    public Descriptor.Type getType();
+    public boolean isPseduoAsym() {
+        return asym;
+    }
 
 }

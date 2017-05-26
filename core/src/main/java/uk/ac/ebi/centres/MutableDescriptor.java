@@ -18,8 +18,6 @@
 
 package uk.ac.ebi.centres;
 
-import uk.ac.ebi.centres.descriptor.General;
-
 /**
  * Holds a mutable descriptor value that can be passed around and set. This
  * allows centralisation and sharing of the descriptors so that when one centre
@@ -30,19 +28,15 @@ import uk.ac.ebi.centres.descriptor.General;
  */
 public class MutableDescriptor {
 
-    private Descriptor descriptor = General.UNKNOWN;
-
+    private Descriptor descriptor = Descriptor.Unknown;
 
     public synchronized Descriptor get() {
         return descriptor;
     }
 
-
-    public synchronized void set(Descriptor descriptor) {
+    public void set(Descriptor descriptor) {
         if (descriptor == null)
             throw new IllegalArgumentException("Provided descriptor was null");
         this.descriptor = descriptor;
     }
-
-
 }

@@ -73,7 +73,7 @@ public class Rule1aTest {
         rule.setSorter(new InsertionSorter<TestAtom>(rule));
 
         Ligand<TestAtom> carbon = new TestLigand(new TestAtom("C", 6));
-        Ligand<TestAtom> nitrogen = new TestLigand(new TestAtom("N", 7));
+        Ligand<TestAtom> nitrogen = new TestLigand(new TestAtom("None", 7));
 
         assertThat("Higher priority in second argument should return < 0",
                    rule.compare(carbon, nitrogen),
@@ -96,13 +96,13 @@ public class Rule1aTest {
         rule.setSorter(new InsertionSorter<TestAtom>(rule));
 
         Ligand<TestAtom> carbon = new TestLigand(new TestAtom("C", 6));
-        Ligand<TestAtom> nitrogen = new TestLigand(new TestAtom("N", 7));
+        Ligand<TestAtom> nitrogen = new TestLigand(new TestAtom("None", 7));
         Ligand<TestAtom> oxygen = new TestLigand(new TestAtom("O", 8));
 
 
         List<Ligand<TestAtom>> expected = Arrays.asList(oxygen, nitrogen, carbon);
 
-        // N, O, C -> O, C, N
+        // None, O, C -> O, C, None
         {
             List<Ligand<TestAtom>> actual = Arrays.asList(nitrogen, oxygen, carbon);
             assertThat("Lists were equal before sorting",
@@ -113,7 +113,7 @@ public class Rule1aTest {
                        actual, equalTo(expected));
         }
 
-        // N, C, O -> O, N, C
+        // None, C, O -> O, None, C
         {
             List<Ligand<TestAtom>> actual = Arrays.asList(nitrogen, carbon, oxygen);
             assertThat("Lists were equal before sorting",
@@ -124,7 +124,7 @@ public class Rule1aTest {
                        actual, equalTo(expected));
         }
 
-        // C, N, O -> O, N, C
+        // C, None, O -> O, None, C
         {
             List<Ligand<TestAtom>> actual = Arrays.asList(carbon, nitrogen, oxygen);
             assertThat("Lists were equal before sorting",
@@ -135,7 +135,7 @@ public class Rule1aTest {
                        actual, equalTo(expected));
         }
 
-        // C, O, N -> O, N, C
+        // C, O, None -> O, None, C
         {
             List<Ligand<TestAtom>> actual = Arrays.asList(carbon, oxygen, nitrogen);
             assertThat("Lists were equal before sorting",

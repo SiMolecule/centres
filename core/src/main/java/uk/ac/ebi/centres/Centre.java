@@ -32,8 +32,8 @@ import java.util.Set;
  * @author John May
  * @see Descriptor
  * @see uk.ac.ebi.centres.descriptor.General
- * @see uk.ac.ebi.centres.descriptor.Tetrahedral
- * @see uk.ac.ebi.centres.descriptor.Planar
+ * @see uk.ac.ebi.centres.descriptor.Descriptor
+ * @see uk.ac.ebi.centres.descriptor.Descriptor
  * @see uk.ac.ebi.centres.descriptor.Trigonal
  */
 public interface Centre<A> extends Ligand<A> {

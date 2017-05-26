@@ -16,16 +16,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-package uk.ac.ebi.centres.priority.descriptor;
+package uk.ac.ebi.centres.priority;
 
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import org.openscience.cdk.interfaces.IAtom;
+import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Ligand;
 import uk.ac.ebi.centres.Priority;
-import uk.ac.ebi.centres.descriptor.General;
-import uk.ac.ebi.centres.descriptor.Tetrahedral;
-import uk.ac.ebi.centres.priority.AbstractPriorityRule;
 import uk.ac.ebi.centres.priority.access.DescriptorAccessor;
 
 import java.util.ArrayList;
@@ -104,11 +102,10 @@ public class Rule4b<A>
 
         // create a descriptor list with given exclusions
         DescriptorList descriptors = new DescriptorList(null,
-                                                        Tetrahedral.s,
-                                                        Tetrahedral.r,
-                                                        General.NONE,
-                                                        General.UNSPECIFIED,
-                                                        General.UNKNOWN);
+                                                        Descriptor.s,
+                                                        Descriptor.r,
+                                                        Descriptor.None,
+                                                        Descriptor.Unknown);
 
         
         while (!queue.isEmpty()) {

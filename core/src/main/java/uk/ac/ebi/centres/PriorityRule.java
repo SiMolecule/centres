@@ -40,8 +40,6 @@ public interface PriorityRule<A> extends Comparator<Ligand<A>> {
         COMBINED
     }
 
-    public Type getRuleType();
-
     public int recursiveCompare(Ligand<A> o1, Ligand<A> o2);
 
     /**
@@ -86,7 +84,7 @@ public interface PriorityRule<A> extends Comparator<Ligand<A>> {
      *
      * @return the type of rule
      */
-    public Descriptor.Type getType();
+    public boolean isPseudoAsymmetric();
 
 
     /**

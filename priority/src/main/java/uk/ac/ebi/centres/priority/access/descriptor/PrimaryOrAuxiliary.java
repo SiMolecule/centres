@@ -20,7 +20,6 @@ package uk.ac.ebi.centres.priority.access.descriptor;
 
 import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Ligand;
-import uk.ac.ebi.centres.descriptor.General;
 
 /**
  * Access the primary descriptor on a ligand
@@ -33,7 +32,7 @@ public class PrimaryOrAuxiliary<A> implements
     @Override
     public Descriptor getDescriptor(Ligand<A> ligand) {
         Descriptor descriptor = ligand.getDescriptor();
-        if (descriptor != null && descriptor != General.NONE && descriptor != General.UNKNOWN)
+        if (descriptor != null && descriptor != Descriptor.None && descriptor != Descriptor.Unknown)
             return descriptor;
         else
             return ligand.getAuxiliary();

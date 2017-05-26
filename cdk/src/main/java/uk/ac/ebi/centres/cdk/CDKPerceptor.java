@@ -26,7 +26,7 @@ import org.openscience.cdk.interfaces.IIsotope;
 import uk.ac.ebi.centres.DefaultPerceptor;
 import uk.ac.ebi.centres.SignCalculator;
 import uk.ac.ebi.centres.priority.Rule1a;
-import uk.ac.ebi.centres.priority.CombinedRule;
+import uk.ac.ebi.centres.priority.Rules;
 import uk.ac.ebi.centres.priority.Rule1b;
 import uk.ac.ebi.centres.priority.Rule2;
 import uk.ac.ebi.centres.priority.access.AtomicNumberAccessor;
@@ -34,10 +34,10 @@ import uk.ac.ebi.centres.priority.access.MassNumberAccessor;
 import uk.ac.ebi.centres.priority.access.PsuedoAtomicNumberModifier;
 import uk.ac.ebi.centres.priority.access.descriptor.PrimaryOrAuxiliary;
 import uk.ac.ebi.centres.priority.access.descriptor.PrimaryDescriptor;
-import uk.ac.ebi.centres.priority.descriptor.Rule4b;
-import uk.ac.ebi.centres.priority.descriptor.Rule4c;
-import uk.ac.ebi.centres.priority.descriptor.Rule5;
-import uk.ac.ebi.centres.priority.descriptor.Rule3;
+import uk.ac.ebi.centres.priority.Rule4b;
+import uk.ac.ebi.centres.priority.Rule4c;
+import uk.ac.ebi.centres.priority.Rule5;
+import uk.ac.ebi.centres.priority.Rule3;
 
 import java.io.IOException;
 
@@ -74,7 +74,7 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
     }
 
     public CDKPerceptor(SignCalculator<IAtom> calculator) {
-        super(new CombinedRule<IAtom>(
+        super(new Rules<IAtom>(
                       new Rule1a<IAtom>(
                               new PsuedoAtomicNumberModifier<IAtom>(
                                       new AtomicNumberAccessor<IAtom>() {
@@ -91,7 +91,7 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
                       new Rule4c<IAtom>(new PrimaryDescriptor<IAtom>()),
                       new Rule5<IAtom>(new PrimaryDescriptor<IAtom>())
               ),
-              new CombinedRule<IAtom>(
+              new Rules<IAtom>(
                       new Rule1a<IAtom>(
                               new PsuedoAtomicNumberModifier<IAtom>(
                                       new AtomicNumberAccessor<IAtom>() {

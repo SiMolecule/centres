@@ -27,8 +27,6 @@ import uk.ac.ebi.centres.MutableDescriptor;
 import uk.ac.ebi.centres.Priority;
 import uk.ac.ebi.centres.PriorityRule;
 import uk.ac.ebi.centres.SignCalculator;
-import uk.ac.ebi.centres.descriptor.General;
-import uk.ac.ebi.centres.descriptor.Planar;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -128,20 +126,20 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
 
 
     @Override
-    public Descriptor perceive(List<Ligand<A>> proximal, PriorityRule<A> rule, SignCalculator<A> calculator) {
+    public uk.ac.ebi.centres.Descriptor perceive(List<Ligand<A>> proximal, PriorityRule<A> rule, SignCalculator<A> calculator) {
         // can't do this type of perception for planar centres
-        return General.UNKNOWN;
+        return Descriptor.Unknown;
     }
 
 
     @Override
-    public Descriptor perceive(PriorityRule<A> rule, SignCalculator<A> calculator) {
+    public uk.ac.ebi.centres.Descriptor perceive(PriorityRule<A> rule, SignCalculator<A> calculator) {
 
         List<Ligand<A>> firstLigands = first.getLigands();
         List<Ligand<A>> secondLigands = second.getLigands();
 
         if (firstLigands.isEmpty() || secondLigands.isEmpty())
-            return General.NONE;
+            return Descriptor.None;
 
         // check for pseudo
         Priority firstPriority = rule.prioritise(firstLigands);
@@ -149,7 +147,7 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
 
         if (!firstPriority.isUnique() || !secondPriority.isUnique()) {
             // we don't know whether it is none yet...
-            return General.UNKNOWN;
+            return Descriptor.Unknown;
         }
 
         int firstSign = calculator.getSign(firstLigands.iterator().next().getAtom(),
@@ -160,14 +158,14 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
                                             first.getAtom());
 
         if (firstSign == 0 || secondSign == 0)
-            return General.UNSPECIFIED;
+            return Descriptor.Unknown;
 
-        boolean pseudo = firstPriority.getType().equals(Descriptor.Type.PSEUDO_ASYMMETRIC)
-                && secondPriority.getType().equals(Descriptor.Type.PSEUDO_ASYMMETRIC);
+        // this should be an or?
+        boolean pseudo = firstPriority.isPseduoAsymettric() && secondPriority.isPseduoAsymettric();
 
         // also check for psuedo (from prioritise)
-        return firstSign == secondSign ? pseudo ? Planar.e : Planar.E
-                                       : pseudo ? Planar.z : Planar.Z;
+        return firstSign == secondSign ? pseudo ? Descriptor.e : Descriptor.E
+                                       : pseudo ? Descriptor.z : Descriptor.Z;
 
     }
 

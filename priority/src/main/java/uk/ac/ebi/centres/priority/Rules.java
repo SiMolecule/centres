@@ -20,9 +20,7 @@ package uk.ac.ebi.centres.priority;
 
 import com.google.common.collect.Lists;
 import uk.ac.ebi.centres.Comparison;
-import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Ligand;
-import uk.ac.ebi.centres.LigandComparison;
 import uk.ac.ebi.centres.LigandSorter;
 import uk.ac.ebi.centres.PriorityRule;
 
@@ -34,7 +32,7 @@ import java.util.List;
  *
  * @author John May
  */
-public class CombinedRule<A> extends AbstractPriorityRule<A> {
+public class Rules<A> extends AbstractPriorityRule<A> {
 
 
     /**
@@ -46,7 +44,7 @@ public class CombinedRule<A> extends AbstractPriorityRule<A> {
     /**
      * Default constructor creates a combined rule with no sub-rules.
      */
-    public CombinedRule() {
+    public Rules() {
         super(Type.COMBINED);
         rules = Lists.newArrayListWithExpectedSize(8);
     }
@@ -57,7 +55,7 @@ public class CombinedRule<A> extends AbstractPriorityRule<A> {
      *
      * @param rules the rules to combined
      */
-    public CombinedRule(PriorityRule<A>... rules) {
+    public Rules(PriorityRule<A>... rules) {
         super(Type.COMBINED);
         this.rules = Lists.newArrayListWithExpectedSize(rules.length);
         for (PriorityRule<A> rule : rules)
@@ -91,7 +89,6 @@ public class CombinedRule<A> extends AbstractPriorityRule<A> {
      *
      * @see LigandComparison
      * @see uk.ac.ebi.centres.PriorityRule#getType()
-     * @see Descriptor.Type
      */
     @Override
     public int compare(Ligand<A> o1, Ligand<A> o2) {
@@ -122,7 +119,6 @@ public class CombinedRule<A> extends AbstractPriorityRule<A> {
      *
      * @see LigandComparison
      * @see uk.ac.ebi.centres.PriorityRule#getType()
-     * @see Descriptor.Type
      */
     @Override
     public Comparison compareLigands(Ligand<A> o1, Ligand<A> o2) {
@@ -132,19 +128,19 @@ public class CombinedRule<A> extends AbstractPriorityRule<A> {
         for (PriorityRule<A> rule : rules) {
 
             if (isHalted())
-                return new LigandComparison(0, Descriptor.Type.NON_STEREOGENIC);
+                return new Comparison(0, false);
 
             // compare expands exhaustively across the whole graph
             int value = rule.recursiveCompare(o1, o2);
 
             if (value != 0) {
-                return new LigandComparison(value, rule.getType());
+                return new Comparison(value, rule.isPseudoAsymmetric());
             }
 
         }
 
         // can't really give a rule type here...
-        return new LigandComparison(0, Descriptor.Type.NON_STEREOGENIC);
+        return new Comparison(0, false);
     }
 
 

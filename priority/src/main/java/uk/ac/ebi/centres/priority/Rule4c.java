@@ -16,9 +16,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-package uk.ac.ebi.centres.priority.descriptor;
+package uk.ac.ebi.centres.priority;
 
-import uk.ac.ebi.centres.descriptor.Tetrahedral;
+import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.priority.access.DescriptorAccessor;
 
 /**
@@ -28,6 +28,6 @@ import uk.ac.ebi.centres.priority.access.DescriptorAccessor;
  */
 public class Rule4c<A> extends DescriptorRule<A> {
     public Rule4c(DescriptorAccessor<A> accessor) {
-        super(accessor, Type.GEOMETRICAL, Tetrahedral.s, Tetrahedral.r);
+        super(accessor, Type.GEOMETRICAL, Descriptor.s, Descriptor.r);
     }
 }

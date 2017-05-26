@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-package uk.ac.ebi.centres.priority.descriptor;
+package uk.ac.ebi.centres.priority;
 
 import com.google.common.collect.Maps;
 import uk.ac.ebi.centres.Descriptor;
@@ -53,7 +53,7 @@ public class DescriptorRule<A> extends AbstractPriorityRule<A> {
     public DescriptorRule(DescriptorAccessor<A> accessor,
                           Type ordering,
                           Descriptor... descriptors) {
-        this(Descriptor.Type.ASYMMETRIC, ordering, accessor, descriptors);
+        this(false, ordering, accessor, descriptors);
     }
 
 
@@ -66,11 +66,11 @@ public class DescriptorRule<A> extends AbstractPriorityRule<A> {
      * @param accessor    a {@link DescriptorAccessor} for a descriptor label
      * @param descriptors ranking of descriptors low .. high priority
      */
-    public DescriptorRule(Descriptor.Type type,
+    public DescriptorRule(boolean pseudoAsymmetric,
                           Type ordering,
                           DescriptorAccessor<A> accessor,
                           Descriptor... descriptors) {
-        super(type, ordering);
+        super(pseudoAsymmetric, ordering);
         this.accessor = accessor;
 
         ranking = Maps.newHashMapWithExpectedSize(descriptors.length);

@@ -54,8 +54,8 @@ public interface Ligand<A> {
      * @param descriptor the new descriptor for this centre
      *
      * @see uk.ac.ebi.centres.descriptor.General
-     * @see uk.ac.ebi.centres.descriptor.Tetrahedral
-     * @see uk.ac.ebi.centres.descriptor.Planar
+     * @see uk.ac.ebi.centres.descriptor.Descriptor
+     * @see uk.ac.ebi.centres.descriptor.Descriptor
      * @see uk.ac.ebi.centres.descriptor.Trigonal
      */
     public void setDescriptor(Descriptor descriptor);
@@ -70,8 +70,8 @@ public interface Ligand<A> {
      * @return descriptor for this centre
      *
      * @see uk.ac.ebi.centres.descriptor.General
-     * @see uk.ac.ebi.centres.descriptor.Tetrahedral
-     * @see uk.ac.ebi.centres.descriptor.Planar
+     * @see uk.ac.ebi.centres.descriptor.Descriptor
+     * @see uk.ac.ebi.centres.descriptor.Descriptor
      * @see uk.ac.ebi.centres.descriptor.Trigonal
      */
     public Descriptor getDescriptor();

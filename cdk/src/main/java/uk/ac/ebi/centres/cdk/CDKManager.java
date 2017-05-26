@@ -24,7 +24,6 @@ import org.openscience.cdk.interfaces.IChemObject;
 import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.DescriptorManager;
 import uk.ac.ebi.centres.MutableDescriptor;
-import uk.ac.ebi.centres.descriptor.General;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -71,7 +70,7 @@ public class CDKManager implements DescriptorManager<IAtom> {
 
         public ProxyMutator(IChemObject chemObject) {
             this.chemObject = chemObject;
-            chemObject.setProperty("descriptor", General.UNKNOWN);
+            chemObject.setProperty("descriptor", Descriptor.Unknown);
         }
 
 

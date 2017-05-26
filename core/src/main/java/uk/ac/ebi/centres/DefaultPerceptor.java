@@ -18,8 +18,6 @@
 
 package uk.ac.ebi.centres;
 
-import uk.ac.ebi.centres.descriptor.General;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -59,7 +57,7 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
                     // only attempt re-perception if there were auxiliary labels defined
                     return centre.perceive(auxRule, calculator);
                 }
-                return General.UNKNOWN;
+                return Descriptor.Unknown;
             }
         };
     }
@@ -79,7 +77,7 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
 
                 for (Centre<A> centre : unperceived) {
                     Descriptor descriptor = perceptor.perceive(centre, unperceived);
-                    if (descriptor != General.UNKNOWN)
+                    if (descriptor != Descriptor.Unknown)
                         map.put(centre, descriptor);
                 }
                 transferLabels(unperceived, perceived, map);
@@ -90,7 +88,7 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
             if (!unperceived.isEmpty()) {
                 for (Centre<A> centre : unperceived) {
                     Descriptor descriptor = auxperceptor.perceive(centre, unperceived);
-                    if (descriptor != General.UNKNOWN)
+                    if (descriptor != Descriptor.Unknown)
                         map.put(centre, descriptor);
                 }
                 transferLabels(unperceived, perceived, map);
@@ -128,7 +126,7 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
 
         // set all unperceived centres to 'none'
         for (Centre<A> centre : unperceived) {
-            centre.setDescriptor(General.NONE);
+            centre.setDescriptor(Descriptor.None);
             centre.dispose();
         }
 

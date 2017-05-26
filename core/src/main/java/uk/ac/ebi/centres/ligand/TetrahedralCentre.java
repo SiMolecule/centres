@@ -18,7 +18,6 @@
 
 package uk.ac.ebi.centres.ligand;
 
-import org.omg.CORBA.UNKNOWN;
 import org.openscience.cdk.interfaces.IAtom;
 import uk.ac.ebi.centres.Centre;
 import uk.ac.ebi.centres.Descriptor;
@@ -27,8 +26,6 @@ import uk.ac.ebi.centres.MutableDescriptor;
 import uk.ac.ebi.centres.Priority;
 import uk.ac.ebi.centres.PriorityRule;
 import uk.ac.ebi.centres.SignCalculator;
-import uk.ac.ebi.centres.descriptor.General;
-import uk.ac.ebi.centres.descriptor.Tetrahedral;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -87,14 +84,14 @@ public class TetrahedralCentre<A>
                                  PriorityRule<A> rule,
                                  SignCalculator<A> calculator) {
 
-        Map<Ligand<A>, Descriptor> auxiliary = new HashMap<Ligand<A>, Descriptor>(centres.size());
-        Set<Ligand<A>> done = new HashSet<Ligand<A>>();
+        Map<Ligand<A>, uk.ac.ebi.centres.Descriptor> auxiliary = new HashMap<Ligand<A>, uk.ac.ebi.centres.Descriptor>(centres.size());
+        Set<Ligand<A>>                               done      = new HashSet<Ligand<A>>();
 
         // ensure the entire digraph is built
         getProvider().build();
 
         for (Ligand<A> ligand : getProvider().ligands()) {
-            ligand.setAuxiliary(General.UNKNOWN);
+            ligand.setAuxiliary(Descriptor.Unknown);
         }
         
         int size = 0;
@@ -116,11 +113,11 @@ public class TetrahedralCentre<A>
                         
                         getProvider().reroot(ligand);
 
-                        Descriptor descriptor = centre.perceive(getProvider().getLigands(ligand),
-                                                                rule,
-                                                                calculator);
+                        uk.ac.ebi.centres.Descriptor descriptor = centre.perceive(getProvider().getLigands(ligand),
+                                                                                  rule,
+                                                                                  calculator);
                         
-                        if (descriptor != General.UNKNOWN) {
+                        if (descriptor != Descriptor.Unknown) {
                             auxiliary.put(ligand, descriptor);
                             done.add(ligand);
                         }
@@ -130,7 +127,7 @@ public class TetrahedralCentre<A>
             }
 
             // transfer auxiliary descriptors to their respective ligands
-            for (Map.Entry<Ligand<A>, Descriptor> entry : auxiliary.entrySet())
+            for (Map.Entry<Ligand<A>, uk.ac.ebi.centres.Descriptor> entry : auxiliary.entrySet())
                 entry.getKey().setAuxiliary(entry.getValue());
             size += auxiliary.size();
             
@@ -144,10 +141,10 @@ public class TetrahedralCentre<A>
     }
 
     @Override
-    public Descriptor perceive(List<Ligand<A>> proximal, PriorityRule<A> rule, SignCalculator<A> calculator) {
+    public uk.ac.ebi.centres.Descriptor perceive(List<Ligand<A>> proximal, PriorityRule<A> rule, SignCalculator<A> calculator) {
 
         if (proximal.size() < 3) {
-            return General.NONE;
+            return Descriptor.None;
         }
 
         IAtom iatom = (IAtom) getAtom();
@@ -162,7 +159,7 @@ public class TetrahedralCentre<A>
             proximal = filterAddedHydrogens(proximal);
 
             if (proximal.size() < 3) {
-                return General.NONE;
+                return Descriptor.Unknown;
             }
 
             int sign = calculator.getSign(this,
@@ -171,17 +168,16 @@ public class TetrahedralCentre<A>
                                           proximal.get(2),
                                           proximal.size() == 4 ? proximal.get(3) : this);
 
-            boolean pseudo = priority.getType().equals(Descriptor.Type.PSEUDO_ASYMMETRIC);
-
             if (sign == 0)
-                return General.UNKNOWN;
+                return Descriptor.Unknown;
             
-            if (pseudo)
-                return sign > 0 ? Tetrahedral.s : Tetrahedral.r;
+            if (priority.isPseduoAsymettric())
+                return sign > 0 ? Descriptor.s : Descriptor.r;
             else
-                return sign > 0 ? Tetrahedral.S : Tetrahedral.R;
+                return sign > 0 ? Descriptor.S : Descriptor.R;
         }
-        return General.UNKNOWN;
+
+        return Descriptor.Unknown;
     }
 
     private List<Ligand<A>> filterAddedHydrogens(List<Ligand<A>> proximal) {
@@ -196,7 +192,7 @@ public class TetrahedralCentre<A>
     }
 
     @Override
-    public Descriptor perceive(PriorityRule<A> rule, SignCalculator<A> calculator) {
+    public uk.ac.ebi.centres.Descriptor perceive(PriorityRule<A> rule, SignCalculator<A> calculator) {
         return perceive(getLigands(), rule, calculator);
     }
 

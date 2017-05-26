@@ -26,7 +26,7 @@ import uk.ac.ebi.centres.DescriptorManager;
 import uk.ac.ebi.centres.Digraph;
 import uk.ac.ebi.centres.Ligand;
 import uk.ac.ebi.centres.MutableDescriptor;
-import uk.ac.ebi.centres.exception.WarpCoreEjection;
+import uk.ac.ebi.centres.TooManyNodesException;
 import uk.ac.ebi.centres.ligand.NonterminalLigand;
 import uk.ac.ebi.centres.ligand.TerminalLigand;
 
@@ -161,7 +161,7 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
 
         // lots of ligands being created
         if(ligandMap.size() > NODE_LIMIT)
-            throw new WarpCoreEjection();
+            throw new TooManyNodesException();
 
         // ligands already determined
         if (!ligands.isEmpty())

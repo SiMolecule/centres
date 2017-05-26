@@ -16,25 +16,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-package uk.ac.ebi.centres.priority.descriptor;
+package uk.ac.ebi.centres.priority;
 
 import uk.ac.ebi.centres.Descriptor;
-import uk.ac.ebi.centres.descriptor.Tetrahedral;
-import uk.ac.ebi.centres.priority.access.DescriptorAccessor;
+import uk.ac.ebi.centres.priority.access.descriptor.ArcPrimaryDescriptor;
 
 /**
- * A rule with prioritises ligands in R configuration over those in S
- * configuration. This rule is pseudo-asymmetric
+ * A rule with prioritises ligands in Z (cis) configuration over those in E
+ * (trans) configuration.
  *
  * @author John May
  */
-public class Rule5<A> extends DescriptorRule<A> {
+public class Rule3<A> extends DescriptorRule<A> {
 
-    public Rule5(DescriptorAccessor<A> accessor) {
-        super(Descriptor.Type.PSEUDO_ASYMMETRIC,
-              Type.TOPOGRAPHICAL,
-              accessor,
-              Tetrahedral.S, Tetrahedral.R);
+    public Rule3() {
+        super(new ArcPrimaryDescriptor<A>(), Type.GEOMETRICAL, Descriptor.E, Descriptor.Z);
     }
 
 }

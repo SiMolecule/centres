@@ -24,8 +24,6 @@ import uk.ac.ebi.centres.ConnectionProvider;
 import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Ligand;
 import uk.ac.ebi.centres.MutableDescriptor;
-import uk.ac.ebi.centres.PriorityRule;
-import uk.ac.ebi.centres.descriptor.General;
 import uk.ac.ebi.centres.graph.Arc;
 
 import java.util.Collections;
@@ -38,190 +36,220 @@ import java.util.Set;
  */
 public abstract class AbstractLigand<A> implements Ligand<A> {
 
-    private Descriptor auxiliary = General.UNKNOWN;
-    private       ConnectionProvider<A> provider;
-    private final Set<A>                visited;
-    private final MutableDescriptor     descriptor;
-    private final int                   distance;
-    private       boolean               duplicate;
-    private       List<Ligand<A>>       ligands;
-    private       Descriptor            descriptorCache;
-    private Set<Class<?>> orderedBy = new HashSet<Class<?>>();
+  private Descriptor auxiliary = Descriptor.Unknown;
+  private       ConnectionProvider<A> provider;
+  private final Set<A>                visited;
+  private final MutableDescriptor     descriptor;
+  private final int                   distance;
+  private       boolean               duplicate;
+  private       List<Ligand<A>>       ligands;
+  private       Descriptor            descriptorCache;
+  private Set<Class<?>> orderedBy = new HashSet<Class<?>>();
 
 
-    public AbstractLigand(ConnectionProvider<A> provider,
-                          Set<A> visited,
-                          MutableDescriptor descriptor,
-                          int distance) {
+  public AbstractLigand(ConnectionProvider<A> provider,
+                        Set<A> visited,
+                        MutableDescriptor descriptor,
+                        int distance)
+  {
 
-        this.provider = provider;
-        this.descriptor = descriptor;
-        this.distance = distance;
+    this.provider = provider;
+    this.descriptor = descriptor;
+    this.distance = distance;
 
-        // optimise size for a load factor of 0.75
-        this.visited = Sets.newHashSet(visited);
+    // optimise size for a load factor of 0.75
+    this.visited = Sets.newHashSet(visited);
 
+  }
+
+
+  public AbstractLigand(Set<A> visited,
+                        MutableDescriptor descriptor,
+                        int distance)
+  {
+
+    this.descriptor = descriptor;
+    this.distance = distance;
+
+    // optimise size for a load factor of 0.75
+    this.visited = Sets.newHashSet(visited);
+
+  }
+
+
+  public AbstractLigand(MutableDescriptor descriptor,
+                        int distance)
+  {
+
+    this.descriptor = descriptor;
+    this.distance = distance;
+
+    this.visited = Collections.EMPTY_SET;
+
+  }
+
+
+  public boolean isDuplicate()
+  {
+    return duplicate;
+  }
+
+
+  public void setDuplicate(boolean duplicate)
+  {
+    this.duplicate = duplicate;
+  }
+
+
+  public ConnectionProvider<A> getProvider()
+  {
+    return provider;
+  }
+
+
+  public void setProvider(ConnectionProvider<A> provider)
+  {
+    this.provider = provider;
+  }
+
+
+  @Override
+  public Boolean isVisited(A atom)
+  {
+    return visited.contains(atom);
+  }
+
+
+  @Override
+  public Set<A> getVisited()
+  {
+    return visited;
+  }
+
+
+  @Override
+  public void setDescriptor(Descriptor descriptor)
+  {
+    this.descriptor.set(descriptor);
+  }
+
+
+  @Override
+  public Descriptor getDescriptor()
+  {
+    if (descriptorCache == null) {
+      Descriptor descriptor = this.descriptor.get();
+      if (descriptor == Descriptor.None)  // cache access to NONE descriptors
+        descriptorCache = descriptor;
+      return descriptor;
     }
+    return descriptorCache;
+  }
 
 
-    public AbstractLigand(Set<A> visited,
-                          MutableDescriptor descriptor,
-                          int distance) {
+  /**
+   * @inheritDoc
+   */
+  @Override
+  public List<Ligand<A>> getLigands()
+  {
+    if (ligands == null)
+      ligands = provider.getLigands(this);
+    return ligands;
+  }
 
-        this.descriptor = descriptor;
-        this.distance = distance;
-
-        // optimise size for a load factor of 0.75
-        this.visited = Sets.newHashSet(visited);
-
-    }
-
-
-    public AbstractLigand(MutableDescriptor descriptor,
-                          int distance) {
-
-        this.descriptor = descriptor;
-        this.distance = distance;
-
-        this.visited = Collections.EMPTY_SET;
-
-    }
+  public void reset()
+  {
+    ligands = null;
+  }
 
 
-    public boolean isDuplicate() {
-        return duplicate;
-    }
+  @Override
+  public List<Arc<A>> getArcs()
+  {
+    return provider.getArcs(this);
+  }
 
 
-    public void setDuplicate(boolean duplicate) {
-        this.duplicate = duplicate;
-    }
+  @Override
+  public Arc<A> getParentArc()
+  {
+    return provider.getParentArc(this);
+  }
 
 
-    public ConnectionProvider<A> getProvider() {
-        return provider;
-    }
+  @Override
+  public int getDistanceFromRoot()
+  {
+    return distance;
+  }
 
 
-    public void setProvider(ConnectionProvider<A> provider) {
-        this.provider = provider;
-    }
+  /**
+   * @inheritDoc
+   */
+  @Override
+  public Descriptor getAuxiliary()
+  {
+    return auxiliary;
+  }
 
 
-    @Override
-    public Boolean isVisited(A atom) {
-        return visited.contains(atom);
-    }
+  /**
+   * @inheritDoc
+   */
+  @Override
+  public void setAuxiliary(Descriptor descriptor)
+  {
+    this.auxiliary = descriptor;
+  }
 
 
-    @Override
-    public Set<A> getVisited() {
-        return visited;
-    }
+  @Override
+  public int getDepth()
+  {
+    Arc<A> arc = getParentArc();
+    return arc == null ? 0 : arc.getDepth();
+  }
 
 
-    @Override
-    public void setDescriptor(Descriptor descriptor) {
-        this.descriptor.set(descriptor);
-    }
+  @Override
+  public boolean isBranching()
+  {
+    return Boolean.FALSE;
+  }
 
 
-    @Override
-    public Descriptor getDescriptor() {
-        if (descriptorCache == null) {
-            Descriptor descriptor = this.descriptor.get();
-            if (descriptor == General.NONE)  // cache access to NONE descriptors
-                descriptorCache = descriptor;
-            return descriptor;
-        }
-        return descriptorCache;
-    }
+  @Override
+  public boolean isTerminal()
+  {
+    return Boolean.FALSE;
+  }
 
+  @Override
+  public void markOrderedBy(Class<?> rule)
+  {
+    orderedBy.add(rule);
+  }
 
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public List<Ligand<A>> getLigands() {
-        if (ligands == null)
-            ligands = provider.getLigands(this);
-        return ligands;
-    }
+  @Override
+  public boolean isOrderedBy(Class<?> rule)
+  {
+    return false; // return orderedBy.contains(rule);
+  }
 
-    public void reset() {
-        ligands = null;
-    }
+  @Override
+  public void clearOrderedBy()
+  {
+    orderedBy.clear();
+  }
 
-
-    @Override
-    public List<Arc<A>> getArcs() {
-        return provider.getArcs(this);
-    }
-
-
-    @Override
-    public Arc<A> getParentArc() {
-        return provider.getParentArc(this);
-    }
-
-
-    @Override
-    public int getDistanceFromRoot() {
-        return distance;
-    }
-
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public Descriptor getAuxiliary() {
-        return auxiliary;
-    }
-
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public void setAuxiliary(Descriptor descriptor) {
-        this.auxiliary = descriptor;
-    }
-
-
-    @Override
-    public int getDepth() {
-        Arc<A> arc = getParentArc();
-        return arc == null ? 0 : arc.getDepth();
-    }
-
-
-    @Override
-    public boolean isBranching() {
-        return Boolean.FALSE;
-    }
-
-
-    @Override
-    public boolean isTerminal() {
-        return Boolean.FALSE;
-    }
-
-    @Override public void markOrderedBy(Class<?> rule) {
-        orderedBy.add(rule);
-    }
-
-    @Override public boolean isOrderedBy(Class<?> rule) {
-        return false; // return orderedBy.contains(rule);
-    }
-
-    @Override public void clearOrderedBy() {
-        orderedBy.clear();
-    }
-
-    @Override public String toString() {
-        IAtom iatom = (IAtom) getAtom();
-        int num = (iatom.getProperty("num", Integer.class) + 1);
-        return iatom.getSymbol().toLowerCase() + num + (isDuplicate() ? "_dup" : "") + "_" + System.identityHashCode(this) + (getDescriptor() != General.UNKNOWN ? "_" + getDescriptor() : "") + (getAuxiliary() != General.UNKNOWN ? "_" + getAuxiliary() + "aux" : "");
-    }
+  @Override
+  public String toString()
+  {
+    IAtom iatom = (IAtom) getAtom();
+    int   num   = (iatom.getProperty("num", Integer.class) + 1);
+    return iatom.getSymbol()
+                .toLowerCase() + num + (isDuplicate() ? "_dup" : "") + "_" + System.identityHashCode(this) + (getDescriptor() != Descriptor.Unknown ? "_" + getDescriptor() : "") + (getAuxiliary() != Descriptor.Unknown ? "_" + getAuxiliary() + "aux" : "");
+  }
 }

@@ -24,46 +24,29 @@ package uk.ac.ebi.centres;
  * Type} which can be useful when comparing centres of different geometry.
  *
  * @author John May
- * @see uk.ac.ebi.centres.descriptor.Tetrahedral
- * @see uk.ac.ebi.centres.descriptor.Trigonal
- * @see uk.ac.ebi.centres.descriptor.Planar
  */
-public interface Descriptor {
+public enum Descriptor {
+    /** Unknown/Unspecified */
+    Unknown,
+    /** None */
+    None,
+    /** Tetrahedral */
+    R,
+    S,
+    r,
+    s,
+    /** Cis/Trans */
+    E,
+    Z,
+    e,
+    z,
+    /* Axial */
+    M,
+    P,
+    m,
+    p;
 
-    /**
-     * Defines the type of the descriptor.
-     */
-    public enum Type {
-        /**
-         * A non-stereogenic descriptor
-         */
-        NON_STEREOGENIC,
-
-        /**
-         * An asymmetric stereo descriptor
-         */
-        ASYMMETRIC,
-
-        /**
-         * A pseudo-asymmetric descriptor
-         */
-        PSEUDO_ASYMMETRIC
-
-
+    boolean isPseudoAsymmetric() {
+        return Character.isLowerCase(name().charAt(0));
     }
-
-    /**
-     * Access the {@link Type} of the descriptor. The type can be useful when
-     * ranking descriptors where similar type descriptors can be considered
-     * equal.
-     *
-     * @return the type
-     *
-     * @see Type
-     * @see uk.ac.ebi.centres.descriptor.Tetrahedral#getType()
-     * @see uk.ac.ebi.centres.descriptor.Planar#getType()
-     * @see uk.ac.ebi.centres.descriptor.Trigonal#getType()
-     */
-    public Type getType();
-
 }

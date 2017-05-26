@@ -75,7 +75,7 @@ public class CDKCentreProvider implements CentreProvider<IAtom> {
                 if ((IAtomType.Hybridization.SP3.equals(atom.getHybridization())
                         && container.getConnectedAtomsCount(atom) > 2
                         && atom.getFormalNeighbourCount() == 4) 
-                        || atom.getSymbol().equals("N")
+                        || atom.getSymbol().equals("None")
                         || atom.getSymbol().equals("S")) {
 
 

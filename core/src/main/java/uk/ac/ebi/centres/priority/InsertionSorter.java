@@ -45,15 +45,6 @@ public class InsertionSorter<A> implements LigandSorter<A> {
     }
 
 
-    public InsertionSorter(List<PriorityRule<A>> comparators, PriorityRule.Type restrict) {
-        for (PriorityRule<A> rule : comparators) {
-            if (rule.getRuleType().equals(restrict)) {
-                this.rules.add(rule);
-            }
-        }
-    }
-
-
     public InsertionSorter(List<PriorityRule<A>> comparators) {
         rules.addAll(comparators);
     }
@@ -69,7 +60,7 @@ public class InsertionSorter<A> implements LigandSorter<A> {
     public Priority prioritise(List<Ligand<A>> ligands) {
 
         Boolean unique = Boolean.TRUE;
-        Descriptor.Type type = Descriptor.Type.NON_STEREOGENIC;
+        boolean pseudoAsym = false;
 //        Set<Set<Integer>> duplicates = null;
 
         for (int i = 0; i < ligands.size(); i++)
@@ -78,8 +69,8 @@ public class InsertionSorter<A> implements LigandSorter<A> {
                 Comparison comparison = compareLigands(ligands.get(j - 1),
                                                        ligands.get(j));
 
-                type = comparison.getType().ordinal() > type.ordinal()
-                       ? comparison.getType() : type;
+                if (comparison.isPseduoAsym())
+                    pseudoAsym = true;
 
                 if (comparison.getOrder() < 0) {
                     swap(ligands, j, j - 1);
@@ -91,7 +82,7 @@ public class InsertionSorter<A> implements LigandSorter<A> {
 
             }
 
-        return new Priority(unique, type);
+        return new Priority(unique, pseudoAsym);
 
     }
 
@@ -101,18 +92,7 @@ public class InsertionSorter<A> implements LigandSorter<A> {
             Comparison comparison = rule.compareLigands(first, second);
             if (comparison.getOrder() != 0) return comparison;
         }
-        return new Comparison() {
-            @Override
-            public Integer getOrder() {
-                return 0;
-            }
-
-
-            @Override
-            public Descriptor.Type getType() {
-                return Descriptor.Type.NON_STEREOGENIC;
-            }
-        };
+        return new Comparison(0, false);
     }
 
 

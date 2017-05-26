@@ -16,15 +16,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-package uk.ac.ebi.centres.exception;
+package uk.ac.ebi.centres.priority;
+
+import uk.ac.ebi.centres.Descriptor;
+import uk.ac.ebi.centres.priority.access.DescriptorAccessor;
 
 /**
+ * A rule with prioritises ligands in R configuration over those in S
+ * configuration. This rule is pseudo-asymmetric
+ *
  * @author John May
  */
-public class WarpCoreEjection extends RuntimeException {
+public class Rule5<A> extends DescriptorRule<A> {
 
-    public WarpCoreEjection() {
-        super("Boy, that escalated quickly. I mean, that really got out of hand fast! - combinatorial explosion immanent");
+    public Rule5(DescriptorAccessor<A> accessor) {
+        super(true,
+              Type.TOPOGRAPHICAL,
+              accessor,
+              Descriptor.S,
+              Descriptor.R);
     }
 
 }
