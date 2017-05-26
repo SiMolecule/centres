@@ -32,7 +32,7 @@ import uk.ac.ebi.centres.priority.MassNumberRule;
 import uk.ac.ebi.centres.priority.access.AtomicNumberAccessor;
 import uk.ac.ebi.centres.priority.access.MassNumberAccessor;
 import uk.ac.ebi.centres.priority.access.PsuedoAtomicNumberModifier;
-import uk.ac.ebi.centres.priority.access.descriptor.AuxiliaryDescriptor;
+import uk.ac.ebi.centres.priority.access.descriptor.PrimaryOrAuxiliary;
 import uk.ac.ebi.centres.priority.access.descriptor.PrimaryDescriptor;
 import uk.ac.ebi.centres.priority.descriptor.PairRule;
 import uk.ac.ebi.centres.priority.descriptor.PseudoRSRule;
@@ -82,8 +82,9 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
                                           public int getAtomicNumber(IAtom atom) {
                                               return atomicNumber(atom);
                                           }
-                                      })),
-                      // new DuplicateAtomRule<IAtom>(),
+                                      }))
+                      ,
+                      new DuplicateAtomRule<IAtom>(),
                       new MassNumberRule<IAtom>(cdkMassNumberAccessor),
                       new ZERule<IAtom>(),
                       new PairRule<IAtom>(new PrimaryDescriptor<IAtom>()),
@@ -101,9 +102,9 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
                                       })),
                       new MassNumberRule<IAtom>(cdkMassNumberAccessor),
                       new ZERule<IAtom>(),
-                      new PairRule<IAtom>(new AuxiliaryDescriptor<IAtom>()),
-                      new PseudoRSRule<IAtom>(new AuxiliaryDescriptor<IAtom>()),
-                      new RSRule<IAtom>(new AuxiliaryDescriptor<IAtom>())
+                      new PairRule<IAtom>(new PrimaryOrAuxiliary<IAtom>()),
+                      new PseudoRSRule<IAtom>(new PrimaryOrAuxiliary<IAtom>()),
+                      new RSRule<IAtom>(new PrimaryOrAuxiliary<IAtom>())
               ),
               calculator);
     }
