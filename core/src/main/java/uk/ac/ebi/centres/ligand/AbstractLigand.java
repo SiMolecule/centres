@@ -212,7 +212,7 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
     }
 
     @Override public boolean isOrderedBy(Class<?> rule) {
-        return orderedBy.contains(rule);
+        return false; // return orderedBy.contains(rule);
     }
 
     @Override public void clearOrderedBy() {
