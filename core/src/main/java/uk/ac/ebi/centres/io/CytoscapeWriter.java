@@ -29,6 +29,9 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * Allows a digraph to be created
@@ -66,15 +69,36 @@ public abstract class CytoscapeWriter<A> implements Closeable {
 
 
     public void writeAttributes() throws IOException {
-        // do nothing
+        if (attributes.isEmpty()) return;
+        FileWriter                     wtr      = new FileWriter(new File(folder, "props.tsv"));
+        Map<String,Map<String,String>> inverted = new HashMap<String, Map<String, String>>();
+        Set<String>                    columns  = new TreeSet<String>();
         for (Map.Entry<String, Map<String, String>> entry : attributes.entrySet()) {
-            FileWriter attributeWriter = new FileWriter(new File(folder, entry.getKey() + ".noa"));
-            attributeWriter.write(entry.getKey().replaceAll(" ", ".") + " (class=String)" + "\n");
+            String prop = entry.getKey().replaceAll(" ", ".");
+            columns.add(prop);
             for (Map.Entry<String, String> nodeEntry : entry.getValue().entrySet()) {
-                attributeWriter.write(nodeEntry.getKey() + " = " + nodeEntry.getValue() + "\n");
+                Map<String,String> values = inverted.get(nodeEntry.getKey());
+                if (values == null)
+                    inverted.put(nodeEntry.getKey(), values = new TreeMap<String, String>());
+                values.put(prop, nodeEntry.getValue());
             }
-            attributeWriter.close();
         }
+        wtr.write("Node");
+        for (String str : columns) {
+            wtr.write('\t');
+            wtr.write(str);
+        }
+        wtr.write('\n');
+        for (Map.Entry<String,Map<String,String>> e : inverted.entrySet()) {
+            wtr.write(e.getKey());
+            for (String str : columns) {
+                wtr.write('\t');
+                wtr.write(e.getValue().get(str));
+            }
+            wtr.write('\n');
+        }
+
+        wtr.close();
     }
 
 
