@@ -20,6 +20,7 @@ package uk.ac.ebi.centres.cdk;
 
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObject;
 import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.DescriptorManager;
@@ -50,7 +51,10 @@ public class CDKManager implements DescriptorManager<IAtom> {
 
     @Override
     public MutableDescriptor getDescriptor(IAtom first, IAtom second) {
-        return _getDescriptor(container.getBond(first, second));
+        IBond bond = container.getBond(first, second);
+        if (bond != null)
+            return _getDescriptor(bond);
+        return null;
     }
 
 

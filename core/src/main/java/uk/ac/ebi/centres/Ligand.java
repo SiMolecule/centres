@@ -18,7 +18,7 @@
 
 package uk.ac.ebi.centres;
 
-import uk.ac.ebi.centres.graph.Arc;
+import uk.ac.ebi.centres.graph.Edge;
 
 import java.util.List;
 import java.util.Set;
@@ -143,9 +143,9 @@ public interface Ligand<A> {
     public Descriptor getAuxiliary();
 
 
-    public List<Arc<A>> getArcs();
+    public List<Edge<A>> getArcs();
 
-    public Arc<A> getParentArc();
+    public Edge<A> getParentArc();
 
     /**
      * Access the distance from the root this ligand is

@@ -25,36 +25,36 @@ import uk.ac.ebi.centres.MutableDescriptor;
 /**
  * @author John May
  */
-public class Arc<A> {
+public class Edge<A> {
 
-    private Ligand<A>         tail;
-    private Ligand<A>         head;
+    private Ligand<A>         beg;
+    private Ligand<A>         end;
     private MutableDescriptor descriptor;
     private int depth = 0;
 
 
-    public Arc(Ligand<A> tail, Ligand<A> head,
-               MutableDescriptor descriptor) {
-        this.tail = tail;
-        this.head = head;
+    public Edge(Ligand<A> beg, Ligand<A> head,
+                MutableDescriptor descriptor) {
+        this.beg = beg;
+        this.end = head;
         this.descriptor = descriptor;
     }
 
 
     /**
-     * @param tail
+     * @param beg
      * @param head
      * @param descriptor
-     * @param depth      1 = tail is closed then head, -1 = head is closer then
-     *                   head, 0 = same plane. -1 = wedge bond when tail is root
+     * @param depth      1 = beg is closed then end, -1 = end is closer then
+     *                   end, 0 = same plane. -1 = wedge bond when beg is root
      *                   atom
      */
-    public Arc(Ligand<A> tail,
-               Ligand<A> head,
-               MutableDescriptor descriptor,
-               int depth) {
-        this.tail = tail;
-        this.head = head;
+    public Edge(Ligand<A> beg,
+                Ligand<A> head,
+                MutableDescriptor descriptor,
+                int depth) {
+        this.beg = beg;
+        this.end = head;
         this.descriptor = descriptor;
         this.depth = depth;
     }
@@ -66,33 +66,35 @@ public class Arc<A> {
 
 
     public Descriptor getDescriptor() {
+        if (descriptor == null)
+            return Descriptor.None;
         return descriptor.get();
     }
 
 
-    public Ligand<A> getHead() {
-        return this.head;
+    public Ligand<A> getEnd() {
+        return this.end;
     }
 
 
-    public Ligand<A> getTail() {
-        return this.tail;
+    public Ligand<A> getBeg() {
+        return this.beg;
     }
 
 
     public void transpose() {
-        Ligand<A> tmp = tail;
-        tail = head;
-        head = tmp;
+        Ligand<A> tmp = beg;
+        beg = end;
+        end = tmp;
         depth *= -1; // invert the sign
-        head.setParent(tail.getAtom());
-        head.reset(); // need to reset any caches
-        tail.reset();
+        end.setParent(beg.getAtom());
+        end.reset(); // need to reset any caches
+        beg.reset();
     }
 
 
     @Override
     public String toString() {
-        return tail + " -> " + head;
+        return beg + " -> " + end;
     }
 }

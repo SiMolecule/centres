@@ -39,15 +39,13 @@ import java.util.Set;
 /**
  * @author John May
  */
-public class TetrahedralCentre<A>
-        extends AbstractLigand<A>
-        implements Centre<A> {
+public class Tetrahedral<A> extends AbstractLigand<A> implements Centre<A> {
 
     private final A atom;
     private       A parent;
 
-    public TetrahedralCentre(MutableDescriptor descriptor,
-                             A atom) {
+    public Tetrahedral(MutableDescriptor descriptor,
+                       A atom) {
         super(descriptor, 0);
         this.atom = atom;
         this.parent = atom;

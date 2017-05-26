@@ -515,7 +515,6 @@ public class PerceptorTest {
     @Test public void handbook_example_8() {
         String path = "handbook_example_8.mol";
         IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
-        AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);
         perceptor.perceive(container);
         for (IAtom atom : container.atoms()){
             System.out.println(atom.getProperty("number") + ": " + atom.getProperty("descriptor"));
@@ -525,7 +524,6 @@ public class PerceptorTest {
     @Test public void handbook_example_9() {
         String path = "handbook_example_9.mol";
         IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
-        AtomContainerManipulator.convertImplicitToExplicitHydrogens(container);
         perceptor.perceive(container);
         for (IAtom atom : container.atoms()){
             System.out.println(atom.getProperty("number") + ": " + atom.getProperty("descriptor"));

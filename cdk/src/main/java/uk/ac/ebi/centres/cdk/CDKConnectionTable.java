@@ -34,7 +34,6 @@ public class CDKConnectionTable extends BasicConnectionTable<IAtom> {
     private static final Map<IBond.Order, Integer>  orders = Maps.newHashMapWithExpectedSize(4);
     private static final Map<IBond.Stereo, Integer> depths = Maps.newHashMapWithExpectedSize(4);
 
-
     static {
         orders.put(IBond.Order.SINGLE, 1);
         orders.put(IBond.Order.DOUBLE, 2);
@@ -60,7 +59,19 @@ public class CDKConnectionTable extends BasicConnectionTable<IAtom> {
                           bond.getAtom(1),
                           getOrder(bond.getOrder()), // might need to check for aromatic
                           getDepth(bond.getStereo()));
-
+        }
+        for (IAtom atom : container.atoms()) {
+            if (atom.getImplicitHydrogenCount() == null)
+                throw new IllegalArgumentException("AtomContainer Atom with unset H count");
+            if (atom.getImplicitHydrogenCount() > 0) {
+                for (int h = 0; h < atom.getImplicitHydrogenCount(); h++) {
+                    IAtom hAtom = atom.getBuilder().newAtom();
+                    hAtom.setAtomicNumber(1);
+                    hAtom.setSymbol("H");
+                    hAtom.setFormalCharge(0);
+                    addConnection(atom, hAtom, 1, 0);
+                }
+            }
         }
     }
 

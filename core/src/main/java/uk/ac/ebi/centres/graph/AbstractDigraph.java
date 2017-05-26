@@ -94,20 +94,20 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
         root = ligand;
         ligand.reset();
 
-        Queue<Arc<A>> queue = new LinkedList<Arc<A>>();
+        Queue<Edge<A>> queue = new LinkedList<Edge<A>>();
 
         // get parent arcs
-        Arc<A> arc = arcs.getForHead(ligand);
-        while (arc != null) {
-            arcs.remove(arc);
-            Arc<A> next = arcs.getForHead(arc.getTail());
-            arc.transpose();
-            queue.add(arc);
-            arc = next;
+        Edge<A> edge = arcs.getForHead(ligand);
+        while (edge != null) {
+            arcs.remove(edge);
+            Edge<A> next = arcs.getForHead(edge.getBeg());
+            edge.transpose();
+            queue.add(edge);
+            edge = next;
         }
 
-        for (Arc<A> transposedArc : queue) {
-            arcs.add(transposedArc);
+        for (Edge<A> transposedEdge : queue) {
+            arcs.add(transposedEdge);
         }
         
         for (Ligand<A> l : ligands())
@@ -143,13 +143,13 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
 
 
     @Override
-    public List<Arc<A>> getArcs(Ligand<A> ligand) {
+    public List<Edge<A>> getArcs(Ligand<A> ligand) {
         return arcs.getForTail(ligand);
     }
 
 
     @Override
-    public Arc<A> getParentArc(Ligand<A> ligand) {
+    public Edge<A> getParentArc(Ligand<A> ligand) {
         return arcs.getForHead(ligand);
     }
 
@@ -237,10 +237,10 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
     public abstract int getDepth(A first, A second);
 
 
-    private Arc<A> newArc(Ligand<A> tail, Ligand<A> head) {
-        return new Arc<A>(tail, head,
-                          manager.getDescriptor(tail.getAtom(), head.getAtom()),
-                          getDepth(tail.getAtom(), head.getAtom()));
+    private Edge<A> newArc(Ligand<A> tail, Ligand<A> head) {
+        return new Edge<A>(tail, head,
+                           manager.getDescriptor(tail.getAtom(), head.getAtom()),
+                           getDepth(tail.getAtom(), head.getAtom()));
     }
 
 
@@ -249,31 +249,31 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
      */
     class ArcMap {
 
-        private final ListMultimap<Ligand<A>, Arc<A>> tails = ArrayListMultimap.create();
-        private final Map<Ligand<A>, Arc<A>>          heads = new HashMap<Ligand<A>, Arc<A>>();
+        private final ListMultimap<Ligand<A>, Edge<A>> tails = ArrayListMultimap.create();
+        private final Map<Ligand<A>, Edge<A>>          heads = new HashMap<Ligand<A>, Edge<A>>();
 
 
-        public void remove(Arc<A> arc) {
-            //System.out.println("\tremoving " + arc.getTail() + ": " + arc + " and " + arc.getHead() + ": " + arc);
-            tails.remove(arc.getTail(), arc);
-            heads.remove(arc.getHead());
+        public void remove(Edge<A> edge) {
+            //System.out.println("\tremoving " + arc.getBeg() + ": " + arc + " and " + arc.getEnd() + ": " + arc);
+            tails.remove(edge.getBeg(), edge);
+            heads.remove(edge.getEnd());
         }
 
 
-        public void add(Arc<A> arc) {
-            tails.put(arc.getTail(), arc);
-            if (heads.containsKey(arc.getHead()))
+        public void add(Edge<A> edge) {
+            tails.put(edge.getBeg(), edge);
+            if (heads.containsKey(edge.getEnd()))
                 System.err.println("Key clash!");
-            heads.put(arc.getHead(), arc);
+            heads.put(edge.getEnd(), edge);
         }
 
 
-        public Arc<A> getForHead(Ligand<A> head) {
+        public Edge<A> getForHead(Ligand<A> head) {
             return heads.get(head);
         }
 
 
-        public List<Arc<A>> getForTail(Ligand<A> tail) {
+        public List<Edge<A>> getForTail(Ligand<A> tail) {
             return tails.get(tail);
         }
 
@@ -282,10 +282,10 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
 
             // this okay for now but should create a custom list that proxyies calls
             // to the arc list
-            List<Arc<A>> arcs = tails.get(tail);
-            List<Ligand<A>> ligands = new ArrayList<Ligand<A>>(arcs.size());
-            for (Arc<A> arc : arcs) {
-                ligands.add(arc.getHead());
+            List<Edge<A>>   edges   = tails.get(tail);
+            List<Ligand<A>> ligands = new ArrayList<Ligand<A>>(edges.size());
+            for (Edge<A> edge : edges) {
+                ligands.add(edge.getEnd());
             }
             return ligands;
 
@@ -293,10 +293,10 @@ public abstract class AbstractDigraph<A> implements Digraph<A>,
 
 
         public Ligand<A> getTail(Ligand<A> head) {
-            Arc<A> arc = getForHead(head);
-            if (arc == null)
+            Edge<A> edge = getForHead(head);
+            if (edge == null)
                 throw new NoSuchElementException("No tail for provided head");
-            return arc.getTail();
+            return edge.getBeg();
         }
 
         @Override public String toString() {

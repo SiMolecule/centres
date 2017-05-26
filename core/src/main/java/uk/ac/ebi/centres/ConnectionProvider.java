@@ -18,7 +18,7 @@
 
 package uk.ac.ebi.centres;
 
-import uk.ac.ebi.centres.graph.Arc;
+import uk.ac.ebi.centres.graph.Edge;
 
 import java.util.Collection;
 import java.util.List;
@@ -34,9 +34,9 @@ public interface ConnectionProvider<A> {
 
     public List<Ligand<A>> getLigands(Ligand<A> ligand);
 
-    public List<Arc<A>> getArcs(Ligand<A> ligand);
+    public List<Edge<A>> getArcs(Ligand<A> ligand);
 
-    public Arc<A> getParentArc(Ligand<A> ligand);
+    public Edge<A> getParentArc(Ligand<A> ligand);
 
     public void reroot(Ligand<A> ligand);
 

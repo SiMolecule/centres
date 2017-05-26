@@ -24,7 +24,7 @@ import uk.ac.ebi.centres.ConnectionProvider;
 import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Ligand;
 import uk.ac.ebi.centres.MutableDescriptor;
-import uk.ac.ebi.centres.graph.Arc;
+import uk.ac.ebi.centres.graph.Edge;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -165,14 +165,14 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
 
 
   @Override
-  public List<Arc<A>> getArcs()
+  public List<Edge<A>> getArcs()
   {
     return provider.getArcs(this);
   }
 
 
   @Override
-  public Arc<A> getParentArc()
+  public Edge<A> getParentArc()
   {
     return provider.getParentArc(this);
   }
@@ -208,8 +208,8 @@ public abstract class AbstractLigand<A> implements Ligand<A> {
   @Override
   public int getDepth()
   {
-    Arc<A> arc = getParentArc();
-    return arc == null ? 0 : arc.getDepth();
+    Edge<A> edge = getParentArc();
+    return edge == null ? 0 : edge.getDepth();
   }
 
 

@@ -20,8 +20,7 @@ package uk.ac.ebi.centres.test;
 
 import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Ligand;
-import uk.ac.ebi.centres.PriorityRule;
-import uk.ac.ebi.centres.graph.Arc;
+import uk.ac.ebi.centres.graph.Edge;
 
 import java.util.Collections;
 import java.util.List;
@@ -139,13 +138,13 @@ public class TestLigand implements Ligand<TestAtom> {
 
 
     @Override
-    public List<Arc<TestAtom>> getArcs() {
+    public List<Edge<TestAtom>> getArcs() {
         return null;
     }
 
 
     @Override
-    public Arc<TestAtom> getParentArc() {
+    public Edge<TestAtom> getParentArc() {
         return null;
     }
 

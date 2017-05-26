@@ -18,7 +18,6 @@
 
 package uk.ac.ebi.centres.cdk;
 
-import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.graph.SpanningTree;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -29,8 +28,7 @@ import uk.ac.ebi.centres.CentreProvider;
 import uk.ac.ebi.centres.ConnectionTable;
 import uk.ac.ebi.centres.DescriptorManager;
 import uk.ac.ebi.centres.graph.ConnectionTableDigraph;
-import uk.ac.ebi.centres.ligand.PlanarCentre;
-import uk.ac.ebi.centres.ligand.TetrahedralCentre;
+import uk.ac.ebi.centres.ligand.Tetrahedral;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -79,7 +77,7 @@ public class CDKCentreProvider implements CentreProvider<IAtom> {
                         || atom.getSymbol().equals("S")) {
 
 
-                    TetrahedralCentre<IAtom> centre = new TetrahedralCentre<IAtom>(manager.getDescriptor(atom), atom);
+                    Tetrahedral<IAtom> centre = new Tetrahedral<IAtom>(manager.getDescriptor(atom), atom);
                     centre.setProvider(new ConnectionTableDigraph<IAtom>(centre, manager, table));
                     centres.add(centre);
                 }

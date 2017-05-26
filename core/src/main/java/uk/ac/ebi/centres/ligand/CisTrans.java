@@ -36,7 +36,7 @@ import java.util.Set;
 /**
  * @author John May
  */
-public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
+public class CisTrans<A> extends AbstractLigand<A> implements Centre<A> {
 
     private final AbstractLigand<A> first;
     private final AbstractLigand<A> second;
@@ -44,8 +44,8 @@ public class PlanarCentre<A> extends AbstractLigand<A> implements Centre<A> {
 
 
     @SuppressWarnings("unchecked")
-    public PlanarCentre(A first, A second,
-                        MutableDescriptor descriptor) {
+    public CisTrans(A first, A second,
+                    MutableDescriptor descriptor) {
 
         super(descriptor, 0);
 
