@@ -21,14 +21,11 @@ package uk.ac.ebi.centres.cdk;
 import org.openscience.cdk.graph.SpanningTree;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IDoubleBondStereochemistry;
 import org.openscience.cdk.interfaces.IStereoElement;
 import org.openscience.cdk.interfaces.ITetrahedralChirality;
-import org.openscience.cdk.stereo.StereoTool;
 import uk.ac.ebi.centres.Centre;
-import uk.ac.ebi.centres.CentreProvider;
 import uk.ac.ebi.centres.ConnectionTable;
 import uk.ac.ebi.centres.DescriptorManager;
 import uk.ac.ebi.centres.graph.ConnectionTableDigraph;
@@ -42,7 +39,7 @@ import java.util.List;
 /**
  * @author John May
  */
-public class CDKCentreProvider implements CentreProvider<IAtom> {
+public class CDKCentreProvider {
 
   private final IAtomContainer         container;
   private final ConnectionTable<IAtom> table;
@@ -55,15 +52,6 @@ public class CDKCentreProvider implements CentreProvider<IAtom> {
     this.table = new CDKConnectionTable(container);
   }
 
-
-  @Override
-  public Integer getAtomCount()
-  {
-    return container.getAtomCount();
-  }
-
-
-  @Override
   public Collection<Centre<IAtom>> getCentres(DescriptorManager<IAtom> manager)
   {
 
@@ -97,48 +85,6 @@ public class CDKCentreProvider implements CentreProvider<IAtom> {
         centres.add(centre);
       }
     }
-
-    int i = 0;
-
-//        // tetrahedral centres
-//        for (IAtom atom : container.atoms()) {
-//
-//            atom.setProperty("num", container.getAtomNumber(atom));
-//
-//            // might need refinement
-//            if (hasStereoBonds(container, atom)) {
-//                if ((IAtomType.Hybridization.SP3.equals(atom.getHybridization())
-//                        && container.getConnectedAtomsCount(atom) > 2
-//                        && atom.getFormalNeighbourCount() == 4)
-//                        || atom.getSymbol().equals("None")
-//                        || atom.getSymbol().equals("S")) {
-//
-//
-//                    Tetrahedral<IAtom> centre = new Tetrahedral<IAtom>(manager.getDescriptor(atom), atom);
-//                    centre.setProvider(new ConnectionTableDigraph<IAtom>(centre, manager, table));
-//                    centres.add(centre);
-//                }
-//            }
-//        }
-
-
-//        // planar centres
-//        for (IBond bond : container.bonds()) {
-//            if (IBond.Order.DOUBLE.equals(bond.getOrder())
-//                    && container.getConnectedAtomsCount(bond.getAtom(0)) > 1
-//                    && container.getConnectedAtomsCount(bond.getAtom(1)) > 1
-//                    && bond.getFlag(CDKConstants.ISAROMATIC) == Boolean.FALSE
-//                    && onlyConnectedToSingleBonds(bond, container)
-//                    && !getCyclicFragments().contains(bond)
-//                    && !hasVariableBond(container, bond.getAtom(0))
-//                    && !hasVariableBond(container, bond.getAtom(1))) {
-//                PlanarCentre<IAtom> centre = new PlanarCentre<IAtom>(bond.getAtom(0), bond.getAtom(1),
-//                                                                     manager.getDescriptor(bond.getAtom(0), bond.getAtom(1)));
-//                centre.setProvider(new ConnectionTableDigraph<IAtom>(centre, manager, table));
-//                centres.add(centre);
-//
-//            }
-//        }
 
     return centres;
 

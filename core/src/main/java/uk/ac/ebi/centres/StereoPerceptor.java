@@ -141,12 +141,12 @@ public class StereoPerceptor<M, A, B> {
   }
 
 
-  public void perceive(final CentreProvider<A> provider, final DescriptorManager<A> manager)
+  public void perceive(final Collection<Centre<A>> centres, final DescriptorManager<A> manager)
   {
 
     // timeout fo the centre provider incase we have a huge molecule and the spanning tree can't
     // be constructed
-    Collection<Centre<A>> unperceived = provider.getCentres(manager);
+    Collection<Centre<A>> unperceived = new ArrayList<>(centres);
 
     if (unperceived.isEmpty())
       return;

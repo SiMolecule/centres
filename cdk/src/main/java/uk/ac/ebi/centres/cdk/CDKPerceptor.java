@@ -36,7 +36,7 @@ public class CDKPerceptor extends StereoPerceptor<IAtomContainer, IAtom, IBond> 
 
   public void perceive(IAtomContainer container)
   {
-    perceive(new CDKCentreProvider(container),
+    perceive(new CDKCentreProvider(container).getCentres(new CDKManager(container)),
              new CDKManager(container));
   }
 
