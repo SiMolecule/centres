@@ -81,9 +81,7 @@ public class StereoPerceptor<M, A, B> {
       @Override
       public Descriptor perceive(Centre<A> centre, Collection<Centre<A>> centres)
       {
-        System.err.println("Perceive aux");
         if (centre.perceiveAuxiliary(centres, rule) > 0) {
-          System.err.println("Using Aux for...");
           // only attempt re-perception if there were auxiliary labels defined
           return centre.perceive(auxRule);
         }

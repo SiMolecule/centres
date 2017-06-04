@@ -148,6 +148,8 @@ public abstract class AbstractValidationSuite {
 
   private static List<CipLabel> parse(String str)
   {
+    if (str.isEmpty())
+      return Collections.emptyList();
     String[]       labels    = str.split(",");
     List<CipLabel> ciplabels = new ArrayList<>();
     for (String label : labels) {
@@ -163,7 +165,7 @@ public abstract class AbstractValidationSuite {
         else
           ciplabels.add(new CipLabel(idx - 1, cip));
       } else {
-        System.err.println("Cannot parse: " + label);
+        System.err.println("Cannot parse label: " + label);
       }
     }
     return ciplabels;
@@ -190,7 +192,7 @@ public abstract class AbstractValidationSuite {
   public static Collection<Object[]> load()
   {
     List<Object[]> testunits = new ArrayList<>();
-    try (InputStream in = ClassLoader.getSystemResourceAsStream("uk/ac/ebi/centres/validate.smi");
+    try (InputStream in = ClassLoader.getSystemResourceAsStream("com/simolecule/centres/validate.smi");
          Reader rdr = new InputStreamReader(in);
          BufferedReader brdr = new BufferedReader(rdr)) {
       String line;
