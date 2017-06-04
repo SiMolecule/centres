@@ -43,7 +43,6 @@ import java.util.Iterator;
  */
 public class MolLoader {
 
-
     public static IAtomContainer loadCML(InputStream in) {
         CMLReader reader = new CMLReader(in);
         try {

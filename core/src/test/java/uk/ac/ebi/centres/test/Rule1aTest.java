@@ -18,24 +18,19 @@
 
 package uk.ac.ebi.centres.test;
 
+import com.simolecule.centres.MolApi;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import uk.ac.ebi.centres.Node;
 import uk.ac.ebi.centres.priority.InsertionSorter;
 import uk.ac.ebi.centres.priority.Rule1a;
-import uk.ac.ebi.centres.priority.access.AtomicNumberAccessor;
-import uk.ac.ebi.centres.test.TestAtom;
-import uk.ac.ebi.centres.test.TestNode;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -47,14 +42,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class Rule1aTest {
 
-    private AtomicNumberAccessor<TestAtom> accessor = new AtomicNumberAccessor<TestAtom>() {
-        @Override
-        public int getAtomicNumber(TestAtom atom) {
-            return atom.getAtomicNumber();
-        }
-    };
-
-    private Rule1a<TestAtom> rule = new Rule1a<TestAtom>(accessor);
+    private Rule1a<TestAtom> rule = new Rule1a<TestAtom>(new MockApi());
 
 
     @Test

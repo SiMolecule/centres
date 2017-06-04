@@ -18,8 +18,8 @@
 
 package uk.ac.ebi.centres.priority;
 
+import com.simolecule.centres.MolApi;
 import uk.ac.ebi.centres.Node;
-import uk.ac.ebi.centres.priority.access.MassNumberAccessor;
 
 /**
  * An abstract class for constitutional priority based on mass number. A mass
@@ -31,32 +31,19 @@ import uk.ac.ebi.centres.priority.access.MassNumberAccessor;
 public class Rule2<A>
         extends AbstractPriorityRule<A> {
 
-    /**
-     * Accessor used to get the atomic number from an atom.
-     */
-    private final MassNumberAccessor<A> accessor;
+  private MolApi<?, A, ?> api;
 
+  public Rule2(MolApi<?, A, ?> api)
+  {
+    super(Type.CONSTITUTIONAL);
+    this.api = api;
+  }
 
-    /**
-     * Constructs an mass number comparator that uses the provided accessor to
-     * fetch the mass number for a given atom.
-     *
-     * @param accessor an accessor for the atom's mass number
-     */
-    public Rule2(MassNumberAccessor<A> accessor) {
-        super(Type.CONSTITUTIONAL);
-        this.accessor = accessor;
-    }
-
-
-    /**
-     * Compares the ligands by their atoms mass numbers.
-     *
-     * @inheritDoc
-     */
-    @Override
-    public int compare(Node<A> o1, Node<A> o2) {
-        return accessor.getMassNumber(o1.getAtom()) - accessor.getMassNumber(o2.getAtom());
-    }
+  @Override
+  public int compare(Node<A> o1, Node<A> o2)
+  {
+    return Integer.compare(api.getMassNum(null, o1.getAtom()),
+                           api.getMassNum(null, o2.getAtom()));
+  }
 
 }

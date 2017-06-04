@@ -24,15 +24,10 @@ import org.junit.Test;
 import uk.ac.ebi.centres.Node;
 import uk.ac.ebi.centres.priority.InsertionSorter;
 import uk.ac.ebi.centres.priority.Rule2;
-import uk.ac.ebi.centres.priority.access.MassNumberAccessor;
-import uk.ac.ebi.centres.test.TestAtom;
-import uk.ac.ebi.centres.test.TestNode;
 
 import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -43,15 +38,7 @@ import static org.junit.Assert.assertThat;
  */
 public class Rule2Test {
 
-    private MassNumberAccessor<TestAtom> accessor = new MassNumberAccessor<TestAtom>() {
-        @Override
-        public int getMassNumber(TestAtom atom) {
-            return atom.getMassNumber();
-        }
-    };
-
-    private Rule2<TestAtom> rule = new Rule2<TestAtom>(accessor);
-
+    private Rule2<TestAtom> rule = new Rule2<TestAtom>(new MockApi());
 
     @Test
     public void testCompare_Equal() throws Exception {

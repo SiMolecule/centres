@@ -18,81 +18,26 @@
 
 package uk.ac.ebi.centres.cdk;
 
+import com.simolecule.CdkMolApi;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import uk.ac.ebi.centres.DefaultPerceptor;
-import uk.ac.ebi.centres.priority.Rule1a;
-import uk.ac.ebi.centres.priority.Rules;
-import uk.ac.ebi.centres.priority.Rule1b;
-import uk.ac.ebi.centres.priority.Rule2;
-import uk.ac.ebi.centres.priority.access.AtomicNumberAccessor;
-import uk.ac.ebi.centres.priority.access.MassNumberAccessor;
-import uk.ac.ebi.centres.priority.access.PsuedoAtomicNumberModifier;
-import uk.ac.ebi.centres.priority.access.descriptor.PrimaryOrAuxiliary;
-import uk.ac.ebi.centres.priority.access.descriptor.PrimaryDescriptor;
-import uk.ac.ebi.centres.priority.Rule4b;
-import uk.ac.ebi.centres.priority.Rule4c;
-import uk.ac.ebi.centres.priority.Rule5;
-import uk.ac.ebi.centres.priority.Rule3;
+import org.openscience.cdk.interfaces.IBond;
+import uk.ac.ebi.centres.StereoPerceptor;
 
 /**
  * @author John May
  */
-public class CDKPerceptor extends DefaultPerceptor<IAtom> {
+public class CDKPerceptor extends StereoPerceptor<IAtomContainer, IAtom, IBond> {
 
-    private static final MassNumberAccessor<IAtom> cdkMassNumberAccessor = new MassNumberAccessor<IAtom>() {
-        @Override
-        public int getMassNumber(IAtom atom) {
-            Integer massnum = atom.getMassNumber();
-            if (massnum == null)
-                return 0;
-            return massnum;
-        }
-    };
+  public CDKPerceptor()
+  {
+    super(new CdkMolApi());
+  }
 
-    private static int atomicNumber(IAtom atom) {
-        final Integer elem = atom.getAtomicNumber();
-        if (elem == null) return 0;
-        return elem;
-    }
-
-    public CDKPerceptor() {
-        super(new Rules<IAtom>(
-                      new Rule1a<IAtom>(
-                              new PsuedoAtomicNumberModifier<IAtom>(
-                                      new AtomicNumberAccessor<IAtom>() {
-                                          @Override
-                                          public int getAtomicNumber(IAtom atom) {
-                                              return atomicNumber(atom);
-                                          }
-                                      }))
-                      ,
-                      new Rule1b<IAtom>(),
-                      new Rule2<IAtom>(cdkMassNumberAccessor),
-                      new Rule3<IAtom>(),
-                      new Rule4b<IAtom>(new PrimaryDescriptor<IAtom>()),
-                      new Rule4c<IAtom>(new PrimaryDescriptor<IAtom>()),
-                      new Rule5<IAtom>(new PrimaryDescriptor<IAtom>())
-              ),
-              new Rules<IAtom>(
-                      new Rule1a<IAtom>(
-                              new PsuedoAtomicNumberModifier<IAtom>(
-                                      new AtomicNumberAccessor<IAtom>() {
-                                          @Override
-                                          public int getAtomicNumber(IAtom atom) {
-                                              return atomicNumber(atom);
-                                          }
-                                      })),
-                      new Rule2<IAtom>(cdkMassNumberAccessor),
-                      new Rule3<IAtom>(),
-                      new Rule4b<IAtom>(new PrimaryOrAuxiliary<IAtom>()),
-                      new Rule4c<IAtom>(new PrimaryOrAuxiliary<IAtom>()),
-                      new Rule5<IAtom>(new PrimaryOrAuxiliary<IAtom>())
-              ));
-    }
-
-    public void perceive(IAtomContainer container) {
-        perceive(new CDKCentreProvider(container), new CDKManager(container));
-    }
+  public void perceive(IAtomContainer container)
+  {
+    perceive(new CDKCentreProvider(container),
+             new CDKManager(container));
+  }
 
 }

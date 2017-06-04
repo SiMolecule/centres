@@ -18,8 +18,8 @@
 
 package uk.ac.ebi.centres.priority;
 
+import com.simolecule.centres.MolApi;
 import uk.ac.ebi.centres.Node;
-import uk.ac.ebi.centres.priority.access.AtomicNumberAccessor;
 
 /**
  * An abstract class for constitutional priority based on atomic number. An
@@ -28,35 +28,21 @@ import uk.ac.ebi.centres.priority.access.AtomicNumberAccessor;
  *
  * @author John May
  */
-public class Rule1a<A>
+public final class Rule1a<A>
         extends AbstractPriorityRule<A> {
 
-    /**
-     * Accessor used to get the atomic number from an atom.
-     */
-    private final AtomicNumberAccessor<A> accessor;
+  private MolApi<?, A, ?> api;
 
+  public Rule1a(MolApi<?, A, ?> api)
+  {
+    super(Type.CONSTITUTIONAL);
+    this.api = api;
+  }
 
-    /**
-     * Constructs an atomic number comparator that uses the provided accessor to
-     * fetch the atomic number for a given atom.
-     *
-     * @param accessor an accessor for the atom's atomic number
-     */
-    public Rule1a(AtomicNumberAccessor<A> accessor) {
-        super(Type.CONSTITUTIONAL);
-        this.accessor = accessor;
-    }
-
-
-    /**
-     * Compares the ligands by their atoms atomic numbers.
-     *
-     * @inheritDoc
-     */
-    @Override
-    public int compare(Node<A> o1, Node<A> o2) {
-        return accessor.getAtomicNumber(o1.getAtom()) - accessor.getAtomicNumber(o2.getAtom());
-    }
-
+  @Override
+  public int compare(Node<A> o1, Node<A> o2)
+  {
+    return Integer.compare(api.getAtomicNum(null, o1.getAtom()),
+                           api.getAtomicNum(null, o2.getAtom()));
+  }
 }
