@@ -34,6 +34,7 @@ import java.util.Map;
  */
 public class CDKManager implements DescriptorManager<IAtom> {
 
+    public static final String PROP_KEY = "descriptor";
     private final IAtomContainer container;
     private Map<IChemObject, MutableDescriptor> map = new HashMap<IChemObject, MutableDescriptor>();
 
@@ -80,13 +81,13 @@ public class CDKManager implements DescriptorManager<IAtom> {
 
         @Override
         public synchronized Descriptor get() {
-            return (Descriptor) chemObject.getProperty("descriptor");
+            return (Descriptor) chemObject.getProperty(PROP_KEY);
         }
 
 
         @Override
         public synchronized void set(Descriptor descriptor) {
-            chemObject.setProperty("descriptor", descriptor);
+            chemObject.setProperty(PROP_KEY, descriptor);
         }
     }
 

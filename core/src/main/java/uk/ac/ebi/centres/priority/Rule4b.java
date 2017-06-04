@@ -156,6 +156,7 @@ public class Rule4b<A>
     private List<Node<A>> nonTerminalLigands(List<Node<A>> nodes) {
         List<Node<A>> filtered = new ArrayList<Node<A>>();
         for (Node<A> node : nodes) {
+            // XXX remove this!
             if (!node.isTerminal() && ((IAtom) node.getAtom()).getAtomicNumber() != 1)
                 filtered.add(node);
         }

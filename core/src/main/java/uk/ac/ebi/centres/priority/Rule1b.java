@@ -16,30 +16,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-package uk.ac.ebi.centres.cdk;
+package uk.ac.ebi.centres.priority;
 
-import org.openscience.cdk.interfaces.IAtom;
-import uk.ac.ebi.centres.calculator.ThreeDimensionalSignCalculator;
+import uk.ac.ebi.centres.Node;
 
 /**
- * @author John May
+ * <b>Sequence Rule 1b</b>
+ * <i>"A duplicate atom node whose corresponding nonduplicated atom
+ * node is the root or is closer to the root ranks higher than
+ * a duplicate atom node whose corresponding nonduplicated atom
+ * node is farther from the root."</i>
+ * @param <A> generic atom class
  */
-public class CDK3DSignCalculator extends ThreeDimensionalSignCalculator<IAtom> {
+public class Rule1b<A>
+        extends AbstractPriorityRule<A> {
 
-    @Override
-    public double getX(IAtom atom) {
-        return atom.getPoint3d().x;
+    public Rule1b(){
+        super(Type.CONSTITUTIONAL);
     }
 
-
     @Override
-    public double getY(IAtom atom) {
-        return atom.getPoint3d().y;
+    public int compare(Node<A> o1, Node<A> o2) {
+        // TODO
+        return 0;
     }
 
-
-    @Override
-    public double getZ(IAtom atom) {
-        return atom.getPoint3d().z;
-    }
 }

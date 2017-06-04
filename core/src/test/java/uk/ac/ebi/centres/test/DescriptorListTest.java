@@ -16,8 +16,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package uk.ac.ebi.centres.priority.descriptor;
+package uk.ac.ebi.centres.test;
 
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 import uk.ac.ebi.centres.Descriptor;
@@ -207,7 +209,7 @@ public class DescriptorListTest {
         descriptors.add(Descriptor.S);
         descriptors.add(Descriptor.R);
         descriptors.add(Descriptor.S);
-        Assert.assertThat(descriptors.getPairing(), is(greaterThan(0)));
+        Assert.assertThat(descriptors.getPairing(), CoreMatchers.is(Matchers.greaterThan(0)));
         descriptors.clear();
         Assert.assertThat(descriptors.getPairing(), is(0));
 

@@ -69,6 +69,7 @@ public class CDKConnectionTable extends BasicConnectionTable<IAtom> {
                     hAtom.setAtomicNumber(1);
                     hAtom.setSymbol("H");
                     hAtom.setFormalCharge(0);
+                    addExpandedHydrogen(hAtom);
                     addConnection(atom, hAtom, 1, 0);
                 }
             }

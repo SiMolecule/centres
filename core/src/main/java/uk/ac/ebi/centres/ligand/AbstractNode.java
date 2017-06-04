@@ -19,7 +19,6 @@
 package uk.ac.ebi.centres.ligand;
 
 import com.google.common.collect.Sets;
-import org.openscience.cdk.interfaces.IAtom;
 import uk.ac.ebi.centres.ConnectionProvider;
 import uk.ac.ebi.centres.Descriptor;
 import uk.ac.ebi.centres.Node;
@@ -242,14 +241,5 @@ public abstract class AbstractNode<A> implements Node<A> {
   public void clearOrderedBy()
   {
     orderedBy.clear();
-  }
-
-  @Override
-  public String toString()
-  {
-    IAtom iatom = (IAtom) getAtom();
-    int   num   = (iatom.getProperty("num", Integer.class) + 1);
-    return iatom.getSymbol()
-                .toLowerCase() + num + (isDuplicate() ? "_dup" : "") + "_" + System.identityHashCode(this) + (getDescriptor() != Descriptor.Unknown ? "_" + getDescriptor() : "") + (getAuxiliary() != Descriptor.Unknown ? "_" + getAuxiliary() + "aux" : "");
   }
 }

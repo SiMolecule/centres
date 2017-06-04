@@ -25,6 +25,10 @@ import java.util.Collection;
  */
 public interface ConnectionTable<A> {
 
+    public void addExpandedHydrogen(A atom);
+
+    public boolean isExpandedHydrogen(A atom);
+
     public Collection<A> getConnected(A atom);
 
     public Integer getDepth(A first, A second);

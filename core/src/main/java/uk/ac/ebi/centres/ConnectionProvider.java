@@ -30,6 +30,8 @@ public interface ConnectionProvider<A> {
 
     public void build();
 
+    ConnectionTable<A> getCtab();
+
     public List<Node<A>> ligandInstancesForAtom(A atom);
 
     public List<Node<A>> getLigands(Node<A> node);

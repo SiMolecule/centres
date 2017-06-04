@@ -31,22 +31,17 @@ import java.util.Set;
  *
  * @author John May
  * @see Descriptor
- * @see uk.ac.ebi.centres.descriptor.General
- * @see uk.ac.ebi.centres.descriptor.Descriptor
- * @see uk.ac.ebi.centres.descriptor.Descriptor
- * @see uk.ac.ebi.centres.descriptor.Trigonal
  */
 public interface Centre<A> extends Node<A> {
 
-
     /**
-     * Access the centre atoms that define this centre. In tetrahedral and
+     * Access the focus atoms that define this stereo centre. In tetrahedral and
      * trigonal centres this is a set of length one whilst in planar centres
      * this is a set of length two.
      *
      * @return the atoms of this centre
      */
-    public Set<A> getAtoms();
+    public Set<A> getFoci();
 
     /**
      * Perceives the descriptor for this centre given a priority rule and a
@@ -57,17 +52,15 @@ public interface Centre<A> extends Node<A> {
      *
      * @param rule       the rule by which this centre's proximal ligands are
      *                   sorted
-     * @param calculator the sign calculator to use (normally 2D or 3D).
      *
      * @return a perceived descriptor for this centre.
      */
-    public Descriptor perceive(PriorityRule<A> rule, SignCalculator<A> calculator);
+    public Descriptor perceive(PriorityRule<A> rule);
 
-    public Descriptor perceive(List<Node<A>> proximal, PriorityRule<A> rule, SignCalculator<A> calculator);
+    public Descriptor perceive(List<Node<A>> proximal, PriorityRule<A> rule);
 
     public int perceiveAuxiliary(Collection<Centre<A>> centres,
-                                  PriorityRule<A> rule,
-                                  SignCalculator<A> calculator);
+                                  PriorityRule<A> rule);
 
     /**
      * Clean up the digraph

@@ -26,7 +26,6 @@ import uk.ac.ebi.centres.Node;
 import uk.ac.ebi.centres.MutableDescriptor;
 import uk.ac.ebi.centres.Priority;
 import uk.ac.ebi.centres.PriorityRule;
-import uk.ac.ebi.centres.SignCalculator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,22 +40,20 @@ public class CisTrans<A> extends AbstractNode<A> implements Centre<A> {
     private final AbstractNode<A> first;
     private final AbstractNode<A> second;
     private final Set<A>          atoms;
+    private final A[] carriers;
+    private final int config;
 
+    public static final int TOGETHER = 0x1;
+    public static final int OPPOSITE = 0x2;
 
-    @SuppressWarnings("unchecked")
-    public CisTrans(A first, A second,
-                    MutableDescriptor descriptor) {
-
+    public CisTrans(A first, A second, A[] carriers, int config, MutableDescriptor descriptor) {
         super(descriptor, 0);
-
         Node<A> self = this;
-
-        // create two ligand delegates
-        this.first = new NonterminalNode<A>(descriptor, first, second, 0);
+        this.first  = new NonterminalNode<A>(descriptor, first, second, 0);
         this.second = new NonterminalNode<A>(descriptor, second, first, 0);
-
-        atoms = Sets.newHashSet(first, second);
-
+        this.atoms = Sets.newHashSet(first, second);
+        this.carriers = carriers;
+        this.config = config;
     }
 
 
@@ -86,10 +83,6 @@ public class CisTrans<A> extends AbstractNode<A> implements Centre<A> {
 
     @Override
     public String toString() {
-//        if (first.getAtom() instanceof IAtom) {
-//            return ((IAtom) first.getAtom()).getSymbol() + "" + ((IAtom) first.getAtom()).getProperty("number") + "=" +
-//                    ((IAtom) second.getAtom()).getSymbol() + "" + ((IAtom) second.getAtom()).getProperty("number");
-//        }
         return first.getAtom().toString() + "=" + second.getAtom().toString();
     }
 
@@ -101,7 +94,7 @@ public class CisTrans<A> extends AbstractNode<A> implements Centre<A> {
 
 
     @Override
-    public Set<A> getAtoms() {
+    public Set<A> getFoci() {
         return atoms;
     }
 
@@ -119,21 +112,21 @@ public class CisTrans<A> extends AbstractNode<A> implements Centre<A> {
 
 
     @Override
-    public int perceiveAuxiliary(Collection<Centre<A>> centres, PriorityRule<A> rule, SignCalculator<A> calculator) {
+    public int perceiveAuxiliary(Collection<Centre<A>> centres, PriorityRule<A> rule) {
         // System.err.println("Auxiliary perception is not currently supported on planar centres");
         return 0;
     }
 
 
     @Override
-    public uk.ac.ebi.centres.Descriptor perceive(List<Node<A>> proximal, PriorityRule<A> rule, SignCalculator<A> calculator) {
+    public uk.ac.ebi.centres.Descriptor perceive(List<Node<A>> proximal, PriorityRule<A> rule) {
         // can't do this type of perception for planar centres
         return Descriptor.Unknown;
     }
 
 
     @Override
-    public uk.ac.ebi.centres.Descriptor perceive(PriorityRule<A> rule, SignCalculator<A> calculator) {
+    public uk.ac.ebi.centres.Descriptor perceive(PriorityRule<A> rule) {
 
         List<Node<A>> firstNodes  = first.getNodes();
         List<Node<A>> secondNodes = second.getNodes();
@@ -142,7 +135,7 @@ public class CisTrans<A> extends AbstractNode<A> implements Centre<A> {
             return Descriptor.None;
 
         // check for pseudo
-        Priority firstPriority = rule.prioritise(firstNodes);
+        Priority firstPriority  = rule.prioritise(firstNodes);
         Priority secondPriority = rule.prioritise(secondNodes);
 
         if (!firstPriority.isUnique() || !secondPriority.isUnique()) {
@@ -150,22 +143,23 @@ public class CisTrans<A> extends AbstractNode<A> implements Centre<A> {
             return Descriptor.Unknown;
         }
 
-        int firstSign = calculator.getSign(firstNodes.iterator().next().getAtom(),
-                                           first.getAtom(),
-                                           second.getAtom());
-        int secondSign = calculator.getSign(secondNodes.iterator().next().getAtom(),
-                                            second.getAtom(),
-                                            first.getAtom());
+        int config = this.config;
 
-        if (firstSign == 0 || secondSign == 0)
-            return Descriptor.Unknown;
+        if (firstNodes.size() > 1 && firstNodes.get(1).getAtom().equals(carriers[0]))
+            config ^= 0x3;
+        //else if (!firstNodes.get(0).getAtom().equals(carriers[0]))
+        //    throw new IllegalArgumentException();
+        if (secondNodes.size() > 2 && secondNodes.get(1).getAtom().equals(carriers[1]))
+            config ^= 0x3;
+        //else if (!secondNodes.get(0).getAtom().equals(carriers[1]))
+        //    throw new IllegalArgumentException();
 
         // this should be an or?
-        boolean pseudo = firstPriority.isPseduoAsymettric() && secondPriority.isPseduoAsymettric();
+        boolean pseudo = firstPriority.isPseduoAsymettric() || secondPriority.isPseduoAsymettric();
 
         // also check for psuedo (from prioritise)
-        return firstSign == secondSign ? pseudo ? Descriptor.e : Descriptor.E
-                                       : pseudo ? Descriptor.z : Descriptor.Z;
+        return config == TOGETHER ? pseudo ? Descriptor.z : Descriptor.Z
+                                  : pseudo ? Descriptor.E : Descriptor.E;
 
     }
 

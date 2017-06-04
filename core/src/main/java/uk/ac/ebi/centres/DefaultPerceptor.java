@@ -38,24 +38,23 @@ public class DefaultPerceptor<A> implements Perceptor<A> {
 
 
     public DefaultPerceptor(final PriorityRule<A> rule,
-                            final PriorityRule<A> auxRule,
-                            final SignCalculator<A> calculator) {
+                            final PriorityRule<A> auxRule) {
 
         // create the main and aux perceptors
         this.mainPerceptor = new CentrePerceptor<A>(rule) {
             @Override
             public Descriptor perceive(Centre<A> centre, Collection<Centre<A>> centres) {
-                return centre.perceive(rule, calculator);
+                return centre.perceive(rule);
             }
         };
         this.auxPerceptor = new CentrePerceptor<A>(auxRule) {
             @Override
             public Descriptor perceive(Centre<A> centre, Collection<Centre<A>> centres) {
                 System.err.println("Perceive aux");
-                if (centre.perceiveAuxiliary(centres, rule, calculator) > 0) {
+                if (centre.perceiveAuxiliary(centres, rule) > 0) {
                     System.err.println("Using Aux for...");
                     // only attempt re-perception if there were auxiliary labels defined
-                    return centre.perceive(auxRule, calculator);
+                    return centre.perceive(auxRule);
                 }
                 return Descriptor.Unknown;
             }

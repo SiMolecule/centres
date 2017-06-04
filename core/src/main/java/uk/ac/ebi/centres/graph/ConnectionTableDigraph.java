@@ -43,6 +43,12 @@ public class ConnectionTableDigraph<A>
 
 
     @Override
+    public ConnectionTable<A> getCtab()
+    {
+        return table;
+    }
+
+    @Override
     public int getOrder(A first, A second) {
         return table.getOrder(first, second);
     }

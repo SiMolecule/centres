@@ -23,7 +23,9 @@ import uk.ac.ebi.centres.ConnectionTable;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author John May
@@ -31,54 +33,71 @@ import java.util.Map;
 
 public class BasicConnectionTable<A> implements ConnectionTable<A> {
 
-    private Map<A, Map<A, Map.Entry<Integer, Integer>>> connections = new HashMap<A, Map<A, Map.Entry<Integer, Integer>>>();
-    private Map<A, Map<A, Map.Entry<Integer, Integer>>> stereo      = new HashMap<A, Map<A, Map.Entry<Integer, Integer>>>();
+  private Map<A, Map<A, Map.Entry<Integer, Integer>>> connections = new HashMap<A, Map<A, Map.Entry<Integer, Integer>>>();
+  private Map<A, Map<A, Map.Entry<Integer, Integer>>> stereo      = new HashMap<A, Map<A, Map.Entry<Integer, Integer>>>();
+  private Set<A>                                      hydrogens   = new HashSet<>();
+
+  public void addExpandedHydrogen(A atom)
+  {
+    hydrogens.add(atom);
+  }
+
+  public boolean isExpandedHydrogen(A atom)
+  {
+    return hydrogens.contains(atom);
+  }
+
+  public void addConnection(A first, A second, int order)
+  {
+    addConnection(first, second, order, 0);
+  }
 
 
-    public void addConnection(A first, A second, int order) {
-        addConnection(first, second, order, 0);
+  public void addConnection(A first, A second, int order, int sign)
+  {
+    newConnection(first, second, order,
+                  sign >= 1 ? 1 : sign <= -1 ? -1 : 0);
+    newConnection(second, first, order,
+                  //sign >= 1 ? -1 : sign <= -1 ? 1 : 0); // note the sign is inverted
+                  0);
+  }
+
+
+  private void newConnection(A first, A second, int order, int sign)
+  {
+    if (!connections.containsKey(first)) {
+      connections.put(first, new HashMap<A, Map.Entry<Integer, Integer>>());
     }
+    connections.get(first).put(second, new AbstractMap.SimpleEntry<Integer, Integer>(order, sign));
+  }
 
 
-    public void addConnection(A first, A second, int order, int sign) {
-        newConnection(first, second, order,
-                      sign >= 1 ? 1 : sign <= -1 ? -1 : 0);
-        newConnection(second, first, order,
-                      //sign >= 1 ? -1 : sign <= -1 ? 1 : 0); // note the sign is inverted
-                      0);
-    }
+  @Override
+  public Collection<A> getConnected(A atom)
+  {
+    return connections.get(atom).keySet();
+  }
 
 
-    private void newConnection(A first, A second, int order, int sign) {
-        if (!connections.containsKey(first)) {
-            connections.put(first, new HashMap<A, Map.Entry<Integer, Integer>>());
-        }
-        connections.get(first).put(second, new AbstractMap.SimpleEntry<Integer, Integer>(order, sign));
-    }
+  @Override
+  public int getOrder(A first, A second)
+  {
+    return connections.get(first).get(second).getKey();
+  }
 
 
-    @Override
-    public Collection<A> getConnected(A atom) {
-        return connections.get(atom).keySet();
-    }
+  @Override
+  public Integer getDepth(A first, A second)
+  {
+    return connections.get(first).get(second).getValue();
+  }
 
 
-    @Override
-    public int getOrder(A first, A second) {
-        return connections.get(first).get(second).getKey();
-    }
-
-
-    @Override
-    public Integer getDepth(A first, A second) {
-        return connections.get(first).get(second).getValue();
-    }
-
-
-    @Override
-    public Integer getAtomCount() {
-        return connections.keySet().size();
-    }
+  @Override
+  public Integer getAtomCount()
+  {
+    return connections.keySet().size();
+  }
 }
 
 

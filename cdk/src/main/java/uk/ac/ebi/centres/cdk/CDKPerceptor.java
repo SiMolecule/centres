@@ -18,13 +18,9 @@
 
 package uk.ac.ebi.centres.cdk;
 
-import org.openscience.cdk.config.Elements;
-import org.openscience.cdk.config.Isotopes;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IIsotope;
 import uk.ac.ebi.centres.DefaultPerceptor;
-import uk.ac.ebi.centres.SignCalculator;
 import uk.ac.ebi.centres.priority.Rule1a;
 import uk.ac.ebi.centres.priority.Rules;
 import uk.ac.ebi.centres.priority.Rule1b;
@@ -39,8 +35,6 @@ import uk.ac.ebi.centres.priority.Rule4c;
 import uk.ac.ebi.centres.priority.Rule5;
 import uk.ac.ebi.centres.priority.Rule3;
 
-import java.io.IOException;
-
 /**
  * @author John May
  */
@@ -50,19 +44,8 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
         @Override
         public int getMassNumber(IAtom atom) {
             Integer massnum = atom.getMassNumber();
-            if (massnum == null) {
-                int elem = atomicNumber(atom);
-                if (elem == 0)
-                    return 0;
-                try {
-                    IIsotope isotope = Isotopes.getInstance().getMajorIsotope(Elements.ofNumber(elem).symbol());
-                    if (isotope == null)
-                        return 0;
-                    return isotope.getMassNumber();
-                } catch (IOException e) {
-                    return 0;
-                }
-            }
+            if (massnum == null)
+                return 0;
             return massnum;
         }
     };
@@ -73,7 +56,7 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
         return elem;
     }
 
-    public CDKPerceptor(SignCalculator<IAtom> calculator) {
+    public CDKPerceptor() {
         super(new Rules<IAtom>(
                       new Rule1a<IAtom>(
                               new PsuedoAtomicNumberModifier<IAtom>(
@@ -105,17 +88,8 @@ public class CDKPerceptor extends DefaultPerceptor<IAtom> {
                       new Rule4b<IAtom>(new PrimaryOrAuxiliary<IAtom>()),
                       new Rule4c<IAtom>(new PrimaryOrAuxiliary<IAtom>()),
                       new Rule5<IAtom>(new PrimaryOrAuxiliary<IAtom>())
-              ),
-              calculator);
+              ));
     }
-
-    /**
-     * Creates a perceptor for 2D centres
-     */
-    public CDKPerceptor() {
-        this(new CDK2DSignCalculator());
-    }
-
 
     public void perceive(IAtomContainer container) {
         perceive(new CDKCentreProvider(container), new CDKManager(container));

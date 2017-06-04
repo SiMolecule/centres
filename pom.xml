@@ -35,26 +35,22 @@
         </developer>
     </developers>
 
-    <distributionManagement>
-        <repository>
-            <id>ebi-repo</id>
-            <url>${ebi.maven.repo.deploy.url}</url>
-        </repository>
-        <snapshotRepository>
-            <id>ebi-snapshots-repo</id>
-            <url>${ebi.maven.repo.snapshots.deploy.url}</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <repositories>
-        <repository>
-            <id>ebi-repo</id>
-            <url>http://www.ebi.ac.uk/~maven/m2repo</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-library</artifactId>
+                <version>1.1</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
 

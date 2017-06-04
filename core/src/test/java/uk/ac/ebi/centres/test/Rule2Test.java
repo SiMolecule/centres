@@ -16,10 +16,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package uk.ac.ebi.centres.priority;
+package uk.ac.ebi.centres.test;
 
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import uk.ac.ebi.centres.Node;
+import uk.ac.ebi.centres.priority.InsertionSorter;
+import uk.ac.ebi.centres.priority.Rule2;
 import uk.ac.ebi.centres.priority.access.MassNumberAccessor;
 import uk.ac.ebi.centres.test.TestAtom;
 import uk.ac.ebi.centres.test.TestNode;
@@ -73,10 +77,10 @@ public class Rule2Test {
 
         assertThat("Higher priority in second argument should return < 0",
                    rule.compare(carbon12, carbon13),
-                   is(lessThan(0)));
+                   CoreMatchers.is(Matchers.lessThan(0)));
         assertThat("Higher priority in second argument should return > 0",
                    rule.compare(carbon13, carbon12),
-                   is(greaterThan(0)));
+                   CoreMatchers.is(Matchers.greaterThan(0)));
 
     }
 
