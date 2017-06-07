@@ -1,6 +1,6 @@
 package uk.ac.cam.ch.wwmm.opsin;
 
-import com.simolecule.centres.Labeler;
+import com.simolecule.centres.Labeller;
 import com.simolecule.centres.config.Configuration;
 import com.simolecule.centres.config.Sp2Bond;
 import com.simolecule.centres.config.Tetrahedral;
@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class OpsinLabeler extends Labeler<Atom, Bond> {
+public class OpsinLabeller extends Labeller<Atom, Bond> {
 
-  OpsinLabeler()
+  OpsinLabeller()
   {
   }
 
@@ -72,7 +72,7 @@ public class OpsinLabeler extends Labeler<Atom, Bond> {
 
   public static void label(Fragment fragment)
   {
-    new OpsinLabeler().label(new OpsinMol(fragment),
-                             createCfgs(fragment));
+    new OpsinLabeller().label(new OpsinMol(fragment),
+                              createCfgs(fragment));
   }
 }

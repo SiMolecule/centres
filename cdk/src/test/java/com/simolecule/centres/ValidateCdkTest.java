@@ -21,7 +21,7 @@ public class ValidateCdkTest extends AbstractValidationSuite {
   {
     IAtomContainer base = smigen.parseSmiles(expected.getSmiles());
     CdkMol         mol  = new CdkMol(base);
-    new CdkLabeler().label(mol, CdkLabeler.createConfigs(base));
+    new CdkLabeller().label(mol, CdkLabeller.createConfigs(base));
     check(mol, new GenSmiles() {
       @Override
       public String generate(BaseMol mol)

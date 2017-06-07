@@ -15,7 +15,7 @@ public class ValidateOpsinTest extends AbstractValidationSuite {
 
       BaseMol<Atom,Bond> mol = new OpsinMol(fragment);
 
-      new OpsinLabeler().label(mol, OpsinLabeler.createCfgs(fragment));
+      new OpsinLabeller().label(mol, OpsinLabeller.createCfgs(fragment));
 
       check(mol,
             new GenSmiles() {

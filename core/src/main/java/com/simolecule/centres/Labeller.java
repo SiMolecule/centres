@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Labeler<A, B> {
+public class Labeller<A, B> {
 
   public void label(BaseMol<A, B> mol,
                     List<Configuration<A, B>> configs)

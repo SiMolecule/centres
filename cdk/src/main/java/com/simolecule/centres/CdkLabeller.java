@@ -13,9 +13,9 @@ import org.openscience.cdk.stereo.TetrahedralChirality;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class CdkLabeler extends Labeler<IAtom, IBond> {
+public final class CdkLabeller extends Labeller<IAtom, IBond> {
 
-  CdkLabeler()
+  CdkLabeller()
   {
   }
 
@@ -51,6 +51,6 @@ public final class CdkLabeler extends Labeler<IAtom, IBond> {
 
   public static void label(IAtomContainer mol)
   {
-    new CdkLabeler().label(new CdkMol(mol), createConfigs(mol));
+    new CdkLabeller().label(new CdkMol(mol), createConfigs(mol));
   }
 }

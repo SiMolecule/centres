@@ -29,7 +29,7 @@ public class Main {
 
   static void processMol(IAtomContainer mol)
   {
-    CdkLabeler.label(mol);
+    CdkLabeller.label(mol);
   }
 
   static void processSmiles(BufferedWriter wtr, String smi) throws CDKException, IOException
