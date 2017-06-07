@@ -4,7 +4,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>uk.ac.ebi.centres</groupId>
+    <groupId>com.simolecule</groupId>
     <artifactId>centres</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
