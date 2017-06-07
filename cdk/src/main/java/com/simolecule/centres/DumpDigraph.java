@@ -14,7 +14,7 @@ public class DumpDigraph {
 
   public static void main(String[] args) throws CDKException
   {
-    String         smiles = "O[C@H](C1=CC(O)=CC=C1)C2=CC=CC(O)=C2";
+    String         smiles = "CC=[C@]=CC";
     SmilesParser   smipar = new SmilesParser(SilentChemObjectBuilder.getInstance());
     IAtomContainer mol    = smipar.parseSmiles(smiles);
 

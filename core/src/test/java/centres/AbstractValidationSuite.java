@@ -1,11 +1,11 @@
 package centres;
 
 import com.simolecule.centres.BaseMol;
+import com.simolecule.centres.Descriptor;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import com.simolecule.centres.Descriptor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,12 +21,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public abstract class AbstractValidationSuite {
@@ -169,6 +163,8 @@ public abstract class AbstractValidationSuite {
     Set<Object> checked  = new HashSet<>();
     int         atomIter = 0;
     int         bondIter = 0;
+    String      smiles = callback.generate(mol);
+
     for (CipLabel label : expected.getLabels()) {
       switch (label.getCtx()) {
         case Atom:
@@ -182,14 +178,14 @@ public abstract class AbstractValidationSuite {
                   actual != Descriptor.Unknown) {
                 checked.add(atom);
                 Assert.assertThat("Atom idx=" + atomIter + " expected=" + label.getExp() + " was=" + actual +
-                                  "\n" + callback.generate(mol),
+                                  "\n" + smiles,
                                   actual, CoreMatchers.is(label.getExp()));
                 atomIter++;
                 break;
               }
               atomIter++;
             }
-            Assert.assertTrue("Label not found, expected " + label.getExp() + "\n" + callback.generate(mol),
+            Assert.assertTrue("Label not found, expected " + label.getExp() + "\n" + smiles,
                               atomIter < mol.getNumAtoms());
           } else {
             A atom = mol.getAtom(label.getIdx());
@@ -197,7 +193,7 @@ public abstract class AbstractValidationSuite {
             Assert.assertNotNull("No atom at index " + label.getIdx(), atom);
             Descriptor actual = mol.getAtomProp(atom, BaseMol.CIP_LABEL_KEY);
             Assert.assertThat("Atom idx=" + label.getIdx() + " expected=" + label.getExp() + " was=" + actual +
-                              "\n" + callback.generate(mol),
+                              "\n" + smiles,
                               actual,
                               CoreMatchers.is(label.getExp()));
           }
@@ -212,14 +208,14 @@ public abstract class AbstractValidationSuite {
               if (actual != null &&
                   actual != Descriptor.Unknown) {
                 Assert.assertThat("Bond idx=" + bondIter + " expected=" + label.getExp() + " was=" + actual +
-                                  "\n" + callback.generate(mol),
+                                  "\n" + smiles,
                                   actual, CoreMatchers.is(label.getExp()));
                 bondIter++;
                 break;
               }
               bondIter++;
             }
-            Assert.assertTrue("Label not found, expected " + label.getExp() + "\n" + callback.generate(mol),
+            Assert.assertTrue("Label not found, expected " + label.getExp() + "\n" + smiles,
                               bondIter < mol.getNumBonds());
           } else {
             B bond = mol.getBond(label.getIdx());
@@ -227,7 +223,7 @@ public abstract class AbstractValidationSuite {
             Assert.assertNotNull("No atom at index " + label.getIdx(), bond);
             Descriptor actual = mol.getBondProp(bond, BaseMol.CIP_LABEL_KEY);
             Assert.assertThat("Bond idx=" + label.getIdx() + " expected=" + label.getExp() + " was=" + actual +
-                              "\n" + callback.generate(mol),
+                              "\n" + smiles,
                               actual,
                               CoreMatchers.is(label.getExp()));
           }
@@ -242,7 +238,7 @@ public abstract class AbstractValidationSuite {
         continue;
       Descriptor desc = mol.getAtomProp(atom, BaseMol.CIP_LABEL_KEY);
       if (desc != null && desc != Descriptor.Unknown)
-        Assert.fail("No expected value for Atom idx=" + mol.getAtomIdx(atom) + " was=" + desc + "\n" + callback.generate(mol));
+        Assert.fail("No expected value for Atom idx=" + mol.getAtomIdx(atom) + " was=" + desc + "\n" + smiles);
     }
     for (int i = 0; i < mol.getNumBonds(); i++) {
       B bond = mol.getBond(i);
@@ -250,7 +246,7 @@ public abstract class AbstractValidationSuite {
         continue;
       Descriptor desc = mol.getBondProp(bond, BaseMol.CIP_LABEL_KEY);
       if (desc != null && desc != Descriptor.Unknown)
-        Assert.fail("No expected value for Bond idx=" + mol.getBondIdx(bond) + " was=" + desc + "\n" + callback.generate(mol));
+        Assert.fail("No expected value for Bond idx=" + mol.getBondIdx(bond) + " was=" + desc + "\n" + smiles);
     }
 
     if (expected.getLabels().isEmpty()) {

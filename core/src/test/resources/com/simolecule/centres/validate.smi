@@ -14,7 +14,10 @@ C/N=N\C         Z (Z)-dimethyldiazene
 C[S@@](=O)CC    R sulfone
 C[S@](=O)CC     S sulfone
 O[C@H](C1=CC(O)=CC=C1)C1=CC=CC(O)=C1 U Kekulé independence
-CC=[C@@]=CC
+CC=[C@]=CC            A3M elongated tetrahedral
+CC=[C@@]=CC           A3P elongated tetrahedral
+CC([H])=[C@]=C([H])C  A4M elongated tetrahedral (explicit hydrogens)
+CC([H])=[C@@]=C([H])C A4P elongated tetrahedral (explicit hydrogens)
 # Handling of pseudo atoms (optional but useful)
 O[C@H](C*)NC    R pseudo allowed
 O[C@@H](C*)NC   S pseudo allowed
@@ -71,9 +74,14 @@ C[C@H]1CC[C@H](C)CC1  r,r (1r,4r)-p-dimethylcyclohexane
 [H][C@]12C3=CC=C4C=CC=C(C=CC1=CC=C3)[C@@]24[H] r,r
 [H][C@]12C3CCC4CCCC(CCC1CCC3)[C@]24[H] s,s
 [H][C@]12C3CCC4CCCC(CCC1CCC3)[C@@]24[H] r,r
+C[C@H]1CC[C@H](CC1)B([C@@H]1CC[C@H](C)CC1)[C@@H]1CC[C@H](C)CC1 s,s,s,s,s,s bis[4-methylcyclohexyl]-4-methylcyclohexylborane
 # Complex
 O[C@@H]([C@H]1C[C@@H](C1)O)[C@@H]2C[C@@H](C2)O R,r,S,s,S
 # Misc
 O[C@@H]1C[C@@H](O)[C@H](O)[C@@H](O)[C@H]1O R,R,S,S CHEBI:27371
 # Need to fix Rule 4b impl
 # CC(C)(C)c1ccc(SCC(N2C(=O)N3CC=CC(N3C2=O)C(=O)NC[C@@H]4CC[C@@H](N)CC4)C(=O)O)cc1 U CHEMBL32428
+# slow... but working
+# [H][C@]1(C)CC[C@@]([H])(CC1)[C@]2(CC[C@](CC2)([C@]3([H])CC[C@]([H])(C)CC3)[C@@]4([H])CC[C@]([H])(C)CC4)[C@]5([H])CC[C@]([H])(C)CC5 r,r,r,r,s,s,r,r,s,s
+# Mancude
+O[C@H](C1=NC=CC2=CC=CC=[N+]12)C1=NC=CC2=[N+]1C=CC=C2 U mancude

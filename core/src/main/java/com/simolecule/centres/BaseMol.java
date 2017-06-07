@@ -50,4 +50,8 @@ public abstract class BaseMol<A, B> {
   public abstract <V> V getBondProp(B bond, String key);
 
   public abstract String dumpDigraph(Digraph<A,B> digraph);
+
+  void markMancudeRings() {
+
+  }
 }

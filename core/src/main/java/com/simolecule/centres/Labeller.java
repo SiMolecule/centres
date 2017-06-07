@@ -66,10 +66,12 @@ public class Labeller<A, B> {
               continue;
             other.labelAux(aux, config.getDigraph(), rules);
           }
-          setAuxLabels(aux);
-          Descriptor desc = config.label(rules);
-          if (desc != Descriptor.Unknown) {
-            map.put(config, desc);
+          if (!aux.isEmpty()) {
+            setAuxLabels(aux);
+            Descriptor desc = config.label(rules);
+            if (desc != Descriptor.Unknown) {
+              map.put(config, desc);
+            }
           }
         }
 

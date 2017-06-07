@@ -8,6 +8,7 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IStereoElement;
 import org.openscience.cdk.stereo.DoubleBondStereochemistry;
+import org.openscience.cdk.stereo.ExtendedTetrahedral;
 import org.openscience.cdk.stereo.TetrahedralChirality;
 
 import java.util.ArrayList;
@@ -39,13 +40,23 @@ public final class CdkLabeller extends Labeller<IAtom, IBond> {
           configs.add(new Sp2Bond<>(bond,
                                     new IAtom[]{bond.getBegin(), bond.getEnd()},
                                     new IAtom[]{bonds[0].getOther(bond.getBegin()),
-                                                bonds[1].getOther(bond.getEnd())},
+                                            bonds[1].getOther(bond.getEnd())},
                                     dbSe.getConfig()));
+        }
+        break;
+        case IStereoElement.AL: {
+          ExtendedTetrahedral etSe     = (ExtendedTetrahedral) se;
+          IAtom               middle   = etSe.getFocus();
+          IAtom[]             endAtoms = ExtendedTetrahedral.findTerminalAtoms(mol, middle);
+          IAtom[]             focus    = new IAtom[]{middle, endAtoms[0], endAtoms[1]};
+          IAtom[]             carriers = etSe.getCarriers().toArray(new IAtom[4]);
+          configs.add(new com.simolecule.centres.config.ExtendedTetrahedral<IAtom, IBond>(focus,
+                                                                                          carriers,
+                                                                                          etSe.getConfig()));
         }
         break;
       }
     }
-
     return configs;
   }
 
