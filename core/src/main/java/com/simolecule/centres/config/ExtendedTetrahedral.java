@@ -102,12 +102,12 @@ public final class ExtendedTetrahedral<A, B> extends Configuration<A, B> {
       config ^= 0x3;
 
     if (config == RIGHT) {
-      if (priority1.isPseduoAsymettric() && priority2.isPseduoAsymettric())
+      if (priority1.isPseduoAsymettric() || priority2.isPseduoAsymettric())
         return Descriptor.m;
       else
         return Descriptor.M;
     } else if (config == LEFT) {
-      if (priority1.isPseduoAsymettric() && priority2.isPseduoAsymettric())
+      if (priority1.isPseduoAsymettric() || priority2.isPseduoAsymettric())
         return Descriptor.p;
       else
         return Descriptor.P;
