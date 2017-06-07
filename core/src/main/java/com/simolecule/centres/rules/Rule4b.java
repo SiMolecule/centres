@@ -19,12 +19,9 @@
 package com.simolecule.centres.rules;
 
 import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
 import com.simolecule.centres.BaseMol;
-import com.simolecule.centres.Descriptor;
 import com.simolecule.centres.Edge;
 import com.simolecule.centres.Node;
-import com.sun.xml.internal.rngom.parse.host.Base;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -32,7 +29,6 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.NavigableSet;
 import java.util.Queue;
