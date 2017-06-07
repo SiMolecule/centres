@@ -1,6 +1,7 @@
 package com.simolecule.centres;
 
 import centres.AbstractValidationSuite;
+import com.simolecule.CdkLabeler;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,9 +15,6 @@ import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.smiles.SmiFlavor;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.smiles.SmilesParser;
-import uk.ac.ebi.centres.Descriptor;
-import uk.ac.ebi.centres.cdk.CDKManager;
-import uk.ac.ebi.centres.cdk.CDKPerceptor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -29,9 +27,7 @@ public class ValidateCdkTest extends AbstractValidationSuite {
   public void testAssignment() throws Exception
   {
     IAtomContainer mol       = smigen.parseSmiles(expected.getSmiles());
-    CDKPerceptor   perceptor = new CDKPerceptor();
-
-    perceptor.perceive(mol);
+    CdkLabeler.label(mol);
 
     Set<IChemObject> checked = new HashSet<>();
 
@@ -45,7 +41,7 @@ public class ValidateCdkTest extends AbstractValidationSuite {
           if (label.getIdx() < 0) {
             while (atomIter < mol.getAtomCount()) {
               IAtom      atom   = mol.getAtom(atomIter);
-              Descriptor actual = atom.getProperty(CDKManager.PROP_KEY);
+              Descriptor actual = atom.getProperty(BaseMol.CIP_LABEL_KEY);
               if (actual != null &&
                   actual != Descriptor.Unknown) {
                 checked.add(atom);
@@ -63,7 +59,7 @@ public class ValidateCdkTest extends AbstractValidationSuite {
             IAtom atom = mol.getAtom(label.getIdx());
             checked.add(atom);
             Assert.assertNotNull("No atom at index " + label.getIdx(), atom);
-            Descriptor actual = atom.getProperty(CDKManager.PROP_KEY);
+            Descriptor actual = atom.getProperty(BaseMol.CIP_LABEL_KEY);
             Assert.assertThat("Atom idx=" + label.getIdx() + " expected=" + label.getExp() + " was=" + actual +
                               "\n" + toSmiles(mol),
                                      actual,
@@ -76,7 +72,7 @@ public class ValidateCdkTest extends AbstractValidationSuite {
             while (bondIter < mol.getBondCount()) {
               IBond bond = mol.getBond(bondIter);
               checked.add(bond);
-              Descriptor actual = bond.getProperty(CDKManager.PROP_KEY);
+              Descriptor actual = bond.getProperty(BaseMol.CIP_LABEL_KEY);
               if (actual != null &&
                   actual != Descriptor.Unknown) {
                 Assert.assertThat("Bond idx=" + bondIter + " expected=" + label.getExp() + " was=" + actual +
@@ -93,7 +89,7 @@ public class ValidateCdkTest extends AbstractValidationSuite {
             IBond bond = mol.getBond(label.getIdx());
             checked.add(bond);
             Assert.assertNotNull("No atom at index " + label.getIdx(), bond);
-            Descriptor actual = bond.getProperty(CDKManager.PROP_KEY);
+            Descriptor actual = bond.getProperty(BaseMol.CIP_LABEL_KEY);
             Assert.assertThat("Bond idx=" + label.getIdx() + " expected=" + label.getExp() + " was=" + actual +
                               "\n" + toSmiles(mol),
                                      actual,
@@ -107,14 +103,14 @@ public class ValidateCdkTest extends AbstractValidationSuite {
     for (IAtom atom : mol.atoms()) {
       if (checked.contains(atom))
         continue;
-      Descriptor desc = atom.getProperty(CDKManager.PROP_KEY);
+      Descriptor desc = atom.getProperty(BaseMol.CIP_LABEL_KEY);
       if (desc != null && desc != Descriptor.Unknown)
         Assert.fail("No expected value for Atom idx=" + mol.indexOf(atom) + " was=" + desc + "\n" + toSmiles(mol));
     }
     for (IBond bond : mol.bonds()) {
       if (checked.contains(bond))
         continue;
-      Descriptor desc = bond.getProperty(CDKManager.PROP_KEY);
+      Descriptor desc = bond.getProperty(BaseMol.CIP_LABEL_KEY);
       if (desc != null && desc != Descriptor.Unknown)
         Assert.fail("No expected value for Bond idx=" + mol.indexOf(bond) + " was=" + desc + "\n" + toSmiles(mol));
     }
@@ -127,12 +123,12 @@ public class ValidateCdkTest extends AbstractValidationSuite {
   private String toSmiles(IAtomContainer mol) throws CDKException
   {
     for (IAtom atom : mol.atoms()) {
-      Descriptor descriptor = atom.getProperty(CDKManager.PROP_KEY);
+      Descriptor descriptor = atom.getProperty(BaseMol.CIP_LABEL_KEY);
       if (descriptor != null && descriptor != Descriptor.Unknown)
         atom.setProperty(CDKConstants.COMMENT, descriptor);
     }
     for (IBond bond : mol.bonds()) {
-      Descriptor descriptor = bond.getProperty(CDKManager.PROP_KEY);
+      Descriptor descriptor = bond.getProperty(BaseMol.CIP_LABEL_KEY);
       if (descriptor != null && descriptor != Descriptor.Unknown)
         bond.getBegin().setProperty(CDKConstants.COMMENT, descriptor);
     }

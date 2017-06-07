@@ -18,22 +18,6 @@
 
 package uk.ac.ebi.centres.cdk;
 
-import junit.framework.Assert;
-import org.junit.Test;
-import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IAtomContainer;
-import uk.ac.ebi.centres.Centre;
-import uk.ac.ebi.centres.Digraph;
-import uk.ac.ebi.centres.io.CytoscapeWriter;
-import uk.ac.ebi.centres.ligand.AbstractNode;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-
 /**
  * @author John May
  */
@@ -72,7 +56,7 @@ public class CentreProviderTest {
 ////
 ////        System.out.println(end - start);
 ////
-////        PriorityRule<IAtom> rule = new CombinedRule<IAtom>(
+////        PriorityRule<IAtom> rules = new CombinedRule<IAtom>(
 ////                new AtomicNumberRule<IAtom>(new AtomicNumberAccessor<IAtom>() {
 ////                    @Override
 ////                    public int getAtomicNumber(IAtom atom) {
@@ -107,7 +91,7 @@ public class CentreProviderTest {
 ////                new PairRule<IAtom>(new AuxiliaryDescriptor<IAtom>()),
 ////                new RSRule<IAtom>(new AuxiliaryDescriptor<IAtom>()));
 ////
-////        final Perceptor<IAtom> perceptor = new DefaultPerceptor<IAtom>(rule,
+////        final Perceptor<IAtom> perceptor = new DefaultPerceptor<IAtom>(rules,
 ////                                                                       auxrule,
 ////                                                                       new CDK2DSignCalculator());
 ////

@@ -18,22 +18,6 @@
 
 package uk.ac.ebi.centres.cdk;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
-import org.hamcrest.CoreMatchers;
-import org.junit.Test;
-import org.openscience.cdk.config.Isotopes;
-import org.openscience.cdk.exception.CDKException;
-import org.openscience.cdk.graph.AtomContainerAtomPermutor;
-import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.io.MDLV2000Writer;
-import org.openscience.cdk.layout.StructureDiagramGenerator;
-import org.openscience.cdk.silent.SilentChemObjectBuilder;
-import org.openscience.cdk.smiles.SmilesParser;
-import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
-import uk.ac.ebi.centres.Descriptor;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -266,7 +250,7 @@ public class PerceptorTest {
 //
 //            int j = 0;
 //            for (IAtom a : container.atoms()) {
-//                uk.ac.ebi.centres.Descriptor descriptor = a.getProperty("descriptor");
+//                com.simolecule.centres.Descriptor descriptor = a.getProperty("descriptor");
 //                if (descriptor != Descriptor.Unknown) {
 //                    if (j++ > 0)
 //                        System.out.print(", ");
@@ -288,7 +272,7 @@ public class PerceptorTest {
 //
 //            int j = 0;
 //            for (IAtom a : container.atoms()) {
-//                uk.ac.ebi.centres.Descriptor descriptor = a.getProperty("descriptor");
+//                com.simolecule.centres.Descriptor descriptor = a.getProperty("descriptor");
 //                if (descriptor != Descriptor.Unknown) {
 //                    if (j++ > 0)
 //                        System.out.print(", ");
@@ -308,7 +292,7 @@ public class PerceptorTest {
 //
 //            int j = 0;
 //            for (IAtom a : container.atoms()) {
-//                uk.ac.ebi.centres.Descriptor descriptor = a.getProperty("descriptor");
+//                com.simolecule.centres.Descriptor descriptor = a.getProperty("descriptor");
 //                if (descriptor != Descriptor.Unknown) {
 //                    if (j++ > 0)
 //                        System.out.print(", ");
@@ -330,7 +314,7 @@ public class PerceptorTest {
 //
 //            int j = 0;
 //            for (IAtom a : container.atoms()) {
-//                uk.ac.ebi.centres.Descriptor descriptor = a.getProperty("descriptor");
+//                com.simolecule.centres.Descriptor descriptor = a.getProperty("descriptor");
 //                if (descriptor != Descriptor.Unknown) {
 //                    if (j++ > 0)
 //                        System.out.print(", ");
@@ -565,12 +549,12 @@ public class PerceptorTest {
 //            System.out.print(container.getAtom(4).getProperty("descriptor") + ", ");
 //            System.out.println(container.getAtom(5).getProperty("descriptor"));
 //
-//            assertEquals(uk.ac.ebi.centres.Descriptor.R, container.getAtom(0).getProperty("descriptor"));
-//            assertEquals(uk.ac.ebi.centres.Descriptor.s, container.getAtom(1).getProperty("descriptor"));
-//            assertEquals(uk.ac.ebi.centres.Descriptor.S, container.getAtom(2).getProperty("descriptor"));
-//            assertEquals(uk.ac.ebi.centres.Descriptor.R, container.getAtom(3).getProperty("descriptor"));
-//            assertEquals(uk.ac.ebi.centres.Descriptor.r, container.getAtom(4).getProperty("descriptor"));
-//            assertEquals(uk.ac.ebi.centres.Descriptor.S, container.getAtom(5).getProperty("descriptor"));
+//            assertEquals(com.simolecule.centres.Descriptor.R, container.getAtom(0).getProperty("descriptor"));
+//            assertEquals(com.simolecule.centres.Descriptor.s, container.getAtom(1).getProperty("descriptor"));
+//            assertEquals(com.simolecule.centres.Descriptor.S, container.getAtom(2).getProperty("descriptor"));
+//            assertEquals(com.simolecule.centres.Descriptor.R, container.getAtom(3).getProperty("descriptor"));
+//            assertEquals(com.simolecule.centres.Descriptor.r, container.getAtom(4).getProperty("descriptor"));
+//            assertEquals(com.simolecule.centres.Descriptor.S, container.getAtom(5).getProperty("descriptor"));
 //        }
 //
 //    }

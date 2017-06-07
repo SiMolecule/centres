@@ -2,7 +2,7 @@ package centres;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import uk.ac.ebi.centres.Descriptor;
+import com.simolecule.centres.Descriptor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,9 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -107,10 +105,10 @@ public abstract class AbstractValidationSuite {
       this.idx = idx;
       this.exp = exp;
       switch (exp) {
+        case seqTrans:
+        case seqCis:
         case E:
         case Z:
-        case e:
-        case z:
         case M:
         case P:
         case m:
@@ -144,7 +142,7 @@ public abstract class AbstractValidationSuite {
     }
   }
 
-  private static final Pattern PATTERN = Pattern.compile("([A|B])?(\\d+)?([RSrsMPmpEZez])");
+  private static final Pattern PATTERN = Pattern.compile("([A|B])?(\\d+)?([URSrsMPmpEZez])");
 
   private static List<CipLabel> parse(String str)
   {
@@ -157,13 +155,15 @@ public abstract class AbstractValidationSuite {
       if (matcher.matches()) {
         String     strctx = matcher.group(1);
         String     strnum = matcher.group(2);
-        Descriptor cip    = Descriptor.valueOf(matcher.group(3));
-        Integer    idx    = strnum == null ? 0 : Integer.parseInt(strnum);
-        Context    ctx    = strctx == null ? null : strctx.equals("A") ? Context.Atom : Context.Bond;
-        if (ctx != null)
-          ciplabels.add(new CipLabel(idx - 1, ctx, cip));
-        else
-          ciplabels.add(new CipLabel(idx - 1, cip));
+        Descriptor cip    = Descriptor.parse(matcher.group(3));
+        if (cip != Descriptor.Unknown) {
+          Integer idx = strnum == null ? 0 : Integer.parseInt(strnum);
+          Context ctx = strctx == null ? null : strctx.equals("A") ? Context.Atom : Context.Bond;
+          if (ctx != null)
+            ciplabels.add(new CipLabel(idx - 1, ctx, cip));
+          else
+            ciplabels.add(new CipLabel(idx - 1, cip));
+        }
       } else {
         System.err.println("Cannot parse label: " + label);
       }
