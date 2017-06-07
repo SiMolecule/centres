@@ -79,6 +79,8 @@ CC([H])=[C@]=C([C@@H](O)CC)[C@H](O)CC A4m,6S,10R pseudo assymetric elongated tet
 CC([H])=[C@]=C([C@H](O)CC)[C@@H](O)CC A4p,6R,10S pseudo assymetric elongated tetrahedral (explicit hydrogens)
 # Complex
 O[C@@H]([C@H]1C[C@@H](C1)O)[C@@H]2C[C@@H](C2)O R,r,S,s,S
+# Bob's Examples
+C/1=C\C[C@H](C)C/C=C/C[C@H](C)C\1 E,s,E,s Bob 30 Apr
 # Misc
 O[C@@H]1C[C@@H](O)[C@H](O)[C@@H](O)[C@H]1O R,R,S,S CHEBI:27371
 # Need to fix Rule 4b impl
