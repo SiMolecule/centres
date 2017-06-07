@@ -108,12 +108,12 @@ public class Sp2Bond<A, B> extends Configuration<A, B> {
 
     if (config == TOGETHER) {
       if (priority1.isPseduoAsymettric() ||
-          priority1.isPseduoAsymettric())
+          priority2.isPseduoAsymettric())
         return Descriptor.seqCis;
       else
         return Descriptor.Z;
     } else if (config == OPPOSITE) {
-      if (priority2.isPseduoAsymettric() ||
+      if (priority1.isPseduoAsymettric() ||
           priority2.isPseduoAsymettric())
         return Descriptor.seqTrans;
       else

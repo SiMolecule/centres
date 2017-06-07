@@ -145,7 +145,7 @@ public abstract class AbstractValidationSuite {
     }
   }
 
-  private static final Pattern PATTERN = Pattern.compile("([A|B])?(\\d+)?([URSrsMPmpEZez])");
+  private static final Pattern PATTERN = Pattern.compile("([A|B])?(\\d+)?([URSrsMPmpEZ]|seqCis|seqTrans)");
 
 
   public <A, B> void check(BaseMol<A, B> mol, GenSmiles callback)
