@@ -37,10 +37,10 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>centres-core</artifactId>
-      <version>${project.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
-      <groupId>uk.ac.ebi.centres</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>centres-core</artifactId>
       <version>${project.parent.version}</version>
       <type>test-jar</type>

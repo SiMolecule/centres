@@ -12,6 +12,7 @@
     <modules>
         <module>core</module>
         <module>cdk</module>
+        <module>opsin</module>
     </modules>
 
     <name>centres</name>

@@ -1,5 +1,8 @@
 package centres;
 
+import com.simolecule.centres.BaseMol;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import com.simolecule.centres.Descriptor;
@@ -13,7 +16,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,6 +34,10 @@ public abstract class AbstractValidationSuite {
   public enum Context {
     Atom,
     Bond
+  }
+
+  public static abstract class GenSmiles {
+    public abstract String generate(BaseMol mol);
   }
 
   public static final class TestUnit {
@@ -143,6 +152,111 @@ public abstract class AbstractValidationSuite {
   }
 
   private static final Pattern PATTERN = Pattern.compile("([A|B])?(\\d+)?([URSrsMPmpEZez])");
+
+
+  public <A, B> void check(BaseMol<A, B> mol, GenSmiles callback)
+  {
+    if (callback == null) {
+      callback = new GenSmiles() {
+        @Override
+        public String generate(BaseMol mol)
+        {
+          return "No SMILES callback provided!";
+        }
+      };
+    }
+
+    Set<Object> checked  = new HashSet<>();
+    int         atomIter = 0;
+    int         bondIter = 0;
+    for (CipLabel label : expected.getLabels()) {
+      switch (label.getCtx()) {
+        case Atom:
+
+
+          if (label.getIdx() < 0) {
+            while (atomIter < mol.getNumAtoms()) {
+              A          atom   = mol.getAtom(atomIter);
+              Descriptor actual = mol.getAtomProp(atom, BaseMol.CIP_LABEL_KEY);
+              if (actual != null &&
+                  actual != Descriptor.Unknown) {
+                checked.add(atom);
+                Assert.assertThat("Atom idx=" + atomIter + " expected=" + label.getExp() + " was=" + actual +
+                                  "\n" + callback.generate(mol),
+                                  actual, CoreMatchers.is(label.getExp()));
+                atomIter++;
+                break;
+              }
+              atomIter++;
+            }
+            Assert.assertTrue("Label not found, expected " + label.getExp() + "\n" + callback.generate(mol),
+                              atomIter < mol.getNumAtoms());
+          } else {
+            A atom = mol.getAtom(label.getIdx());
+            checked.add(atom);
+            Assert.assertNotNull("No atom at index " + label.getIdx(), atom);
+            Descriptor actual = mol.getAtomProp(atom, BaseMol.CIP_LABEL_KEY);
+            Assert.assertThat("Atom idx=" + label.getIdx() + " expected=" + label.getExp() + " was=" + actual +
+                              "\n" + callback.generate(mol),
+                              actual,
+                              CoreMatchers.is(label.getExp()));
+          }
+          break;
+        case Bond:
+
+          if (label.getIdx() < 0) {
+            while (bondIter < mol.getNumBonds()) {
+              B bond = mol.getBond(bondIter);
+              checked.add(bond);
+              Descriptor actual = mol.getBondProp(bond, BaseMol.CIP_LABEL_KEY);
+              if (actual != null &&
+                  actual != Descriptor.Unknown) {
+                Assert.assertThat("Bond idx=" + bondIter + " expected=" + label.getExp() + " was=" + actual +
+                                  "\n" + callback.generate(mol),
+                                  actual, CoreMatchers.is(label.getExp()));
+                bondIter++;
+                break;
+              }
+              bondIter++;
+            }
+            Assert.assertTrue("Label not found, expected " + label.getExp() + "\n" + callback.generate(mol),
+                              bondIter < mol.getNumBonds());
+          } else {
+            B bond = mol.getBond(label.getIdx());
+            checked.add(bond);
+            Assert.assertNotNull("No atom at index " + label.getIdx(), bond);
+            Descriptor actual = mol.getBondProp(bond, BaseMol.CIP_LABEL_KEY);
+            Assert.assertThat("Bond idx=" + label.getIdx() + " expected=" + label.getExp() + " was=" + actual +
+                              "\n" + callback.generate(mol),
+                              actual,
+                              CoreMatchers.is(label.getExp()));
+          }
+          break;
+
+      }
+    }
+
+    for (int i = 0; i < mol.getNumAtoms(); i++) {
+      A atom = mol.getAtom(i);
+      if (checked.contains(atom))
+        continue;
+      Descriptor desc = mol.getAtomProp(atom, BaseMol.CIP_LABEL_KEY);
+      if (desc != null && desc != Descriptor.Unknown)
+        Assert.fail("No expected value for Atom idx=" + mol.getAtomIdx(atom) + " was=" + desc + "\n" + callback.generate(mol));
+    }
+    for (int i = 0; i < mol.getNumBonds(); i++) {
+      B bond = mol.getBond(i);
+      if (checked.contains(bond))
+        continue;
+      Descriptor desc = mol.getBondProp(bond, BaseMol.CIP_LABEL_KEY);
+      if (desc != null && desc != Descriptor.Unknown)
+        Assert.fail("No expected value for Bond idx=" + mol.getBondIdx(bond) + " was=" + desc + "\n" + callback.generate(mol));
+    }
+
+    if (expected.getLabels().isEmpty()) {
+      System.err.println("No labels assigned for: " + expected.getSmiles());
+    }
+  }
 
   private static List<CipLabel> parse(String str)
   {

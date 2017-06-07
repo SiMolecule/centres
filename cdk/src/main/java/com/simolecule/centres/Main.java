@@ -1,10 +1,7 @@
-package com.simolecule;
+package com.simolecule.centres;
 
-import com.simolecule.centres.BaseMol;
-import com.simolecule.centres.Descriptor;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.exception.CDKException;
-import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
@@ -23,7 +20,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.Buffer;
 import java.nio.charset.StandardCharsets;
 
 public class Main {

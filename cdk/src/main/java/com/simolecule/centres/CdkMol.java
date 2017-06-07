@@ -1,9 +1,5 @@
-package com.simolecule;
+package com.simolecule.centres;
 
-import com.simolecule.centres.BaseMol;
-import com.simolecule.centres.Digraph;
-import com.simolecule.centres.Edge;
-import com.simolecule.centres.Node;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;

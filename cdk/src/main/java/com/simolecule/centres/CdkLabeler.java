@@ -1,6 +1,5 @@
-package com.simolecule;
+package com.simolecule.centres;
 
-import com.simolecule.centres.Labeler;
 import com.simolecule.centres.config.Configuration;
 import com.simolecule.centres.config.Sp2Bond;
 import com.simolecule.centres.config.Tetrahedral;
@@ -16,11 +15,11 @@ import java.util.List;
 
 public final class CdkLabeler extends Labeler<IAtom, IBond> {
 
-  private CdkLabeler()
+  CdkLabeler()
   {
   }
 
-  private static List<Configuration<IAtom, IBond>> createConfigs(IAtomContainer mol)
+  static List<Configuration<IAtom, IBond>> createConfigs(IAtomContainer mol)
   {
     List<Configuration<IAtom, IBond>> configs = new ArrayList<>();
 
