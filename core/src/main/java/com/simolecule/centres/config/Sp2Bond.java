@@ -32,37 +32,7 @@ public class Sp2Bond<A, B> extends Configuration<A, B> {
     mol.setBondProp(bond, BaseMol.CIP_LABEL_KEY, desc);
   }
 
-  public Edge<A, B> findInternalEdge(List<Edge<A, B>> edges, A f1, A f2)
-  {
-    for (Edge<A, B> edge : edges) {
-      if (edge.getBeg().isDuplicate() || edge.getEnd().isDuplicate())
-        continue;
-      if (isInternalEdge(edge, f1, f2)) {
-        return edge;
-      }
-    }
-    return null;
-  }
 
-  private boolean isInternalEdge(Edge<A, B> edge, A f1, A f2)
-  {
-    Node<A,B> beg = edge.getBeg();
-    Node<A,B> end = edge.getEnd();
-    if (f1.equals(beg.getAtom()) && f2.equals(end.getAtom()))
-      return true;
-    else if (f1.equals(end.getAtom()) && f2.equals(beg.getAtom()))
-      return true;
-    return false;
-  }
-
-  public void removeInternalEdges(List<Edge<A,B>> edges, A f1, A f2) {
-    Iterator<Edge<A,B>> iter = edges.iterator();
-    while (iter.hasNext()) {
-      Edge<A,B> e = iter.next();
-      if (isInternalEdge(e, f1, f2))
-        iter.remove();
-    }
-  }
 
   @Override
   public Descriptor label(SequenceRule<A, B> comp)

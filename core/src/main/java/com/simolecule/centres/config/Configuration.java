@@ -3,10 +3,13 @@ package com.simolecule.centres.config;
 import com.simolecule.centres.BaseMol;
 import com.simolecule.centres.Descriptor;
 import com.simolecule.centres.Digraph;
+import com.simolecule.centres.Edge;
 import com.simolecule.centres.Node;
 import com.simolecule.centres.rules.SequenceRule;
 
 import java.lang.reflect.Array;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public abstract class Configuration<A, B> {
@@ -160,4 +163,36 @@ public abstract class Configuration<A, B> {
   public abstract Descriptor label(SequenceRule<A, B> comp);
 
   public abstract void labelAux(Map<Node<A,B>,Descriptor> map, Digraph<A,B> digraph, SequenceRule<A, B> comp);
+
+  protected Edge<A, B> findInternalEdge(List<Edge<A, B>> edges, A f1, A f2)
+  {
+    for (Edge<A, B> edge : edges) {
+      if (edge.getBeg().isDuplicate() || edge.getEnd().isDuplicate())
+        continue;
+      if (isInternalEdge(edge, f1, f2)) {
+        return edge;
+      }
+    }
+    return null;
+  }
+
+  protected boolean isInternalEdge(Edge<A, B> edge, A f1, A f2)
+  {
+    Node<A,B> beg = edge.getBeg();
+    Node<A,B> end = edge.getEnd();
+    if (f1.equals(beg.getAtom()) && f2.equals(end.getAtom()))
+      return true;
+    else if (f1.equals(end.getAtom()) && f2.equals(beg.getAtom()))
+      return true;
+    return false;
+  }
+
+  protected void removeInternalEdges(List<Edge<A,B>> edges, A f1, A f2) {
+    Iterator<Edge<A,B>> iter = edges.iterator();
+    while (iter.hasNext()) {
+      Edge<A,B> e = iter.next();
+      if (isInternalEdge(e, f1, f2))
+        iter.remove();
+    }
+  }
 }

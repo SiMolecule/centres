@@ -7,6 +7,7 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IStereoElement;
+import org.openscience.cdk.stereo.Atropisomeric;
 import org.openscience.cdk.stereo.DoubleBondStereochemistry;
 import org.openscience.cdk.stereo.ExtendedTetrahedral;
 import org.openscience.cdk.stereo.TetrahedralChirality;
@@ -42,6 +43,16 @@ public final class CdkLabeller extends Labeller<IAtom, IBond> {
                                     new IAtom[]{bonds[0].getOther(bond.getBegin()),
                                             bonds[1].getOther(bond.getEnd())},
                                     dbSe.getConfig()));
+        }
+        break;
+        case IStereoElement.AT: {
+          Atropisomeric atSe  = (Atropisomeric) se;
+          IBond         bond  = atSe.getFocus();
+          configs.add(new com.simolecule.centres.config.Atropisomeric<IAtom, IBond>(
+                  bond,
+                  new IAtom[]{bond.getBegin(), bond.getEnd()},
+                  atSe.getCarriers().toArray(new IAtom[4]),
+                  atSe.getConfig()));
         }
         break;
         case IStereoElement.AL: {

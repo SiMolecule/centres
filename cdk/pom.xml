@@ -73,6 +73,12 @@
     </dependency>
     <dependency>
       <groupId>org.openscience.cdk</groupId>
+      <artifactId>cdk-ctab</artifactId>
+      <version>${cdk.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openscience.cdk</groupId>
       <artifactId>cdk-standard</artifactId>
       <version>${cdk.version}</version>
     </dependency>
