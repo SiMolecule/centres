@@ -99,8 +99,7 @@ final class OpsinMol extends BaseMol<Atom, Bond> {
   @Override
   public int getNumHydrogens(Atom atom)
   {
-    final int hcnt = atom.getOutValency() - atom.getIncomingValency();
-    return hcnt < 0 ? 0 : hcnt;
+    return StructureBuildingMethods.calculateSubstitutableHydrogenAtoms(atom);
   }
 
   @Override

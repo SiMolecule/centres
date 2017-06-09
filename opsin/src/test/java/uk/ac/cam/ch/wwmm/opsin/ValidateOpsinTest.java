@@ -10,10 +10,13 @@ public class ValidateOpsinTest extends AbstractValidationSuite {
   public void testAssignment() throws Exception
   {
     try {
-      SMILESFragmentBuilder fragbuilder = new SMILESFragmentBuilder(new IDManager());
-      Fragment              fragment    = fragbuilder.build(expected.getSmiles());
+      IDManager             idManager   = new IDManager();
+      SMILESFragmentBuilder fragbuilder = new SMILESFragmentBuilder(idManager);
+      FragmentManager       manager     = new FragmentManager(fragbuilder, idManager);
+      Fragment              fragment    = manager.buildSMILES(expected.getSmiles());
+      manager.makeHydrogensExplicit();
 
-      BaseMol<Atom,Bond> mol = new OpsinMol(fragment);
+      BaseMol<Atom, Bond> mol = new OpsinMol(fragment);
 
       new OpsinLabeller().label(mol, OpsinLabeller.createCfgs(fragment));
 
@@ -34,4 +37,7 @@ public class ValidateOpsinTest extends AbstractValidationSuite {
       Assert.fail("Could not parse SMILES: " + expected.getSmiles());
     }
   }
+
+
+
 }
