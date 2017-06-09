@@ -37,6 +37,7 @@ O[C@@H](BC12C3C4=C5C6=C7C4=C4C8=C3C3=C1C1=C9C%10=C%11C%12=C%13C%14=C%15C%16=C%17
 # Rule 1b (Duplicate Atoms)
 O[C@@H](C(CCC1CC1)(CCC1CC1)CCC1CC1)C12CCC(CC1)CC2 S http://onlinelibrary.wiley.com/doi/10.1002/jcc.540150802/abstract
 O[C@H](C(CCC1CC1)(CCC1CC1)CCC1CC1)C12CCC(CC1)CC2 R http://onlinelibrary.wiley.com/doi/10.1002/jcc.540150802/abstract
+[H][C@@]12C[C@]1([H])C=CC2 R,S P-92.2.2 Example 2
 # Rule 2
 CC[C@](O)([H])[12CH2]C    R natural mass
 CC[C@@](O)([H])[12CH2]C   S natural mass
@@ -78,8 +79,11 @@ C[C@H]1CC[C@H](CC1)B([C@@H]1CC[C@H](C)CC1)[C@@H]1CC[C@H](C)CC1 s,s,s,s,s,s bis[4
 CC([H])=[C@]=C([C@@H](O)CC)[C@H](O)CC A4m,6S,10R pseudo assymetric elongated tetrahedral (explicit hydrogens)
 CC([H])=[C@]=C([C@H](O)CC)[C@@H](O)CC A4p,6R,10S pseudo assymetric elongated tetrahedral (explicit hydrogens)
 # Bob's Examples
-C/1=C\C[C@H](C)C/C=C/C[C@H](C)C\1 E,s,E,s Bob 30 Apr
+C1=C\C[C@H](C)C/C=C/C[C@H](C)C\1 E,s,E,s Bob 30 Apr
+C1=C\C=C/C=C/C=C\1 E,Z,E,Z
 # Misc/Fun/Non-trivial
+# CC=[C@]=C1CCC(CC1)=[C@]=CC U Todo
+# CC=[C@]=C1CCC(CC1)=[C@@]=CC U ToDo
 C/C=C/1CC[C@H](C)CC1 seqCis,R
 C\C=C/1CC[C@H](C)CC1 seqTrans,S
 O[C@@H]([C@H]1C[C@@H](C1)O)[C@@H]2C[C@@H](C2)O R,r,S,s,S
