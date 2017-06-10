@@ -7,7 +7,12 @@ import java.util.List;
 
 public final class Digraph<A, B> {
 
-  private static final int MAX_NODE_COUNT = 20_000;
+  private static final int MAX_NODE_COUNT = 10_000;
+
+  /**
+   * Used for debugging only, 0=No Max Dist
+   */
+  private static final int MAX_NODE_DIST  = 0;
 
   private final BaseMol<A, B> mol;
   private       Node<A, B>    root;
@@ -116,6 +121,9 @@ public final class Digraph<A, B> {
     final A                atom  = beg.getAtom();
     final List<Edge<A, B>> edges = beg.getEdges();
     final B                prev  = edges.size() > 0 && !edges.get(0).isBeg(beg) ? edges.get(0).getBond() : null;
+
+    if (MAX_NODE_DIST > 0 && beg.getDistance() > MAX_NODE_DIST)
+      return;
 
     // create 'explicit' nodes
     for (final B bond : mol.getBonds(atom)) {
