@@ -58,10 +58,10 @@ public class Labeller<A, B> {
 
       // using auxiliary preceptors
       if (!unspec.isEmpty()) {
-        for (Configuration<A,B> config : unspec) {
+        for (Configuration<A, B> config : unspec) {
 
-          Map<Node<A,B>,Descriptor> aux = new HashMap<>();
-          for (Configuration<A,B> other : unspec) {
+          Map<Node<A, B>, Descriptor> aux = new HashMap<>();
+          for (Configuration<A, B> other : unspec) {
             if (other == config)
               continue;
             other.labelAux(aux, config.getDigraph(), rules);
