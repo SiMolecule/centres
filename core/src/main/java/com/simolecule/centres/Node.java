@@ -58,7 +58,7 @@ public final class Node<A, B> {
     this.edges = (flags & DUPLICATED) != 0
             ? new ArrayList<Edge<A, B>>()
             : new ArrayList<Edge<A, B>>(4);
-    if (g == null || (flags & DUPLICATED) != 0)
+    if (visit == null || (flags & DUPLICATED) != 0)
       this.flags |= EXPANDED;
   }
 
@@ -74,7 +74,7 @@ public final class Node<A, B> {
     short dist = (short) ((flags & DUPLICATED) != 0
             ? visit[idx]
             : this.dist + 1);
-    return new Node<>(null, null, atom, dist, flags);
+    return new Node<>(g, null, atom, dist, flags);
   }
 
   void add(Edge<A, B> e)
@@ -122,7 +122,7 @@ public final class Node<A, B> {
 
   public boolean isTerminal()
   {
-    return g == null || ((flags & EXPANDED) != 0 && edges.size() == 1);
+    return visit == null || ((flags & EXPANDED) != 0 && edges.size() == 1);
   }
 
   String getSymbol(int elem)
@@ -146,10 +146,8 @@ public final class Node<A, B> {
     if (isDuplicate())
       sb.append('(');
     if (g != null && atom != null) {
-      sb.append(getSymbol(g.getMol().getAtomicNum(atom)) + ":" + g.getMol().getAtomIdx(atom));
-    } else if (atom != null) {
-
-    } else {
+      sb.append(getSymbol(g.getMol().getAtomicNum(atom)) + ":" + (1+g.getMol().getAtomIdx(atom)));
+    } else if (atom == null) {
       sb.append("H");
     }
     if (isDuplicate())
