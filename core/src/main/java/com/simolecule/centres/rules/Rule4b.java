@@ -73,6 +73,24 @@ public class Rule4b<A, B>
     return compare(a, b);
   }
 
+  private boolean hasDescriptors(Node<A,B> node) {
+    Deque<Node<A,B>> deque = new ArrayDeque<>();
+    deque.add(node);
+    while (!deque.isEmpty()) {
+      Node<A,B> n = deque.poll();
+      if (getAtomLabel(n) != null)
+        return true;
+      for (Edge<A,B> e : n.getEdges()) {
+        if (e.getEnd().equals(n))
+          continue;
+        if (getBondLabel(e) != null)
+          return true;
+        deque.add(e.getEnd());
+      }
+    }
+    return false;
+  }
+
   /**
    * Generates a set of descriptor lists that maintain the like/unlike pairing
    * whilst descriptors are added. The set is navigable and maintains priority
@@ -104,11 +122,10 @@ public class Rule4b<A, B>
         queue.addAll(edges);
       } else {
         // non unique need to subdivide and combine
-        for (List<Edge<A,B>> combinated : permutate(getSorter().getGroups(edges))) {
-
+        List<List<Edge<A, B>>> groups = getSorter().getGroups(edges);
+        for (List<Edge<A,B>> combinated : permutate(groups)) {
           Deque<Edge<A,B>> subqueue = new ArrayDeque<>(queue);
           subqueue.addAll(combinated);
-
           // add to current descriptor list
           lists.addAll(descriptors.append(generate(subqueue)));
         }
@@ -138,6 +155,8 @@ public class Rule4b<A, B>
     List<Edge<A, B>> filtered = new ArrayList<Edge<A, B>>();
     for (Edge<A, B> edge : edges) {
       if (edge.isEnd(node) || edge.getEnd().isTerminal())
+        continue;
+      if (!hasDescriptors(node))
         continue;
       filtered.add(edge);
     }
