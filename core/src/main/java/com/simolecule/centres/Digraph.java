@@ -7,12 +7,16 @@ import java.util.List;
 
 public final class Digraph<A, B> {
 
-  private static final int MAX_NODE_COUNT = 10_000;
+  /**
+   * Upper limit on the size of the digraph, stops out of memory error with a
+   * more graceful failure.
+   */
+  private static final int MAX_NODE_COUNT = 30_000;
 
   /**
-   * Used for debugging only, 0=No Max Dist
+   * Used for debugging only, 0=Infinite
    */
-  private static final int MAX_NODE_DIST  = 0;
+  private static final int MAX_NODE_DIST = 0;
 
   private final BaseMol<A, B> mol;
   private       Node<A, B>    root;
@@ -41,6 +45,11 @@ public final class Digraph<A, B> {
     this.root.visit[atomIdx] = 1;
     numNodes++;
     return this.root;
+  }
+
+  public int getNumNodes()
+  {
+    return numNodes;
   }
 
   public BaseMol<A, B> getMol()
@@ -142,7 +151,7 @@ public final class Digraph<A, B> {
         // for example >S=O
         if (!root.equals(beg)) {
           for (int i = 1; i < bord; i++) {
-            end = beg.newTerminalChild(nbrIdx, nbr, Node.BOND_DUPLICATED);
+            end = beg.newTerminalChild(nbrIdx, nbr, Node.BOND_DUPLICATE);
             if (++numNodes >= MAX_NODE_COUNT)
               throw new TooManyNodesException();
             addEdge(beg, bond, end);
@@ -153,7 +162,7 @@ public final class Digraph<A, B> {
       else if (bond.equals(prev)) {
         if (!root.getAtom().equals(nbr)) {
           for (int i = 1; i < bord; i++) {
-            Node<A, B> end = beg.newTerminalChild(nbrIdx, nbr, Node.BOND_DUPLICATED);
+            Node<A, B> end = beg.newTerminalChild(nbrIdx, nbr, Node.BOND_DUPLICATE);
             if (++numNodes >= MAX_NODE_COUNT)
               throw new TooManyNodesException();
             addEdge(beg, bond, end);
@@ -168,7 +177,7 @@ public final class Digraph<A, B> {
         addEdge(beg, bond, end);
 
         for (int i = 1; i < bord; i++) {
-          end = beg.newTerminalChild(nbrIdx, nbr, Node.BOND_DUPLICATED);
+          end = beg.newTerminalChild(nbrIdx, nbr, Node.BOND_DUPLICATE);
           if (++numNodes >= MAX_NODE_COUNT)
             throw new TooManyNodesException();
           addEdge(beg, bond, end);

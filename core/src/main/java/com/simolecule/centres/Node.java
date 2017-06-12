@@ -20,12 +20,12 @@ public final class Node<A, B> {
    * Flag indicates whether the node was duplicated
    * at a bond with order > 1.
    */
-  public static final int BOND_DUPLICATED = 0x4;
+  public static final int BOND_DUPLICATE = 0x4;
 
   /**
    * Mask to check if a node is duplicated.
    */
-  public static final int DUPLICATED = 0x6;
+  public static final int DUPLICATE = 0x6;
 
   /**
    * Node was created for an implicit hydrogen,
@@ -55,10 +55,10 @@ public final class Node<A, B> {
     this.atom = atom;
     this.dist = dist;
     this.flags = flags;
-    this.edges = (flags & DUPLICATED) != 0
+    this.edges = (flags & DUPLICATE) != 0
             ? new ArrayList<Edge<A, B>>()
             : new ArrayList<Edge<A, B>>(4);
-    if (visit == null || (flags & DUPLICATED) != 0)
+    if (visit == null || (flags & DUPLICATE) != 0)
       this.flags |= EXPANDED;
   }
 
@@ -71,7 +71,7 @@ public final class Node<A, B> {
 
   Node<A, B> newTerminalChild(int idx, A atom, int flags)
   {
-    short dist = (short) ((flags & DUPLICATED) != 0
+    short dist = (short) ((flags & DUPLICATE) != 0
             ? visit[idx]
             : this.dist + 1);
     return new Node<>(g, null, atom, dist, flags);
@@ -117,7 +117,7 @@ public final class Node<A, B> {
 
   public boolean isDuplicate()
   {
-    return (flags & DUPLICATED) != 0;
+    return (flags & DUPLICATE) != 0;
   }
 
   public boolean isTerminal()
