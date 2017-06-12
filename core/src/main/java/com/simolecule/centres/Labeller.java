@@ -51,12 +51,12 @@ public class Labeller<A, B> {
           }
         }
 
-        setPrimaryLabels(mol, map);
+        setFinalLabels(mol, map);
         unspec.removeAll(map.keySet());
 
       } while (!unspec.isEmpty() && !map.isEmpty());
 
-      // using auxiliary preceptors
+      // use auxiliary preceptors
       if (!unspec.isEmpty()) {
         for (Configuration<A, B> config : unspec) {
 
@@ -75,14 +75,14 @@ public class Labeller<A, B> {
           }
         }
 
-        setPrimaryLabels(mol, map);
+        setFinalLabels(mol, map);
         unspec.removeAll(map.keySet());
       }
 
     } while (!unspec.isEmpty() && !map.isEmpty());
   }
 
-  private void setPrimaryLabels(BaseMol<A, B> mol, Map<Configuration<A, B>, Descriptor> map)
+  private void setFinalLabels(BaseMol<A, B> mol, Map<Configuration<A, B>, Descriptor> map)
   {
     for (Map.Entry<Configuration<A, B>, Descriptor> e : map.entrySet())
       e.getKey().setPrimaryLabel(mol, e.getValue());
