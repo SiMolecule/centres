@@ -1,5 +1,7 @@
 package com.simolecule.centres;
 
+import java.util.Iterator;
+
 /**
  * Defines how we can access the properties and connections
  * of a molecule.
@@ -20,6 +22,36 @@ public abstract class BaseMol<A, B> {
   public abstract A getAtom(int idx);
 
   public abstract int getAtomIdx(A atom);
+
+  public Iterable<A> atoms() {
+    return new Iterable<A>() {
+      @Override
+      public Iterator<A> iterator()
+      {
+        return new Iterator<A>() {
+          private int pos = 0;
+
+          @Override
+          public boolean hasNext()
+          {
+            return pos < getNumAtoms();
+          }
+
+          @Override
+          public A next()
+          {
+            return getAtom(pos++);
+          }
+
+          @Override
+          public void remove()
+          {
+            throw new UnsupportedOperationException();
+          }
+        };
+      }
+    };
+  }
 
   public abstract B getBond(int idx);
 
