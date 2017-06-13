@@ -45,7 +45,11 @@ public class Sort<A, B> {
     rules.addAll(comparators);
   }
 
-  public Priority prioritise(Node<A, B> node, List<Edge<A, B>> edges)
+  public Priority prioritise(Node<A, B> node, List<Edge<A, B>> edges) {
+    return prioritise(node, edges, true);
+  }
+
+  public Priority prioritise(Node<A, B> node, List<Edge<A, B>> edges, boolean deep)
   {
     Boolean unique     = Boolean.TRUE;
     boolean pseudoAsym = false;
@@ -53,7 +57,7 @@ public class Sort<A, B> {
     for (int i = 0; i < edges.size(); i++)
       for (int j = i; j > 0; j--) {
 
-        int cmp = compareLigands(node, edges.get(j - 1), edges.get(j));
+        int cmp = compareLigands(node, edges.get(j - 1), edges.get(j), deep);
 
         if (cmp < -1 || cmp > +1)
           pseudoAsym = true;
@@ -70,7 +74,7 @@ public class Sort<A, B> {
     return new Priority(unique, pseudoAsym);
   }
 
-  public int compareLigands(Node<A, B> node, Edge<A, B> a, Edge<A, B> b)
+  public int compareLigands(Node<A, B> node, Edge<A, B> a, Edge<A, B> b, boolean deep)
   {
     // ensure 'up' edges are moved to the front
     if (!a.isBeg(node) && b.isBeg(node))
@@ -79,7 +83,7 @@ public class Sort<A, B> {
       return -1;
 
     for (SequenceRule<A, B> rule : rules) {
-      int cmp = rule.getComparision(a, b);
+      int cmp = rule.getComparision(a, b, deep);
       if (cmp != 0)
         return cmp;
     }
@@ -104,7 +108,7 @@ public class Sort<A, B> {
 
     Edge<A,B> prev = null;
     for (Edge<A,B> edge : sorted) {
-      if (prev == null || compareLigands(prev.getBeg(), prev, edge) != 0)
+      if (prev == null || compareLigands(prev.getBeg(), prev, edge, true) != 0)
         groups.add(new ArrayList<Edge<A,B>>());
       prev = edge;
       groups.get(groups.size()-1).add(edge);

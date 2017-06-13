@@ -21,6 +21,7 @@ package com.simolecule.centres.rules;
 import com.google.common.collect.Lists;
 import com.simolecule.centres.Edge;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,17 +32,15 @@ import java.util.List;
  */
 public class Rules<A, B> extends SequenceRule<A, B> {
 
-
   /**
    * Rule storage
    */
-  private final List<SequenceRule<A, B>> rules;
+  private final List<SequenceRule<A, B>> rules = new ArrayList<>();
 
 
   public Rules(SequenceRule<A, B> ... rules)
   {
     super(null);
-    this.rules = Lists.newArrayListWithExpectedSize(rules.length);
     for (SequenceRule<A, B> rule : rules)
       add(rule);
   }
@@ -49,8 +48,7 @@ public class Rules<A, B> extends SequenceRule<A, B> {
   public void add(SequenceRule<A, B> rule)
   {
     if (rule == null)
-      throw new IllegalArgumentException("Provided priority rules was" +
-                                         "null!");
+      throw new NullPointerException("No sequence rule provided");
     rules.add(rule);
     rule.setSorter(createSorter(rules));
   }
@@ -63,7 +61,6 @@ public class Rules<A, B> extends SequenceRule<A, B> {
   @Override
   public int compare(Edge<A, B> o1, Edge<A, B> o2)
   {
-
     // Try using each rules. The rules will expand the search exhaustively
     // to all child ligands
     for (SequenceRule<A, B> rule : rules) {
@@ -75,7 +72,7 @@ public class Rules<A, B> extends SequenceRule<A, B> {
   }
 
   @Override
-  public int getComparision(Edge<A, B> a, Edge<A, B> b)
+  public int getComparision(Edge<A, B> a, Edge<A, B> b, boolean deep)
   {
     // Try using each rules. The rules will expand the search exhaustively
     // to all child ligands
@@ -96,7 +93,6 @@ public class Rules<A, B> extends SequenceRule<A, B> {
     return 0;
   }
 
-
   @Override
   public String toString()
   {
@@ -105,5 +101,4 @@ public class Rules<A, B> extends SequenceRule<A, B> {
       builder.append(rule.toString()).append(", ");
     return builder.toString();
   }
-
 }

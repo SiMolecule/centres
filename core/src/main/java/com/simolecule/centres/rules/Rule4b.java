@@ -70,6 +70,8 @@ public class Rule4b<A, B>
   public int recursiveCompare(Edge<A, B> a, Edge<A, B> b)
   {
     // can't/don't need to do recursive on the pair rule
+    if (a.getEnd().getDistance() > 2 || b.getEnd().getDistance() > 2)
+      return 0;
     return compare(a, b);
   }
 
@@ -116,7 +118,7 @@ public class Rule4b<A, B>
 
       Node<A, B>       node     = edge.getEnd();
       List<Edge<A, B>> edges    = getLigandsToSort(node, node.getEdges());
-      Priority         priority = prioritise(node, edges);
+      Priority         priority = sort(node, edges);
       if (priority.isUnique()) {
         // unique
         queue.addAll(edges);
@@ -247,6 +249,9 @@ public class Rule4b<A, B>
   @Override
   public int compare(Edge<A, B> a, Edge<A, B> b)
   {
+    if (a.getEnd().getDistance() > 2 || b.getEnd().getDistance() > 2)
+      return 0;
+
     // produced pair lists are in order
     Set<DescriptorList> list1 = generate(a);
     Set<DescriptorList> list2 = generate(b);
