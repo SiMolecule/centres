@@ -41,11 +41,11 @@ public final class Node<A, B> {
   private int flags = 0;
 
 
-  final         short[]          visit;
+  final         char[]           visit;
   private final List<Edge<A, B>> edges;
 
   public Node(Digraph<A, B> g,
-              short[] visit,
+              char[] visit,
               A atom,
               int dist,
               int flags)
@@ -64,16 +64,16 @@ public final class Node<A, B> {
 
   Node<A, B> newChild(int idx, A atom)
   {
-    final short[] visit = this.visit.clone();
-    visit[idx] = (short) (dist + 1);
+    final char[] visit = this.visit.clone();
+    visit[idx] = (char) (dist + 1);
     return new Node<>(g, visit, atom, dist + 1, 0);
   }
 
   Node<A, B> newTerminalChild(int idx, A atom, int flags)
   {
-    short dist = (short) ((flags & DUPLICATE) != 0
+    int dist = (char) (((flags & DUPLICATE) != 0
             ? visit[idx]
-            : this.dist + 1);
+            : this.dist + 1));
     return new Node<>(g, null, atom, dist, flags);
   }
 
@@ -111,7 +111,8 @@ public final class Node<A, B> {
     return edges;
   }
 
-  public boolean isSet(int mask) {
+  public boolean isSet(int mask)
+  {
     return (mask & flags) != 0;
   }
 
@@ -125,15 +126,28 @@ public final class Node<A, B> {
     return visit == null || ((flags & EXPANDED) != 0 && edges.size() == 1);
   }
 
-  String getSymbol(int elem)
+  public boolean isExpanded()
+  {
+    return (flags & EXPANDED) != 0;
+  }
+
+  private static String getElementSymbol(int elem)
   {
     switch (elem) {
+      case 1:
+        return "H";
       case 6:
         return "C";
       case 7:
         return "N";
       case 8:
         return "O";
+      case 17:
+        return "Cl";
+      case 35:
+        return "Br";
+      case 9:
+        return "F";
       default:
         return "#" + elem;
     }
@@ -146,7 +160,8 @@ public final class Node<A, B> {
     if (isDuplicate())
       sb.append('(');
     if (g != null && atom != null) {
-      sb.append(getSymbol(g.getMol().getAtomicNum(atom)) + ":" + (1+g.getMol().getAtomIdx(atom)));
+      // .append(":").append(1 + g.getMol().getAtomIdx(atom)
+      sb.append(getElementSymbol(g.getMol().getAtomicNum(atom)));
     } else if (atom == null) {
       sb.append("H");
     }
