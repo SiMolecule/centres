@@ -52,7 +52,7 @@ public final class Atropisomeric<A, B> extends Configuration<A, B> {
     List<Edge<A, B>> edges1 = new ArrayList<>(root1.getEdges());
     edges1.remove(internal);
 
-    Priority priority1 = comp.prioritise(root1, edges1);
+    Priority priority1 = comp.sort(root1, edges1);
     if (!priority1.isUnique())
       return Descriptor.Unknown;
 
@@ -61,7 +61,7 @@ public final class Atropisomeric<A, B> extends Configuration<A, B> {
     List<Edge<A, B>> edges2 = new ArrayList<>(root2.getEdges());
     edges2.remove(internal);
 
-    Priority priority2 = comp.prioritise(root2, edges2);
+    Priority priority2 = comp.sort(root2, edges2);
     if (!priority2.isUnique())
       return Descriptor.Unknown;
 

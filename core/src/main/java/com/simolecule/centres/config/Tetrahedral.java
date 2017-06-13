@@ -8,6 +8,7 @@ import com.simolecule.centres.Node;
 import com.simolecule.centres.rules.Priority;
 import com.simolecule.centres.rules.SequenceRule;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -42,13 +43,13 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
 
   private Descriptor label(Node<A, B> node, SequenceRule<A, B> comp)
   {
-    final List<Edge<A, B>> edges = node.getEdges();
+    final List<Edge<A, B>> edges = new ArrayList<>(node.getEdges());
 
     // something not right!?! bad creation
     if (edges.size() < 3)
       return Descriptor.None;
 
-    Priority priority = comp.prioritise(node, edges);
+    Priority priority = comp.sort(node, edges);
 
     if (!priority.isUnique())
       return Descriptor.Unknown;

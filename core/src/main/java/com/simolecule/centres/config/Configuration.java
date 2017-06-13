@@ -195,4 +195,13 @@ public abstract class Configuration<A, B> {
         iter.remove();
     }
   }
+
+  protected void removeDuplicatedEdges(List<Edge<A,B>> edges) {
+    Iterator<Edge<A,B>> iter = edges.iterator();
+    while (iter.hasNext()) {
+      Edge<A,B> e = iter.next();
+      if (e.getEnd().isDuplicate())
+        iter.remove();
+    }
+  }
 }

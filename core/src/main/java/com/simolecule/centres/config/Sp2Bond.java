@@ -9,7 +9,6 @@ import com.simolecule.centres.rules.Priority;
 import com.simolecule.centres.rules.SequenceRule;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +52,7 @@ public class Sp2Bond<A, B> extends Configuration<A, B> {
     List<Edge<A, B>> edges1 = new ArrayList<>(root1.getEdges());
     edges1.remove(internal);
 
-    Priority priority1 = comp.prioritise(root1, edges1);
+    Priority priority1 = comp.sort(root1, edges1);
     if (!priority1.isUnique())
       return Descriptor.Unknown;
 
@@ -62,7 +61,7 @@ public class Sp2Bond<A, B> extends Configuration<A, B> {
     List<Edge<A, B>> edges2 = new ArrayList<>(root2.getEdges());
     edges2.remove(internal);
 
-    Priority priority2 = comp.prioritise(root2, edges2);
+    Priority priority2 = comp.sort(root2, edges2);
     if (!priority2.isUnique())
       return Descriptor.Unknown;
 
@@ -114,12 +113,12 @@ public class Sp2Bond<A, B> extends Configuration<A, B> {
       removeInternalEdges(edges2, focus1, focus2);
 
       digraph.changeRoot(root1);
-      Priority priority1 = comp.prioritise(root1, edges1);
+      Priority priority1 = comp.sort(root1, edges1);
       if (!priority1.isUnique())
         continue;
 
       digraph.changeRoot(root2);
-      Priority priority2 = comp.prioritise(root2, edges2);
+      Priority priority2 = comp.sort(root2, edges2);
       if (!priority2.isUnique())
         continue;
 

@@ -9,7 +9,6 @@ import com.simolecule.centres.rules.Priority;
 import com.simolecule.centres.rules.SequenceRule;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -74,10 +73,10 @@ public final class ExtendedTetrahedral<A, B> extends Configuration<A, B> {
     if (edges2.size() > 2)
       return Descriptor.Unknown;
 
-    Priority priority1 = comp.prioritise(end1, edges1);
+    Priority priority1 = comp.sort(end1, edges1);
     if (!priority1.isUnique())
       return Descriptor.Unknown;
-    Priority priority2 = comp.prioritise(end2, edges2);
+    Priority priority2 = comp.sort(end2, edges2);
     if (!priority2.isUnique())
       return Descriptor.Unknown;
 
