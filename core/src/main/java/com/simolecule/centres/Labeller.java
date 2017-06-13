@@ -18,8 +18,57 @@ import java.util.Map;
 
 public class Labeller<A, B> {
 
-  public void label(BaseMol<A, B> mol,
-                    List<Configuration<A, B>> configs)
+  private static boolean labelIndependently = true;
+
+  public void label(BaseMol<A, B> mol, List<Configuration<A, B>> configs)
+  {
+    if (labelIndependently)
+      labelIndependent(mol, configs);
+    else
+      labelIterative(mol, configs);
+  }
+
+  public void labelIndependent(BaseMol<A, B> mol, List<Configuration<A, B>> configs)
+  {
+    // constitutional rules
+    final Rules<A, B> begRules = new Rules<A, B>(new Rule1a<A, B>(mol),
+                                                   new Rule1b<A, B>(mol),
+                                                   new Rule2<A, B>(mol));
+    // all rules
+    final Rules<A, B> allRules = new Rules<A, B>(new Rule1a<A, B>(mol),
+                                                 new Rule1b<A, B>(mol),
+                                                 new Rule2<A, B>(mol),
+                                                 new Rule3<A, B>(mol),
+                                                 new Rule4a<A, B>(mol),
+                                                 new Rule4b<A, B>(mol),
+                                                 new Rule4c<A, B>(mol),
+                                                 new Rule5<A, B>(mol));
+
+    Map<Configuration<A,B>,Descriptor> finalLabels = new HashMap<>();
+    for (Configuration<A,B> conf : configs) {
+      conf.setDigraph(new Digraph<A, B>(mol));
+      Descriptor desc = conf.label(begRules);
+      if (desc != null && desc != Descriptor.Unknown) {
+        finalLabels.put(conf, desc);
+      } else {
+        Map<Node<A,B>,Descriptor> auxLabels = new HashMap<>();
+        for (Configuration<A,B> confAux : configs) {
+          if (confAux.equals(conf))
+            continue;
+          confAux.labelAux(auxLabels, conf.getDigraph(), begRules);
+        }
+        if (!auxLabels.isEmpty()) {
+          setAuxLabels(auxLabels);
+          desc = conf.label(allRules);
+          if (desc != null && desc != Descriptor.Unknown)
+            finalLabels.put(conf, desc);
+        }
+      }
+    }
+    setFinalLabels(mol, finalLabels);
+  }
+
+  public void labelIterative(BaseMol<A, B> mol, List<Configuration<A, B>> configs)
   {
 
     // set primary digraphs
