@@ -9,9 +9,9 @@ public final class Digraph<A, B> {
 
   /**
    * Upper limit on the size of the digraph, stops out of memory error with a
-   * more graceful failure.
+   * more graceful failure. 0=Infinite
    */
-  private static final int MAX_NODE_COUNT = 30_000;
+  private static final int MAX_NODE_COUNT = 100000;
 
   /**
    * Used for debugging only, 0=Infinite
@@ -20,7 +20,7 @@ public final class Digraph<A, B> {
 
   private final BaseMol<A, B> mol;
   private       Node<A, B>    root;
-  private       Node<A, B>    currroot;
+  private       Node<A, B>    tmproot;
   private int numNodes = 0;
 
   public Digraph(BaseMol<A, B> mol)
@@ -37,9 +37,9 @@ public final class Digraph<A, B> {
   public Node<A, B> init(A atom)
   {
     this.root = new Node<A, B>(this,
-                               new short[mol.getNumAtoms()],
+                               new char[mol.getNumAtoms()],
                                atom,
-                               1,
+                               (char) 1,
                                0);
     int atomIdx = mol.getAtomIdx(atom);
     this.root.visit[atomIdx] = 1;
@@ -64,7 +64,7 @@ public final class Digraph<A, B> {
 
   public Node<A, B> getCurrRoot()
   {
-    return currroot == null ? root : currroot;
+    return tmproot == null ? root : tmproot;
   }
 
   public List<Node<A, B>> getNodes(A atom)
@@ -86,7 +86,7 @@ public final class Digraph<A, B> {
     return result;
   }
 
-  public void build()
+  public void expandAll()
   {
     Deque<Node<A, B>> queue = new ArrayDeque<>();
     queue.add(root);
@@ -94,7 +94,8 @@ public final class Digraph<A, B> {
       Node<A, B> node = queue.poll();
       for (Edge<A, B> e : node.getEdges()) {
         if (!e.isBeg(node)) continue;
-        queue.add(e.getEnd());
+        if (!e.getEnd().isTerminal())
+          queue.add(e.getEnd());
       }
     }
   }
@@ -122,7 +123,7 @@ public final class Digraph<A, B> {
     }
     for (Edge<A, B> e : toflip)
       e.flip();
-    currroot = newroot;
+    tmproot = newroot;
   }
 
   void expand(Node<A, B> beg)
@@ -133,6 +134,8 @@ public final class Digraph<A, B> {
 
     if (MAX_NODE_DIST > 0 && beg.getDistance() > MAX_NODE_DIST)
       return;
+    if (MAX_NODE_COUNT > 0 && numNodes >= MAX_NODE_COUNT)
+      throw new TooManyNodesException(MAX_NODE_COUNT);
 
     // create 'explicit' nodes
     for (final B bond : mol.getBonds(atom)) {
@@ -143,8 +146,7 @@ public final class Digraph<A, B> {
       if (beg.visit[nbrIdx] == 0) {
 
         Node<A, B> end = beg.newChild(nbrIdx, nbr);
-        if (++numNodes >= MAX_NODE_COUNT)
-          throw new TooManyNodesException();
+        numNodes++;
         addEdge(beg, bond, end);
 
         // duplicate nodes for bond orders (except for root atoms...)
@@ -152,8 +154,7 @@ public final class Digraph<A, B> {
         if (!root.equals(beg)) {
           for (int i = 1; i < bord; i++) {
             end = beg.newTerminalChild(nbrIdx, nbr, Node.BOND_DUPLICATE);
-            if (++numNodes >= MAX_NODE_COUNT)
-              throw new TooManyNodesException();
+            numNodes++;
             addEdge(beg, bond, end);
           }
         }
@@ -163,8 +164,7 @@ public final class Digraph<A, B> {
         if (!root.getAtom().equals(nbr)) {
           for (int i = 1; i < bord; i++) {
             Node<A, B> end = beg.newTerminalChild(nbrIdx, nbr, Node.BOND_DUPLICATE);
-            if (++numNodes >= MAX_NODE_COUNT)
-              throw new TooManyNodesException();
+            numNodes++;
             addEdge(beg, bond, end);
           }
         }
@@ -172,14 +172,12 @@ public final class Digraph<A, B> {
       // ring closures
       else {
         Node<A, B> end = beg.newTerminalChild(nbrIdx, nbr, Node.RING_DUPLICATE);
-        if (++numNodes >= MAX_NODE_COUNT)
-          throw new TooManyNodesException();
+        numNodes++;
         addEdge(beg, bond, end);
 
         for (int i = 1; i < bord; i++) {
           end = beg.newTerminalChild(nbrIdx, nbr, Node.BOND_DUPLICATE);
-          if (++numNodes >= MAX_NODE_COUNT)
-            throw new TooManyNodesException();
+          numNodes++;
           addEdge(beg, bond, end);
         }
       }
@@ -189,8 +187,7 @@ public final class Digraph<A, B> {
     final int hcnt = mol.getNumHydrogens(atom);
     for (int i = 0; i < hcnt; i++) {
       Node<A, B> end = beg.newTerminalChild(-1, null, Node.IMPL_HYDROGEN);
-      if (++numNodes >= MAX_NODE_COUNT)
-        throw new TooManyNodesException();
+      numNodes++;
       addEdge(beg, null, end);
     }
   }
