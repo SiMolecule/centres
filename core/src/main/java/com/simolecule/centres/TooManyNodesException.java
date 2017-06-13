@@ -22,9 +22,7 @@ package com.simolecule.centres;
  * @author John May
  */
 public class TooManyNodesException extends RuntimeException {
-
-    public TooManyNodesException() {
-        super("Too many nodes in the digraph were created");
+    public TooManyNodesException(int limit) {
+        super("More than " + limit + " nodes were created. CIP assignment is probably intractable.");
     }
-
 }
