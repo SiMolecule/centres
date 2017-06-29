@@ -45,7 +45,12 @@ public class Rule1b<A, B> extends SequenceRule<A, B> {
         b.getEnd().isSet(Node.RING_DUPLICATE))
       return -Integer.compare(a.getEnd().getDistance(),
                               b.getEnd().getDistance());
-    else
+    else {
+      if (a.getEnd().isSet(Node.RING_DUPLICATE) && !b.getEnd().isSet(Node.RING_DUPLICATE))
+        return +1;
+      if (!a.getEnd().isSet(Node.RING_DUPLICATE) && b.getEnd().isSet(Node.RING_DUPLICATE))
+        return -1;
       return 0;
+    }
   }
 }
