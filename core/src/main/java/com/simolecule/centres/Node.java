@@ -111,6 +111,16 @@ public final class Node<A, B> {
     return edges;
   }
 
+  public List<Edge<A, B>> getOutEdges()
+  {
+    List<Edge<A,B>> edges = new ArrayList<>();
+    for (Edge<A,B> edge : getEdges()) {
+      if (edge.isBeg(this))
+        edges.add(edge);
+    }
+    return edges;
+  }
+
   public boolean isSet(int mask)
   {
     return (mask & flags) != 0;
