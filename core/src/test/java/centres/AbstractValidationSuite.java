@@ -163,7 +163,7 @@ public abstract class AbstractValidationSuite {
     Set<Object> checked  = new HashSet<>();
     int         atomIter = 0;
     int         bondIter = 0;
-    String      smiles = callback.generate(mol);
+    String      smiles = null;
 
     for (CipLabel label : expected.getLabels()) {
       switch (label.getCtx()) {
@@ -177,6 +177,8 @@ public abstract class AbstractValidationSuite {
               if (actual != null &&
                   actual != Descriptor.Unknown) {
                 checked.add(atom);
+                if (!label.getExp().equals(actual))
+                  smiles = callback.generate(mol);
                 Assert.assertThat("Atom idx=" + atomIter + " expected=" + label.getExp() + " was=" + actual +
                                   "\n" + smiles,
                                   actual, CoreMatchers.is(label.getExp()));
@@ -192,6 +194,8 @@ public abstract class AbstractValidationSuite {
             checked.add(atom);
             Assert.assertNotNull("No atom at index " + label.getIdx(), atom);
             Descriptor actual = mol.getAtomProp(atom, BaseMol.CIP_LABEL_KEY);
+            if (!label.getExp().equals(actual))
+              smiles = callback.generate(mol);
             Assert.assertThat("Atom idx=" + label.getIdx() + " expected=" + label.getExp() + " was=" + actual +
                               "\n" + smiles,
                               actual,
@@ -207,6 +211,8 @@ public abstract class AbstractValidationSuite {
               Descriptor actual = mol.getBondProp(bond, BaseMol.CIP_LABEL_KEY);
               if (actual != null &&
                   actual != Descriptor.Unknown) {
+                if (!label.getExp().equals(actual))
+                  smiles = callback.generate(mol);
                 Assert.assertThat("Bond idx=" + bondIter + " expected=" + label.getExp() + " was=" + actual +
                                   "\n" + smiles,
                                   actual, CoreMatchers.is(label.getExp()));
@@ -222,6 +228,8 @@ public abstract class AbstractValidationSuite {
             checked.add(bond);
             Assert.assertNotNull("No atom at index " + label.getIdx(), bond);
             Descriptor actual = mol.getBondProp(bond, BaseMol.CIP_LABEL_KEY);
+            if (!label.getExp().equals(actual))
+              smiles = callback.generate(mol);
             Assert.assertThat("Bond idx=" + label.getIdx() + " expected=" + label.getExp() + " was=" + actual +
                               "\n" + smiles,
                               actual,
@@ -237,16 +245,20 @@ public abstract class AbstractValidationSuite {
       if (checked.contains(atom))
         continue;
       Descriptor desc = mol.getAtomProp(atom, BaseMol.CIP_LABEL_KEY);
-      if (desc != null && desc != Descriptor.Unknown)
+      if (desc != null && desc != Descriptor.Unknown) {
+        smiles = callback.generate(mol);
         Assert.fail("No expected value for Atom idx=" + mol.getAtomIdx(atom) + " was=" + desc + "\n" + smiles);
+      }
     }
     for (int i = 0; i < mol.getNumBonds(); i++) {
       B bond = mol.getBond(i);
       if (checked.contains(bond))
         continue;
       Descriptor desc = mol.getBondProp(bond, BaseMol.CIP_LABEL_KEY);
-      if (desc != null && desc != Descriptor.Unknown)
+      if (desc != null && desc != Descriptor.Unknown) {
+        smiles = callback.generate(mol);
         Assert.fail("No expected value for Bond idx=" + mol.getBondIdx(bond) + " was=" + desc + "\n" + smiles);
+      }
     }
 
     if (expected.getLabels().isEmpty()) {
@@ -302,7 +314,8 @@ public abstract class AbstractValidationSuite {
   public static Collection<Object[]> load()
   {
     List<Object[]> testunits = new ArrayList<>();
-    try (InputStream in = ClassLoader.getSystemResourceAsStream("com/simolecule/centres/validate.smi");
+//    try (InputStream in = ClassLoader.getSystemResourceAsStream("com/simolecule/centres/validate.smi");
+    try (InputStream in = ClassLoader.getSystemResourceAsStream("com/simolecule/centres/bob_test.smi");
          Reader rdr = new InputStreamReader(in);
          BufferedReader brdr = new BufferedReader(rdr)) {
       String line;
