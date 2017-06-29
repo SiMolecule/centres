@@ -185,15 +185,15 @@ public final class CdkMol extends BaseMol<IAtom, IBond> {
       } else if (node.isDuplicate()) {
         atom = new Atom(base.getSymbol());
         if (node.getAux() != null)
-          atom.setProperty(CDKConstants.COMMENT, "(" + org.indexOf(base) + ") " + node.getAux() + "0 d=" + node.getDistance());
+          atom.setProperty(CDKConstants.COMMENT, "(" + org.indexOf(base) + ") " + node.getAux() + "0");
         else
-          atom.setProperty(CDKConstants.COMMENT, "(" + org.indexOf(base) + ") d=" + node.getDistance());
+          atom.setProperty(CDKConstants.COMMENT, "(" + org.indexOf(base) + ")");
       } else {
         atom = new Atom(base.getSymbol());
         if (node.getAux() != null)
-          atom.setProperty(CDKConstants.COMMENT, org.indexOf(base) + " " + node.getAux() + "0 d=" + node.getDistance());
+          atom.setProperty(CDKConstants.COMMENT, org.indexOf(base) + " " + node.getAux() + "0");
         else
-          atom.setProperty(CDKConstants.COMMENT, org.indexOf(base) + " d=" + node.getDistance());
+          atom.setProperty(CDKConstants.COMMENT, org.indexOf(base));
       }
       res.addAtom(atom);
       amap.put(node, atom);
