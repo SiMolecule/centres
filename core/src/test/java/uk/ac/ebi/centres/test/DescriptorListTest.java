@@ -18,7 +18,7 @@
 
 package uk.ac.ebi.centres.test;
 
-import com.simolecule.centres.rules.DescriptorList;
+import com.simolecule.centres.rules.PairList;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
@@ -39,7 +39,7 @@ public class DescriptorListTest {
   @Test
   public void testIgnoreConstruction_null() throws Exception
   {
-    DescriptorList descriptors = new DescriptorList();
+    PairList descriptors = new PairList();
     Assert.assertFalse("Null should be ignored", descriptors.add(null));
   }
 
@@ -47,7 +47,7 @@ public class DescriptorListTest {
   public void testIgnoreConstruction_Pseudo() throws Exception
   {
 
-    DescriptorList descriptors = new DescriptorList();
+    PairList descriptors = new PairList();
 
     Assert.assertFalse("r should be ignored", descriptors.add(Descriptor.r));
     Assert.assertFalse("s should be ignored", descriptors.add(Descriptor.s));
@@ -60,7 +60,7 @@ public class DescriptorListTest {
   public void testIgnoreConstruction_Pairing() throws Exception
   {
 
-    DescriptorList descriptors = new DescriptorList();
+    PairList descriptors = new PairList();
 
     Assert.assertEquals(0, descriptors.getPairing());
     Assert.assertEquals("0", Integer.toBinaryString(descriptors.getPairing()));
@@ -105,12 +105,12 @@ public class DescriptorListTest {
   @Test
   public void testAppend_empty()
   {
-    DescriptorList head = new DescriptorList();
+    PairList head = new PairList();
     head.add(Descriptor.R);
     head.add(Descriptor.R);
     head.add(Descriptor.S);
     head.add(Descriptor.R);
-    List<DescriptorList> lists = head.append(Arrays.asList(new DescriptorList()));
+    List<PairList> lists = head.append(Arrays.asList(new PairList()));
     Assert.assertEquals(1, lists.size());
     Assert.assertEquals(head.getPairing(), lists.get(0).getPairing());
 
@@ -121,23 +121,23 @@ public class DescriptorListTest {
   public void testAppend()
   {
 
-    DescriptorList head = new DescriptorList();
+    PairList head = new PairList();
     head.add(Descriptor.R);
     head.add(Descriptor.R);
     head.add(Descriptor.S);
     head.add(Descriptor.R);
 
-    DescriptorList tail1 = new DescriptorList();
+    PairList tail1 = new PairList();
     tail1.add(Descriptor.R);
     tail1.add(Descriptor.S);
     tail1.add(Descriptor.R);
 
-    DescriptorList tail2 = new DescriptorList();
+    PairList tail2 = new PairList();
     tail2.add(Descriptor.S);
     tail2.add(Descriptor.S);
     tail2.add(Descriptor.R);
 
-    List<DescriptorList> created = head.append(Arrays.asList(tail1, tail2));
+    List<PairList> created = head.append(Arrays.asList(tail1, tail2));
 
     Assert.assertEquals(2, created.size());
 
@@ -150,8 +150,8 @@ public class DescriptorListTest {
 
   @Test
   public void pairRM() throws Exception {
-    DescriptorList list1 = new DescriptorList();
-    DescriptorList list2 = new DescriptorList();
+    PairList list1 = new PairList();
+    PairList list2 = new PairList();
     list1.add(Descriptor.R);
     list1.add(Descriptor.M);
     list1.add(Descriptor.R);
@@ -171,7 +171,7 @@ public class DescriptorListTest {
   public void testClear() throws Exception
   {
 
-    DescriptorList descriptors = new DescriptorList();
+    PairList descriptors = new PairList();
     descriptors.add(Descriptor.R);
     descriptors.add(Descriptor.R);
     descriptors.add(Descriptor.S);

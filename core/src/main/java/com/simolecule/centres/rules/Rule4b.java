@@ -26,6 +26,7 @@ import com.simolecule.centres.Node;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -57,12 +58,12 @@ public class Rule4b<A, B>
    *
    * @return navigable set of descriptor lists
    */
-  protected NavigableSet<DescriptorList> generate(Edge<A, B> e)
+  protected NavigableSet<PairList> generate(Edge<A, B> e)
   {
     // would be good to give an expected size
     Queue<Edge<A, B>> queue = new ArrayDeque<>();
     queue.add(e);
-    return new TreeSet<DescriptorList>(generate(queue));
+    return new TreeSet<PairList>(generate(queue));
   }
 
 
@@ -101,13 +102,13 @@ public class Rule4b<A, B>
    * @param queue a queue of ligands for which to get descriptors and expand
    * @return navigable set of descriptor lists
    */
-  protected Set<DescriptorList> generate(Queue<Edge<A, B>> queue)
+  protected Set<PairList> generate(Queue<Edge<A, B>> queue)
   {
 
-    final Set<DescriptorList> lists = new HashSet<DescriptorList>();
+    final Set<PairList> lists = new HashSet<PairList>();
 
     // create a descriptor list with given exclusions
-    DescriptorList descriptors = new DescriptorList();
+    PairList descriptors = new PairList();
 
     while (!queue.isEmpty()) {
 
@@ -253,11 +254,11 @@ public class Rule4b<A, B>
       return 0;
 
     // produced pair lists are in order
-    Set<DescriptorList> list1 = generate(a);
-    Set<DescriptorList> list2 = generate(b);
+    Set<PairList> list1 = generate(a);
+    Set<PairList> list2 = generate(b);
 
-    Iterator<DescriptorList> list1It = list1.iterator();
-    Iterator<DescriptorList> list2It = list2.iterator();
+    Iterator<PairList> list1It = list1.iterator();
+    Iterator<PairList> list2It = list2.iterator();
 
     while (list1It.hasNext() && list2It.hasNext()) {
       int value = list1It.next().compareTo(list2It.next());

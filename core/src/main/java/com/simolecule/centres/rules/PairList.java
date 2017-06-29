@@ -36,12 +36,12 @@ import java.util.List;
  * @author John May
  * @see Descriptor
  */
-public class DescriptorList implements Comparable<DescriptorList> {
+public class PairList implements Comparable<PairList> {
 
   private final List<Descriptor> descriptors = new ArrayList<Descriptor>();
   private       int              pairing     = 0;
 
-  public DescriptorList() {
+  public PairList() {
 
   }
 
@@ -54,7 +54,7 @@ public class DescriptorList implements Comparable<DescriptorList> {
    * @param head the head of the list (prefix)
    * @param tail the tail of the list (suffix)
    */
-  public DescriptorList(DescriptorList head, DescriptorList tail)
+  public PairList(PairList head, PairList tail)
   {
     // add descriptors to the new instance (ignored descriptors not added)
     addAll(head.descriptors);
@@ -160,16 +160,16 @@ public class DescriptorList implements Comparable<DescriptorList> {
    * @param lists multiple descriptor lists to be appended to this list.
    * @return modified list of descriptors based on the provided input lists
    */
-  public List<DescriptorList> append(Collection<? extends DescriptorList> lists)
+  public List<PairList> append(Collection<? extends PairList> lists)
   {
 
-    List<DescriptorList> created = new ArrayList<DescriptorList>(lists.size());
+    List<PairList> created = new ArrayList<PairList>(lists.size());
 
-    for (DescriptorList list : lists) {
+    for (PairList list : lists) {
 
       // tail isn't empty  - create a new list with this list as the head
       if (!list.descriptors.isEmpty()) {
-        created.add(new DescriptorList(this, list));
+        created.add(new PairList(this, list));
       }
 
     }
@@ -213,7 +213,7 @@ public class DescriptorList implements Comparable<DescriptorList> {
 
 
   @Override
-  public int compareTo(DescriptorList o)
+  public int compareTo(PairList o)
   {
     return Integer.compare(getPairing() , o.getPairing());
   }
