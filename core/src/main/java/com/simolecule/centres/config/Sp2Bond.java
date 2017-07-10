@@ -101,6 +101,10 @@ public class Sp2Bond<A, B> extends Configuration<A, B> {
     A focus2 = getFoci()[1];
 
     for (Node<A,B> root1 : digraph.getNodes(focus1)) {
+
+      if (map.containsKey(root1))
+        continue;
+
       Edge<A,B> internal = findInternalEdge(root1.getEdges(), focus1, focus2);
       if (internal == null)
         continue;

@@ -95,6 +95,8 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
     A focus = getFocus();
     List<Node<A, B>> nodes = digraph.getNodes(focus);
     for (Node<A, B> node : nodes) {
+      if (map.containsKey(node))
+        continue;
       digraph.changeRoot(node);
       Descriptor label = label(node, comp);
       if (label != Descriptor.Unknown)
