@@ -91,6 +91,13 @@ final class OpsinMol extends BaseMol<Atom, Bond> {
   }
 
   @Override
+  public boolean isInRing(Bond bond)
+  {
+    // TODO check with daniel
+    return false;
+  }
+
+  @Override
   public int getAtomicNum(Atom atom)
   {
     return atom.getElement().ATOMIC_NUM;

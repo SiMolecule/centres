@@ -2,6 +2,7 @@ package com.simolecule.centres;
 
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.graph.Cycles;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
@@ -23,6 +24,7 @@ public final class CdkMol extends BaseMol<IAtom, IBond> {
   public CdkMol(IAtomContainer base)
   {
     this.base = base;
+    Cycles.markRingAtomsAndBonds(base);
   }
 
   @Override
@@ -89,6 +91,12 @@ public final class CdkMol extends BaseMol<IAtom, IBond> {
   public IAtom getEnd(IBond bond)
   {
     return bond.getEnd();
+  }
+
+  @Override
+  public boolean isInRing(IBond bond)
+  {
+    return bond.isInRing();
   }
 
   @Override

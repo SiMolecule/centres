@@ -65,6 +65,8 @@ public abstract class BaseMol<A, B> {
 
   public abstract A getEnd(B bond);
 
+  public abstract boolean isInRing(B bond);
+
   public abstract int getAtomicNum(A atom);
 
   public abstract int getNumHydrogens(A atom);
@@ -82,8 +84,4 @@ public abstract class BaseMol<A, B> {
   public abstract <V> V getBondProp(B bond, String key);
 
   public abstract String dumpDigraph(Digraph<A,B> digraph);
-
-  void markMancudeRings() {
-
-  }
 }
