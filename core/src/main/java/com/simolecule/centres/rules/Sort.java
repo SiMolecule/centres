@@ -23,6 +23,7 @@ import com.simolecule.centres.Edge;
 import com.simolecule.centres.Node;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -43,6 +44,10 @@ public class Sort<A, B> {
   public Sort(List<SequenceRule<A, B>> comparators)
   {
     rules.addAll(comparators);
+  }
+
+  public List<SequenceRule<A,B>> getRules() {
+    return Collections.unmodifiableList(rules);
   }
 
   public Priority prioritise(Node<A, B> node, List<Edge<A, B>> edges) {
