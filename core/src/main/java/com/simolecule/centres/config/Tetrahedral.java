@@ -55,13 +55,15 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
       return Descriptor.Unknown;
 
     Object[] ordered = new Object[4];
-    ordered[0] = edges.get(0).getEnd().getAtom();
-    ordered[1] = edges.get(1).getEnd().getAtom();
-    ordered[2] = edges.get(2).getEnd().getAtom();
-    if (edges.size() < 4 || edges.get(3).getEnd().getAtom() == null)
-      ordered[3] = getFocus();
-    else
-      ordered[3] = edges.get(3).getEnd().getAtom();
+    int      idx     = 0;
+    for (Edge<A, B> edge : edges) {
+      if (edge.getEnd().isSet(Node.BOND_DUPLICATE) ||
+          edge.getEnd().isSet(Node.IMPL_HYDROGEN))
+        continue;
+      ordered[idx++] = edge.getEnd().getAtom();
+    }
+    if (idx < 4)
+      ordered[idx] = getFocus();
 
     int parity = parity4(ordered, getCarriers());
 
@@ -92,7 +94,7 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
                        Digraph<A, B> digraph,
                        SequenceRule<A, B> comp)
   {
-    A focus = getFocus();
+    A                focus = getFocus();
     List<Node<A, B>> nodes = digraph.getNodes(focus);
     for (Node<A, B> node : nodes) {
       if (map.containsKey(node))
