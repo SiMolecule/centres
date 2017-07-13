@@ -7,6 +7,7 @@ import com.simolecule.centres.rules.Rule2;
 import com.simolecule.centres.rules.Rule3;
 import com.simolecule.centres.rules.Rule4a;
 import com.simolecule.centres.rules.Rule4b;
+import com.simolecule.centres.rules.Rule4bNew;
 import com.simolecule.centres.rules.Rule4c;
 import com.simolecule.centres.rules.Rule5;
 import com.simolecule.centres.rules.Rules;
@@ -18,7 +19,7 @@ import java.util.Map;
 
 public class Labeller<A, B> {
 
-  private static boolean labelIndependently = true;
+  static boolean labelIndependently = true;
 
   public void label(BaseMol<A, B> mol, List<Configuration<A, B>> configs)
   {
@@ -32,33 +33,42 @@ public class Labeller<A, B> {
   {
     // constitutional rules
     final Rules<A, B> begRules = new Rules<A, B>(new Rule1a<A, B>(mol),
-                                                   new Rule1b<A, B>(mol),
-                                                   new Rule2<A, B>(mol));
+                                                 new Rule1b<A, B>(mol),
+                                                 new Rule2<A, B>(mol));
     // all rules
     final Rules<A, B> allRules = new Rules<A, B>(new Rule1a<A, B>(mol),
                                                  new Rule1b<A, B>(mol),
                                                  new Rule2<A, B>(mol),
                                                  new Rule3<A, B>(mol),
                                                  new Rule4a<A, B>(mol),
-                                                 new Rule4b<A, B>(mol),
+                                                 new Rule4bNew<A, B>(mol),
                                                  new Rule4c<A, B>(mol),
-                                                 new Rule5<A, B>(mol));
+                                                 new Rule5<A, B>(mol)
+    );
 
-    Map<Configuration<A,B>,Descriptor> finalLabels = new HashMap<>();
-    for (Configuration<A,B> conf : configs) {
+    Map<Configuration<A, B>, Descriptor> finalLabels = new HashMap<>();
+    for (Configuration<A, B> conf : configs) {
       conf.setDigraph(new Digraph<A, B>(mol));
       Descriptor desc = conf.label(begRules);
       if (desc != null && desc != Descriptor.Unknown) {
         finalLabels.put(conf, desc);
       } else {
-        Map<Node<A,B>,Descriptor> auxLabels = new HashMap<>();
-        for (Configuration<A,B> confAux : configs) {
-          if (confAux.equals(conf))
-            continue;
-          confAux.labelAux(auxLabels, conf.getDigraph(), begRules);
-        }
-        if (!auxLabels.isEmpty()) {
-          setAuxLabels(auxLabels);
+        Map<Node<A, B>, Descriptor> auxqueue = new HashMap<>();
+        int done;
+        do {
+          done = auxqueue.size();
+          for (Configuration<A, B> c : configs) {
+            if (!c.equals(conf))
+              c.labelAux(auxqueue,
+                         conf.getDigraph(),
+                         done > 0 ? allRules : begRules);
+          }
+          if (!auxqueue.isEmpty()) {
+            setAuxLabels(auxqueue);
+          }
+        } while (auxqueue.size() > done);
+
+        if (done > 0) {
           desc = conf.label(allRules);
           if (desc != null && desc != Descriptor.Unknown)
             finalLabels.put(conf, desc);
@@ -80,7 +90,7 @@ public class Labeller<A, B> {
                                               new Rule2<A, B>(mol),
                                               new Rule3<A, B>(mol),
                                               new Rule4a<A, B>(mol),
-                                              new Rule4b<A, B>(mol),
+                                              new Rule4bNew<A, B>(mol),
                                               new Rule4c<A, B>(mol),
                                               new Rule5<A, B>(mol)
     );
