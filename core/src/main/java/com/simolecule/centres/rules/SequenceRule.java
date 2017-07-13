@@ -45,6 +45,10 @@ public abstract class SequenceRule<A, B> implements Comparator<Edge<A, B>> {
     this.mol = mol;
   }
 
+  public BaseMol<A,B> getMol() {
+    return mol;
+  }
+
   public Descriptor getBondLabel(Edge<A, B> edge)
   {
     B bond = edge.getBond();
