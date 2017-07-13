@@ -9,6 +9,7 @@ import com.simolecule.centres.rules.Priority;
 import com.simolecule.centres.rules.SequenceRule;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,20 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
   public Tetrahedral(A focus, A[] carriers, int cfg)
   {
     super(focus, carriers, cfg);
+  }
+
+  private boolean visitRing(BaseMol<A,B> mol, A spiro, A atom, B prev, boolean[] visit) {
+    if (atom.equals(spiro))
+      return true;
+    visit[mol.getAtomIdx(atom)] = true;
+    boolean res = false;
+    for (B bond : mol.getBonds(atom)) {
+      if (!mol.isInRing(bond) || bond == prev)
+        continue;
+      if (visitRing(mol, spiro, mol.getOther(bond, atom), bond, visit))
+        res = true;
+    }
+    return res;
   }
 
   @Override
@@ -43,6 +58,7 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
 
   private Descriptor label(Node<A, B> node, SequenceRule<A, B> comp)
   {
+    A focus = getFocus();
     final List<Edge<A, B>> edges = new ArrayList<>(node.getEdges());
 
     // something not right!?! bad creation
@@ -51,8 +67,37 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
 
     Priority priority = comp.sort(node, edges);
 
-    if (!priority.isUnique())
-      return Descriptor.Unknown;
+
+    if (!priority.isUnique() && edges.size() == 4) {
+
+      BaseMol<A, B> mol = comp.getMol();
+
+      // check for spiro cases
+      for (Edge<A, B> edge : edges) {
+        if (edge.getBond() != null && !mol.isInRing(edge.getBond()))
+          return Descriptor.Unknown;
+      }
+
+      List<List<Edge<A,B>>> partition = comp.getSorter().getGroups(edges);
+      // expect a,a',b,b'!
+      if (partition.size() != 2 || partition.get(0).size() != 2)
+        return Descriptor.Unknown;
+
+      System.err.println("Check spiro again!");
+
+      boolean[] visit = new boolean[mol.getNumAtoms()];
+      A first = edges.get(0).getEnd().getAtom();
+      visit[mol.getAtomIdx(focus)] = true;
+      visit[mol.getAtomIdx(first)] = true;
+      if (!visitRing(mol, focus, first, edges.get(0).getBond(), visit))
+        return Descriptor.Unknown;
+
+      // if with our spiro traversal we don't reach either atom in the
+      // the second partition then there it is not stereogenic
+      if (!visit[mol.getAtomIdx(edges.get(2).getEnd().getAtom())] &&
+          !visit[mol.getAtomIdx(edges.get(3).getEnd().getAtom())])
+        return Descriptor.Unknown;
+    }
 
     Object[] ordered = new Object[4];
     int      idx     = 0;
@@ -63,7 +108,7 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
       ordered[idx++] = edge.getEnd().getAtom();
     }
     if (idx < 4)
-      ordered[idx] = getFocus();
+      ordered[idx] = focus;
 
     int parity = parity4(ordered, getCarriers());
 
