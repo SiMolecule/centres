@@ -45,6 +45,10 @@ public class PairList implements Comparable<PairList> {
 
   }
 
+  public PairList(Descriptor ref) {
+    add(ref);
+  }
+
   /**
    * Creates a new list from a provided head and tail. The head and tail
    * ignored descriptors are first transferred and then their descriptors. In
@@ -59,6 +63,10 @@ public class PairList implements Comparable<PairList> {
     // add descriptors to the new instance (ignored descriptors not added)
     addAll(head.descriptors);
     addAll(tail.descriptors);
+  }
+
+  public Descriptor getRefDescriptor() {
+    return ref(descriptors.get(0));
   }
 
   /**
@@ -86,7 +94,7 @@ public class PairList implements Comparable<PairList> {
     }
   }
 
-  public Descriptor ref(Descriptor descriptor) {
+  static Descriptor ref(Descriptor descriptor) {
     switch (descriptor) {
       case R:
       case M:
@@ -97,7 +105,8 @@ public class PairList implements Comparable<PairList> {
       case seqTrans:
         return Descriptor.S;
       default:
-        throw new IllegalArgumentException();
+        return null;
+        // throw new IllegalArgumentException("Unknown descriptor: " + descriptor);
     }
   }
 
@@ -111,12 +120,11 @@ public class PairList implements Comparable<PairList> {
   private void addAndPair(Descriptor descriptor)
   {
     // if this isn't the first descriptor - check the pairing
-    if (!descriptors.isEmpty() && ref(descriptors.get(0)) == ref(descriptor)) {
+    if (!descriptors.isEmpty() && descriptors.get(0) == descriptor) {
       // set the bit to indicate a pair
       pairing |= 0x1 << 31 - descriptors.size();
     }
-
-    descriptors.add(descriptor);
+    descriptors.add(ref(descriptor));
   }
 
   /**
@@ -204,18 +212,32 @@ public class PairList implements Comparable<PairList> {
     basis = ref(basis);
 
     // build like (l) / unlike (u) descriptor pairing
+    if (it.hasNext()) it.next(); // reference appears twice...
     while (it.hasNext())
       sb.append(basis.equals(ref(it.next())) ? "l" : "u");
 
     return sb.toString();
-
   }
 
 
   @Override
-  public int compareTo(PairList o)
+  public int compareTo(PairList that)
   {
-    return Integer.compare(getPairing() , o.getPairing());
+    if (descriptors.size() != that.descriptors.size())
+      throw new IllegalArgumentException("Descriptor lists should be the same length!");
+    if (descriptors.size() < 63) {
+      return Integer.compare(pairing, that.pairing);
+    } else {
+      Descriptor thisRef = this.descriptors.get(0);
+      Descriptor thatRef = that.descriptors.get(0);
+      for (int i = 1; i < this.descriptors.size(); i++) {
+        if (thisRef == this.descriptors.get(i) && thatRef != that.descriptors.get(i))
+          return +1;
+        if (thisRef != this.descriptors.get(i) && thatRef == that.descriptors.get(i))
+          return -1;
+      }
+    }
+    return 0;
   }
 
 
@@ -228,6 +250,4 @@ public class PairList implements Comparable<PairList> {
     pairing = 0;
     descriptors.clear();
   }
-
-
 }
