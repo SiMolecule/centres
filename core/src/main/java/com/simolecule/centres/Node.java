@@ -121,6 +121,16 @@ public final class Node<A, B> {
     return edges;
   }
 
+  public List<Edge<A, B>> getNonTerminalOutEdges()
+  {
+    List<Edge<A,B>> edges = new ArrayList<>();
+    for (Edge<A,B> edge : getEdges()) {
+      if (edge.isBeg(this) && !edge.getEnd().isTerminal())
+        edges.add(edge);
+    }
+    return edges;
+  }
+
   public boolean isSet(int mask)
   {
     return (mask & flags) != 0;
@@ -170,13 +180,14 @@ public final class Node<A, B> {
     if (isDuplicate())
       sb.append('(');
     if (g != null && atom != null) {
-      // .append(":").append(1 + g.getMol().getAtomIdx(atom)
       sb.append(getElementSymbol(g.getMol().getAtomicNum(atom)));
     } else if (atom == null) {
       sb.append("H");
     }
     if (isDuplicate())
       sb.append(')');
+    if (aux != null)
+      sb.append(':').append(aux);
     return sb.toString();
   }
 }
