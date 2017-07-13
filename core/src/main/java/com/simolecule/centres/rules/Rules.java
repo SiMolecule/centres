@@ -19,6 +19,7 @@
 package com.simolecule.centres.rules;
 
 import com.google.common.collect.Lists;
+import com.simolecule.centres.BaseMol;
 import com.simolecule.centres.Edge;
 
 import java.util.ArrayList;
@@ -56,6 +57,18 @@ public class Rules<A, B> extends SequenceRule<A, B> {
   public Sort<A, B> createSorter(List<SequenceRule<A, B>> rules)
   {
     return new Sort<A, B>(rules); // restriction should be configurable
+  }
+
+  @Override
+  public BaseMol<A, B> getMol()
+  {
+    BaseMol<A,B> res = null;
+    for (SequenceRule<A,B> rule : rules) {
+      res = rule.getMol();
+      if (res != null)
+        break;
+    }
+    return res;
   }
 
   @Override
