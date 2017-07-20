@@ -138,7 +138,7 @@ public class Sp2Bond<A, B> extends Configuration<A, B> {
 
       if (config == TOGETHER) {
         if (priority1.isPseduoAsymettric() ||
-            priority1.isPseduoAsymettric()) {
+            priority2.isPseduoAsymettric()) {
           map.put(root1, Descriptor.seqCis);
           map.put(root2, Descriptor.seqCis);
         } else {
@@ -146,7 +146,7 @@ public class Sp2Bond<A, B> extends Configuration<A, B> {
           map.put(root2, Descriptor.Z);
         }
       } else if (config == OPPOSITE) {
-        if (priority2.isPseduoAsymettric() ||
+        if (priority1.isPseduoAsymettric() ||
             priority2.isPseduoAsymettric()) {
           map.put(root1, Descriptor.seqTrans);
           map.put(root2, Descriptor.seqTrans);
