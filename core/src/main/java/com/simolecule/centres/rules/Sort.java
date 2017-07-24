@@ -56,8 +56,8 @@ public class Sort<A, B> {
 
   public Priority prioritise(Node<A, B> node, List<Edge<A, B>> edges, boolean deep)
   {
-    Boolean unique     = Boolean.TRUE;
-    boolean pseudoAsym = false;
+    Boolean unique        = Boolean.TRUE;
+    int     numPseudoAsym = 0;
 
     for (int i = 0; i < edges.size(); i++)
       for (int j = i; j > 0; j--) {
@@ -65,7 +65,7 @@ public class Sort<A, B> {
         int cmp = compareLigands(node, edges.get(j - 1), edges.get(j), deep);
 
         if (cmp < -1 || cmp > +1)
-          pseudoAsym = true;
+          numPseudoAsym++;
 
         if (cmp < 0) {
           swap(edges, j, j - 1);
@@ -76,7 +76,7 @@ public class Sort<A, B> {
         }
       }
 
-    return new Priority(unique, pseudoAsym);
+    return new Priority(unique, numPseudoAsym == 1);
   }
 
   public int compareLigands(Node<A, B> node, Edge<A, B> a, Edge<A, B> b, boolean deep)
