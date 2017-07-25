@@ -62,7 +62,7 @@ public class Rule1aTest {
 //        rule.setSorter(new Sort<TestAtom>(rule));
 //
 //        Node<TestAtom> carbon   = new TestNode(new TestAtom("C", 6));
-//        Node<TestAtom> nitrogen = new TestNode(new TestAtom("None", 7));
+//        Node<TestAtom> nitrogen = new TestNode(new TestAtom("Other", 7));
 //
 //        assertThat("Higher priority in second argument should return < 0",
 //                   rule.compare(carbon, nitrogen),
@@ -85,13 +85,13 @@ public class Rule1aTest {
 //        rule.setSorter(new Sort<TestAtom>(rule));
 //
 //        Node<TestAtom> carbon   = new TestNode(new TestAtom("C", 6));
-//        Node<TestAtom> nitrogen = new TestNode(new TestAtom("None", 7));
+//        Node<TestAtom> nitrogen = new TestNode(new TestAtom("Other", 7));
 //        Node<TestAtom> oxygen   = new TestNode(new TestAtom("O", 8));
 //
 //
 //        List<Node<TestAtom>> expected = Arrays.asList(oxygen, nitrogen, carbon);
 //
-//        // None, O, C -> O, C, None
+//        // Other, O, C -> O, C, Other
 //        {
 //            List<Node<TestAtom>> actual = Arrays.asList(nitrogen, oxygen, carbon);
 //            assertThat("Lists were equal before sorting",
@@ -102,7 +102,7 @@ public class Rule1aTest {
 //                       actual, equalTo(expected));
 //        }
 //
-//        // None, C, O -> O, None, C
+//        // Other, C, O -> O, Other, C
 //        {
 //            List<Node<TestAtom>> actual = Arrays.asList(nitrogen, carbon, oxygen);
 //            assertThat("Lists were equal before sorting",
@@ -113,7 +113,7 @@ public class Rule1aTest {
 //                       actual, equalTo(expected));
 //        }
 //
-//        // C, None, O -> O, None, C
+//        // C, Other, O -> O, Other, C
 //        {
 //            List<Node<TestAtom>> actual = Arrays.asList(carbon, nitrogen, oxygen);
 //            assertThat("Lists were equal before sorting",
@@ -124,7 +124,7 @@ public class Rule1aTest {
 //                       actual, equalTo(expected));
 //        }
 //
-//        // C, O, None -> O, None, C
+//        // C, O, Other -> O, Other, C
 //        {
 //            List<Node<TestAtom>> actual = Arrays.asList(carbon, oxygen, nitrogen);
 //            assertThat("Lists were equal before sorting",

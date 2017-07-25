@@ -110,6 +110,12 @@ final class OpsinMol extends BaseMol<Atom, Bond> {
   }
 
   @Override
+  public int getCharge(Atom atom)
+  {
+    return atom.getCharge();
+  }
+
+  @Override
   public int getMassNum(Atom atom)
   {
     Integer isotope = atom.getIsotope();

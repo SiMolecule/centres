@@ -34,7 +34,8 @@ public class Labeller<A, B> {
     // constitutional rules
     final Rules<A, B> begRules = new Rules<A, B>(new Rule1a<A, B>(mol),
                                                  new Rule1b<A, B>(mol),
-                                                 new Rule2<A, B>(mol));
+                                                 new Rule2<A, B>(mol)
+    );
     // all rules
     final Rules<A, B> allRules = new Rules<A, B>(new Rule1a<A, B>(mol),
                                                  new Rule1b<A, B>(mol),
@@ -53,22 +54,7 @@ public class Labeller<A, B> {
       if (desc != null && desc != Descriptor.Unknown) {
         finalLabels.put(conf, desc);
       } else {
-        Map<Node<A, B>, Descriptor> auxqueue = new HashMap<>();
-        int done;
-        do {
-          done = auxqueue.size();
-          for (Configuration<A, B> c : configs) {
-            if (!c.equals(conf))
-              c.labelAux(auxqueue,
-                         conf.getDigraph(),
-                         done > 0 ? allRules : begRules);
-          }
-          if (!auxqueue.isEmpty()) {
-            setAuxLabels(auxqueue);
-          }
-        } while (auxqueue.size() > done);
-
-        if (done > 0) {
+        if (labelAux(configs, begRules, allRules, conf)) {
           desc = conf.label(allRules);
           if (desc != null && desc != Descriptor.Unknown)
             finalLabels.put(conf, desc);
@@ -76,6 +62,26 @@ public class Labeller<A, B> {
       }
     }
     setFinalLabels(mol, finalLabels);
+  }
+
+  private boolean labelAux(List<Configuration<A, B>> configs, Rules<A, B> begRules, Rules<A, B> allRules,
+                       Configuration<A, B> conf)
+  {
+    Map<Node<A, B>, Descriptor> auxqueue = new HashMap<>();
+    int                         done;
+    do {
+      done = auxqueue.size();
+      for (Configuration<A, B> c : configs) {
+        if (!c.equals(conf))
+          c.labelAux(auxqueue,
+                     conf.getDigraph(),
+                     done > 0 ? allRules : begRules);
+      }
+      if (!auxqueue.isEmpty()) {
+        setAuxLabels(auxqueue);
+      }
+    } while (auxqueue.size() > done);
+    return done > 0;
   }
 
   public void labelIterative(BaseMol<A, B> mol, List<Configuration<A, B>> configs)

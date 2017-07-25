@@ -1,5 +1,7 @@
 package com.simolecule.centres;
 
+import com.simolecule.centres.Mancude.Fraction;
+
 import java.util.Iterator;
 
 /**
@@ -10,6 +12,8 @@ import java.util.Iterator;
  * @param <B> bond type
  */
 public abstract class BaseMol<A, B> {
+
+  private Fraction[] atomnums;
 
   public static final String CIP_LABEL_KEY = "cip.label";
 
@@ -69,9 +73,17 @@ public abstract class BaseMol<A, B> {
 
   public abstract int getAtomicNum(A atom);
 
+  public Fraction getFractionalAtomicNum(A atom) {
+    if (atomnums == null)
+      atomnums = Mancude.CalcFracAtomNums(this);
+    return atomnums[getAtomIdx(atom)];
+  }
+
   public abstract int getNumHydrogens(A atom);
 
   public abstract int getMassNum(A atom);
+
+  public abstract int getCharge(A atom);
 
   public abstract int getBondOrder(B bond);
 
@@ -84,4 +96,6 @@ public abstract class BaseMol<A, B> {
   public abstract <V> V getBondProp(B bond, String key);
 
   public abstract String dumpDigraph(Digraph<A,B> digraph);
+
+
 }

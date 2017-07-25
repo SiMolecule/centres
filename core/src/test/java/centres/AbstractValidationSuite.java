@@ -314,8 +314,7 @@ public abstract class AbstractValidationSuite {
   public static Collection<Object[]> load()
   {
     List<Object[]> testunits = new ArrayList<>();
-//    try (InputStream in = ClassLoader.getSystemResourceAsStream("com/simolecule/centres/validate.smi");
-    try (InputStream in = ClassLoader.getSystemResourceAsStream("com/simolecule/centres/bob_test.smi");
+    try (InputStream in = ClassLoader.getSystemResourceAsStream("com/simolecule/centres/validate.smi");
          Reader rdr = new InputStreamReader(in);
          BufferedReader brdr = new BufferedReader(rdr)) {
       String line;

@@ -37,6 +37,8 @@ public final class Node<A, B> {
   private final Digraph<A, B> g;
   private final A             atom;
   private final int           dist;
+  private final short         atomicnumNum;
+  private final short         atomicnumDen;
   private       Descriptor    aux;
   private int flags = 0;
 
@@ -47,6 +49,8 @@ public final class Node<A, B> {
   public Node(Digraph<A, B> g,
               char[] visit,
               A atom,
+              int anum,
+              int aden,
               int dist,
               int flags)
   {
@@ -55,6 +59,8 @@ public final class Node<A, B> {
     this.atom = atom;
     this.dist = dist;
     this.flags = flags;
+    this.atomicnumNum = (short) anum;
+    this.atomicnumDen = (short) aden;
     this.edges = (flags & DUPLICATE) != 0
             ? new ArrayList<Edge<A, B>>()
             : new ArrayList<Edge<A, B>>(4);
@@ -62,11 +68,15 @@ public final class Node<A, B> {
       this.flags |= EXPANDED;
   }
 
+  public Digraph<A,B> getDigraph() {
+    return g;
+  }
+
   Node<A, B> newChild(int idx, A atom)
   {
     final char[] visit = this.visit.clone();
     visit[idx] = (char) (dist + 1);
-    return new Node<>(g, visit, atom, dist + 1, 0);
+    return new Node<>(g, visit, atom, g.getMol().getAtomicNum(atom), 1, dist + 1, 0);
   }
 
   Node<A, B> newTerminalChild(int idx, A atom, int flags)
@@ -74,7 +84,22 @@ public final class Node<A, B> {
     int dist = (char) (((flags & DUPLICATE) != 0
             ? visit[idx]
             : this.dist + 1));
-    return new Node<>(g, null, atom, dist, flags);
+    int anum;
+    int aden;
+    if ((flags & BOND_DUPLICATE) != 0) {
+      Mancude.Fraction frac = g.getMol().getFractionalAtomicNum(this.atom);
+      if (frac.getDen() > 1) {
+        anum = frac.getNum();
+        aden = frac.getDen();
+      } else {
+        anum = g.getMol().getAtomicNum(atom);
+        aden = 1;
+      }
+    } else {
+      anum = g.getMol().getAtomicNum(atom);
+      aden = 1;
+    }
+    return new Node<>(g, null, atom, anum, aden, dist, flags);
   }
 
   void add(Edge<A, B> e)
@@ -90,6 +115,14 @@ public final class Node<A, B> {
   public A getAtom()
   {
     return atom;
+  }
+
+  public int getAtomicNumNumerator() {
+    return atomicnumNum;
+  }
+
+  public int getAtomicNumDenominator() {
+    return atomicnumDen;
   }
 
   public Descriptor getAux()
@@ -180,7 +213,10 @@ public final class Node<A, B> {
     if (isDuplicate())
       sb.append('(');
     if (g != null && atom != null) {
-      sb.append(getElementSymbol(g.getMol().getAtomicNum(atom)));
+      if (atomicnumDen == 1)
+        sb.append(getElementSymbol(atomicnumNum)).append(':').append(1+g.getMol().getAtomIdx(atom));
+      else
+        sb.append(atomicnumNum).append('/').append(atomicnumDen);
     } else if (atom == null) {
       sb.append("H");
     }

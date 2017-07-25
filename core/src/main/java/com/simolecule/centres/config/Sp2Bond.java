@@ -31,8 +31,6 @@ public class Sp2Bond<A, B> extends Configuration<A, B> {
     mol.setBondProp(bond, BaseMol.CIP_LABEL_KEY, desc);
   }
 
-
-
   @Override
   public Descriptor label(SequenceRule<A, B> comp)
   {
@@ -102,17 +100,15 @@ public class Sp2Bond<A, B> extends Configuration<A, B> {
 
     for (Node<A,B> root1 : digraph.getNodes(focus1)) {
 
-      if (map.containsKey(root1))
-        continue;
-
       Edge<A,B> internal = findInternalEdge(root1.getEdges(), focus1, focus2);
       if (internal == null)
         continue;
       Node<A,B> root2 = internal.getOther(root1);
+      if (map.containsKey(root1) || map.containsKey(root2))
+        continue;
+
       List<Edge<A,B>> edges1 = new ArrayList<>(root1.getEdges());
       List<Edge<A,B>> edges2 = new ArrayList<>(root2.getEdges());
-      edges1.remove(internal);
-      edges2.remove(internal);
       removeInternalEdges(edges1, focus1, focus2);
       removeInternalEdges(edges2, focus1, focus2);
 
@@ -136,23 +132,25 @@ public class Sp2Bond<A, B> extends Configuration<A, B> {
       if (edges2.size() > 1 && carriers[1].equals(edges2.get(1).getEnd().getAtom()))
         config ^= 0x3;
 
+      Node<A,B> tolabel;
+      if (root1.getDistance() < root2.getDistance())
+        tolabel = root1;
+      else
+        tolabel = root2;
+
       if (config == TOGETHER) {
         if (priority1.isPseduoAsymettric() ||
             priority2.isPseduoAsymettric()) {
-          map.put(root1, Descriptor.seqCis);
-          map.put(root2, Descriptor.seqCis);
+          map.put(tolabel, Descriptor.seqCis);
         } else {
-          map.put(root1, Descriptor.Z);
-          map.put(root2, Descriptor.Z);
+          map.put(tolabel, Descriptor.Z);
         }
       } else if (config == OPPOSITE) {
         if (priority1.isPseduoAsymettric() ||
             priority2.isPseduoAsymettric()) {
-          map.put(root1, Descriptor.seqTrans);
-          map.put(root2, Descriptor.seqTrans);
+          map.put(tolabel, Descriptor.seqTrans);
         } else {
-          map.put(root1, Descriptor.E);
-          map.put(root2, Descriptor.E);
+          map.put(tolabel, Descriptor.E);
         }
       }
     }

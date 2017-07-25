@@ -14,6 +14,7 @@ C/N=N/C         E (E)-dimethyldiazene
 C/N=N\C         Z (Z)-dimethyldiazene
 C[S@@](=O)CC    R sulfoxide
 C[S@](=O)CC     S sulfoxide
+C[S@](=O)C    U dimethylsulfoxide
 O[C@H](C1=CC(O)=CC=C1)C1=CC=CC(O)=C1 U Kekulé independence
 CC=[C@]=CC            A3M elongated tetrahedral
 CC=[C@@]=CC           A3P elongated tetrahedral
@@ -36,11 +37,13 @@ O[C@@H](BC12C3C4=C5C6=C7C4=C4C8=C3C3=C1C1=C9C%10=C%11C%12=C%13C%14=C%15C%16=C%17
 O[C@@H]1C=CC2=CC3=CC4=C5C6=C(C=CC7=C6C6=C(C=C7)C=C7CC8=CC=CC9=C8C8=C7C6=C5C3=C8C2=C19)C=C4 R
 O[C@H]1C=CC2=CC3=CC4=C5C6=C(C=CC7=C6C6=C(C=C7)C=C7CC8=CC=CC9=C8C8=C7C6=C5C3=C8C2=C19)C=C4 S
 # Rule 1a (Mancude required)
+O[C@H](C1=CC=CC=N1)C1=NC=CC=C1
 O[C@H](C1=NC=CC2=CC=CC=[N+]12)C1=NC=CC2=[N+]1C=CC=C2 U mancude
 # Rule 1a Spiro aa'bb'
 O=C1CCN[C@]11NCCC1=O S
 O=C1CCN[C@@]11NCCC1=O R
 O=C1CCC(=O)[C@]11NCCN1 U
+C1CCC2(C1)CC[C@]1(CCC3(CCCC3)C1)C2 S
 
 # Rule 1b (Duplicate Atoms)
 O[C@@H](C(CCC1CC1)(CCC1CC1)CCC1CC1)C12CCC(CC1)CC2 S http://onlinelibrary.wiley.com/doi/10.1002/jcc.540150802/abstract
@@ -51,10 +54,11 @@ O[C@@H](C(CCC1C=C1)(CCC2C=C2)CCC3C=C3)C45C=CC(C=C4)C=C5 S
 
 # Rule 2
 # - Isotopic mass
-CC[C@](O)([H])[12CH2]C    R natural mass
-CC[C@@](O)([H])[12CH2]C   S natural mass
+CC[C@](O)([H])[12CH2]C    S natural mass
+CC[C@@](O)([H])[12CH2]C   R natural mass
 CC[C@](CO)([H])[14CH2]C   R https://nextmovesoftware.com/blog/2015/01/21/r-or-s-lets-vote/
 CC[C@@](CO)([H])[14CH2]C  S https://nextmovesoftware.com/blog/2015/01/21/r-or-s-lets-vote/
+c1ccc[13cH]c1[C@H](O)c1cccc[13cH]1
 
 # Rule 3
 C\C=C\[C@H](C)\C=C/C  E,S,Z Z before E
@@ -96,6 +100,8 @@ C[C@H]1CC[C@H](C)CC1  r,r (1r,4r)-p-dimethylcyclohexane
 C[C@H]1CC[C@H](CC1)B([C@@H]1CC[C@H](C)CC1)[C@@H]1CC[C@H](C)CC1 s,s,s,s,s,s bis[4-methylcyclohexyl]-4-methylcyclohexylborane
 CC([H])=[C@]=C([C@@H](O)CC)[C@H](O)CC A4m,6S,10R pseudo assymetric elongated tetrahedral (explicit hydrogens)
 CC([H])=[C@]=C([C@H](O)CC)[C@@H](O)CC A4p,6R,10S pseudo assymetric elongated tetrahedral (explicit hydrogens)
+C\1/2=C3/CC[C@H]4CC.C1C[C@H]5CC.C4C/3.C2C5 seqTrans,s,s
+[C@](CCC[C@@H](O)C)(CCC[C@H](O)C)(CCCC[C@H](O)C)CCCC[C@@H](O)C R,S,R,R,S non-pseudo asymmetric
 # Bob's Examples
 C1=C\C[C@H](C)C/C=C/C[C@H](C)C\1 E,s,E,s Bob 30 Apr
 C1=C\C=C/C=C/C=C\1 E,Z,E,Z
@@ -121,3 +127,8 @@ CC(C)[C@@H]1CC[C@@H](CC1)N2CCC3(CC2)N(CN(CCCCCCCCCN4CN(c5ccccc5)C6(CCN(CC6)[C@@H
 [H][C@]12C3=CC=CC1=CN=C4C=CC=C([C@@]24[H])N=C3 s,s
 O[C@@H](C1=C[CH-]C=C1)C1=C[CH-]C=C1 U
 O[C@@H](C1[CH-]C=CC=1)C1=C[CH-]C=C1 U
+O[C@H](C1=C[N-]C=C1)C1=C[CH-]N=C1 U
+CC1=CC=C2[C@@H](C3=CC=C(N=C3OC2=N1)C1=CC=C(C=C1)C(=O)N1CCOCC1)C(C)(C)C(=O)NC1=NN=C(S1)C(=O)NC1CCOCC1 S
+CC1=CC=C2[C@@H](C3=C(OC2=N1)N=C(C=C3)C1=CC=C(C=C1)C(=O)N1CCOCC1)C(C)(C)C(=O)NC1=NN=C(S1)C(=O)NC1CCOCC1 S
+CC1=NC2=C(C=C1)[C@@H](C1=C(O2)N=C(C=C1)C1=CC=C(C=C1)C(=O)N1CCOCC1)C(C)(C)C(=O)NC1=NN=C(S1)C(=O)NC1CCOCC1 S
+CC1=NC2=C(C=C1)[C@@H](C1=CC=C(N=C1O2)C1=CC=C(C=C1)C(=O)N1CCOCC1)C(C)(C)C(=O)NC1=NN=C(S1)C(=O)NC1CCOCC1 S

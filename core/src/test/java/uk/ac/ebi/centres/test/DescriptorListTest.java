@@ -160,8 +160,6 @@ public class DescriptorListTest {
     list2.add(Descriptor.P);
     list2.add(Descriptor.S);
     list2.add(Descriptor.M);
-    System.out.println(Integer.toBinaryString(list1.getPairing()));
-    System.out.println(Integer.toBinaryString(list2.getPairing()));
     assertThat(list1.toString(), is("R:llu"));
     assertThat(list2.toString(), is("R:uul"));
   }

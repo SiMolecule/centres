@@ -20,6 +20,7 @@ package com.simolecule.centres.rules;
 
 import com.simolecule.centres.BaseMol;
 import com.simolecule.centres.Edge;
+import com.simolecule.centres.Mancude;
 
 public final class Rule1a<A, B> extends SequenceRule<A, B> {
 
@@ -34,10 +35,14 @@ public final class Rule1a<A, B> extends SequenceRule<A, B> {
   @Override
   public int compare(Edge<A, B> a, Edge<A, B> b)
   {
-    int atomNum1 = mol.getAtomicNum(a.getEnd().getAtom());
-    int atomNum2 = mol.getAtomicNum(b.getEnd().getAtom());
-    if (atomNum1 == 0 || atomNum2 == 0)
+    final int anum = a.getEnd().getAtomicNumNumerator();
+    final int aden = a.getEnd().getAtomicNumDenominator();
+    final int bnum = b.getEnd().getAtomicNumNumerator();
+    final int bden = b.getEnd().getAtomicNumDenominator();
+    if (anum == 0 || bnum == 0)
       return 0;
-    return Integer.compare(atomNum1, atomNum2);
+    if (aden == 1 && bden == 1)
+      return Integer.compare(anum, bnum);
+    return Mancude.Fraction.compare(anum, aden, bnum, bden);
   }
 }

@@ -95,6 +95,8 @@ public class PairList implements Comparable<PairList> {
   }
 
   static Descriptor ref(Descriptor descriptor) {
+    if (descriptor == null)
+      return null;
     switch (descriptor) {
       case R:
       case M:
@@ -212,7 +214,6 @@ public class PairList implements Comparable<PairList> {
     basis = ref(basis);
 
     // build like (l) / unlike (u) descriptor pairing
-    if (it.hasNext()) it.next(); // reference appears twice...
     while (it.hasNext())
       sb.append(basis.equals(ref(it.next())) ? "l" : "u");
 
@@ -225,17 +226,13 @@ public class PairList implements Comparable<PairList> {
   {
     if (descriptors.size() != that.descriptors.size())
       throw new IllegalArgumentException("Descriptor lists should be the same length!");
-    if (descriptors.size() < 63) {
-      return Integer.compare(pairing, that.pairing);
-    } else {
-      Descriptor thisRef = this.descriptors.get(0);
-      Descriptor thatRef = that.descriptors.get(0);
-      for (int i = 1; i < this.descriptors.size(); i++) {
-        if (thisRef == this.descriptors.get(i) && thatRef != that.descriptors.get(i))
-          return +1;
-        if (thisRef != this.descriptors.get(i) && thatRef == that.descriptors.get(i))
-          return -1;
-      }
+    Descriptor thisRef = this.descriptors.get(0);
+    Descriptor thatRef = that.descriptors.get(0);
+    for (int i = 1; i < this.descriptors.size(); i++) {
+      if (thisRef == this.descriptors.get(i) && thatRef != that.descriptors.get(i))
+        return +1;
+      if (thisRef != this.descriptors.get(i) && thatRef == that.descriptors.get(i))
+        return -1;
     }
     return 0;
   }

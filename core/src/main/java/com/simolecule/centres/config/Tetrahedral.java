@@ -31,7 +31,10 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
     for (B bond : mol.getBonds(atom)) {
       if (!mol.isInRing(bond) || bond == prev)
         continue;
-      if (visitRing(mol, spiro, mol.getOther(bond, atom), bond, visit))
+      A other = mol.getOther(bond, atom);
+      if (visit[mol.getAtomIdx(other)])
+        continue;
+      if (visitRing(mol, spiro, other, bond, visit))
         res = true;
     }
     return res;
@@ -67,8 +70,8 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
 
     Priority priority = comp.sort(node, edges);
 
-
-    if (!priority.isUnique() && edges.size() == 4) {
+    boolean isUnique = priority.isUnique();
+    if (!isUnique && edges.size() == 4) {
 
       BaseMol<A, B> mol = comp.getMol();
 
@@ -83,20 +86,26 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
       if (partition.size() != 2 || partition.get(0).size() != 2)
         return Descriptor.Unknown;
 
-      System.err.println("Check spiro again!");
-
       boolean[] visit = new boolean[mol.getNumAtoms()];
       A first = edges.get(0).getEnd().getAtom();
       visit[mol.getAtomIdx(focus)] = true;
       visit[mol.getAtomIdx(first)] = true;
-      if (!visitRing(mol, focus, first, edges.get(0).getBond(), visit))
-        return Descriptor.Unknown;
+      visitRing(mol, focus, first, edges.get(0).getBond(), visit);
 
       // if with our spiro traversal we don't reach either atom in the
       // the second partition then there it is not stereogenic
       if (!visit[mol.getAtomIdx(edges.get(2).getEnd().getAtom())] &&
           !visit[mol.getAtomIdx(edges.get(3).getEnd().getAtom())])
         return Descriptor.Unknown;
+
+      // make sure we go the 'right' way around
+      if (visit[mol.getAtomIdx(edges.get(3).getEnd().getAtom())]) {
+        Edge<A,B> tmp = edges.get(2);
+        edges.set(2, edges.get(3));
+        edges.set(3, tmp);
+      }
+    } else if (!isUnique) {
+      return Descriptor.Unknown;
     }
 
     Object[] ordered = new Object[4];
@@ -109,6 +118,8 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
     }
     if (idx < 4)
       ordered[idx] = focus;
+
+    // System.err.println(edges);
 
     int parity = parity4(ordered, getCarriers());
 

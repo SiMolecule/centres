@@ -372,14 +372,14 @@ public class PerceptorTest {
 //        IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
 //        perceptor.perceive(container);
 //        System.out.println(container.getAtom(1).getProperty("descriptor"));
-//        assertThat(container.getAtom(1).getProperty("descriptor"), CoreMatchers.<Object>is(Descriptor.None));
+//        assertThat(container.getAtom(1).getProperty("descriptor"), CoreMatchers.<Object>is(Descriptor.Other));
 //    }
 //
 //    @Test public void bad_h_representation() {
 //        String path = "bad_h_labels.mol";
 //        IAtomContainer container = MolLoader.loadMolfile(getClass().getResourceAsStream(path));
 //        perceptor.perceive(container);
-//        assertThat(container.getAtom(1).getProperty("descriptor"), CoreMatchers.<Object>is(Descriptor.None));
+//        assertThat(container.getAtom(1).getProperty("descriptor"), CoreMatchers.<Object>is(Descriptor.Other));
 //    }
 //
 //    @Test public void r_sarin() {

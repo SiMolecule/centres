@@ -39,6 +39,8 @@ public final class Digraph<A, B> {
     this.root = new Node<A, B>(this,
                                new char[mol.getNumAtoms()],
                                atom,
+                               mol.getAtomicNum(atom),
+                               1,
                                (char) 1,
                                0);
     int atomIdx = mol.getAtomIdx(atom);
@@ -152,10 +154,16 @@ public final class Digraph<A, B> {
         // duplicate nodes for bond orders (except for root atoms...)
         // for example >S=O
         if (!root.equals(beg)) {
-          for (int i = 1; i < bord; i++) {
+          if (mol.getCharge(atom) < 0 && mol.getFractionalAtomicNum(atom).getDen() > 1) {
             end = beg.newTerminalChild(nbrIdx, nbr, Node.BOND_DUPLICATE);
             numNodes++;
             addEdge(beg, bond, end);
+          } else {
+            for (int i = 1; i < bord; i++) {
+              end = beg.newTerminalChild(nbrIdx, nbr, Node.BOND_DUPLICATE);
+              numNodes++;
+              addEdge(beg, bond, end);
+            }
           }
         }
       }
@@ -175,10 +183,16 @@ public final class Digraph<A, B> {
         numNodes++;
         addEdge(beg, bond, end);
 
-        for (int i = 1; i < bord; i++) {
+        if (mol.getCharge(atom) < 0 && mol.getFractionalAtomicNum(atom).getDen() > 1) {
           end = beg.newTerminalChild(nbrIdx, nbr, Node.BOND_DUPLICATE);
           numNodes++;
           addEdge(beg, bond, end);
+        } else {
+          for (int i = 1; i < bord; i++) {
+            end = beg.newTerminalChild(nbrIdx, nbr, Node.BOND_DUPLICATE);
+            numNodes++;
+            addEdge(beg, bond, end);
+          }
         }
       }
     }

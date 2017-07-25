@@ -20,6 +20,7 @@ package com.simolecule.centres.rules;
 
 import com.simolecule.centres.BaseMol;
 import com.simolecule.centres.Edge;
+import com.simolecule.centres.Isotope;
 
 /**
  * <b>Sequence Rule 1b</b>
@@ -43,7 +44,27 @@ public class Rule2<A, B> extends SequenceRule<A, B> {
   @Override
   public int compare(Edge<A, B> a, Edge<A, B> b)
   {
-    return Integer.compare(mol.getMassNum(a.getEnd().getAtom()),
-                           mol.getMassNum(b.getEnd().getAtom()));
+    int aAtomNum = mol.getAtomicNum(a.getEnd().getAtom());
+    int bAtomNum = mol.getAtomicNum(b.getEnd().getAtom());
+    if (aAtomNum == 0 || bAtomNum == 0)
+      return 0;
+    int aMassNum = a.getEnd().isDuplicate() ? 0 : mol.getMassNum(a.getEnd().getAtom());
+    int bMassNum = b.getEnd().isDuplicate() ? 0 : mol.getMassNum(b.getEnd().getAtom());
+    if (aMassNum == 0 && bMassNum == 0)
+      return 0;
+    Isotope aiso = Isotope.find(aAtomNum, aMassNum);
+    Isotope biso = Isotope.find(bAtomNum, bMassNum);
+
+    double aweight, bweight;
+    if (aiso == null)
+      aweight = aMassNum;
+    else
+      aweight = aiso.getWeight();
+    if (biso == null)
+      bweight = bMassNum;
+    else
+      bweight = biso.getWeight();
+
+    return Double.compare(aweight, bweight);
   }
 }

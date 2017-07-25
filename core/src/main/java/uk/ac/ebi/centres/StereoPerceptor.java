@@ -138,7 +138,7 @@ public class StereoPerceptor<M, A, B> {
 //
 //    // set all unperceived centres to 'none'
 //    for (Centre<A> centre : unperceived) {
-//      centre.setPrimaryLabel(Descriptor.None);
+//      centre.setPrimaryLabel(Descriptor.Other);
 //      centre.dispose();
 //    }
 //

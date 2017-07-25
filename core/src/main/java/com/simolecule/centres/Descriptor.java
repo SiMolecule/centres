@@ -31,7 +31,7 @@ public enum Descriptor {
    */
   Unknown,
   /**
-   * None
+   * Other
    */
   None,
   /**

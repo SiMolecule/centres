@@ -18,7 +18,7 @@ public abstract class Configuration<A, B> {
   private A[] carriers;
   private int cfg;
 
-  private Digraph<A, B> digraph;
+  Digraph<A, B> digraph;
 
   public Configuration()
   {

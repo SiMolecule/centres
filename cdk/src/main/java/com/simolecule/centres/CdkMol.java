@@ -9,6 +9,7 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.silent.Atom;
 import org.openscience.cdk.silent.Bond;
+import org.openscience.cdk.silent.PseudoAtom;
 import org.openscience.cdk.smiles.SmiFlavor;
 import org.openscience.cdk.smiles.SmilesGenerator;
 
@@ -114,6 +115,13 @@ public final class CdkMol extends BaseMol<IAtom, IBond> {
   }
 
   @Override
+  public int getCharge(IAtom atom)
+  {
+    Integer q = atom.getFormalCharge();
+    return q != null ? q : 0;
+  }
+
+  @Override
   public int getMassNum(IAtom atom)
   {
     if (atom == null)
@@ -178,6 +186,7 @@ public final class CdkMol extends BaseMol<IAtom, IBond> {
 
     for (IAtom atom : res.atoms())
       atom.setImplicitHydrogenCount(0);
+    res.setAtom(0, new PseudoAtom("X"));
 
     return res;
   }
@@ -191,17 +200,18 @@ public final class CdkMol extends BaseMol<IAtom, IBond> {
       if (base == null) {
         atom = new Atom("H");
       } else if (node.isDuplicate()) {
-        atom = new Atom(base.getSymbol());
+        atom = new Atom("*");
+//        atom.setProperty(CDKConstants.COMMENT, node.getAtomicNumNumerator() + "/" + node.getAtomicNumDenominator());
         if (node.getAux() != null)
-          atom.setProperty(CDKConstants.COMMENT, "(" + org.indexOf(base) + ") " + node.getAux() + "0");
+          atom.setProperty(CDKConstants.COMMENT, "(" + (1+org.indexOf(base)) + ") " + node.getAux() + "0");
         else
-          atom.setProperty(CDKConstants.COMMENT, "(" + org.indexOf(base) + ")");
+          atom.setProperty(CDKConstants.COMMENT, "(" + (1+org.indexOf(base)) + ")");
       } else {
         atom = new Atom(base.getSymbol());
         if (node.getAux() != null)
-          atom.setProperty(CDKConstants.COMMENT, org.indexOf(base) + " " + node.getAux() + "0");
+          atom.setProperty(CDKConstants.COMMENT, (1+org.indexOf(base)) + " " + node.getAux() + "0");
         else
-          atom.setProperty(CDKConstants.COMMENT, org.indexOf(base));
+          atom.setProperty(CDKConstants.COMMENT, (1+org.indexOf(base)));
       }
       res.addAtom(atom);
       amap.put(node, atom);
