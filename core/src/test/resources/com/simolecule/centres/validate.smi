@@ -88,6 +88,8 @@ O[C@H]1[C@H](O)[C@@H](O)[C@H](O)[C@H](O)[C@@H]1O S,r,R,S,s,R myo-inositol
 # Rule 4 - CIP Reconstruction problem
 C[C@@H]1[C@H](C)[C@H](C)[C@H](C)[C@@H](C)[C@@H](C)[C@@H](C)[C@H]1C R,S,R,S,S,R,S,R Handbook
 C[C@H]1[C@H](C)[C@H](C)[C@H](C)[C@@H](C)[C@@H](C)[C@@H](C)[C@@H]1C R,S,R,S,S,R,S,R Handbook
+# Rule 4c
+C\C=C(/[C@@H]([C@@H](C)O)[C@H](C)O)[C@H]([C@@H](C)O)[C@H](C)O Z,r,R,S,s,R,S
 # Rule 5
 C[C@H]1CC[C@@H](C)CC1 s,s (1s,4s)-p-dimethylcyclohexane
 C[C@H]1CC[C@H](C)CC1  r,r (1r,4r)-p-dimethylcyclohexane
@@ -116,8 +118,9 @@ O[C@@H]([C@H]1C[C@@H](C1)O)[C@@H]2C[C@@H](C2)O R,r,S,s,S
 # ChEBI examples
 O[C@@H]1C[C@@H](O)[C@H](O)[C@@H](O)[C@H]1O R,R,S,S CHEBI:27371
 [H][C@]12C[C@]3([H])[C@@]([H])(C1)[C@]3(C)[C@]2(C)CCC=C(C)C S,R,R,S,R (+)-α-santalene CHEBI:61677
-CC(=O)N[C@@H](CSSC[C@H](NC(C)=O)C(=O)N[C@@H]1[C@@H](O)[C@H](O)[C@@H](CO)O[C@@H]1O[C@H]1[C@H](O)[C@@H](O)[C@H](O)[C@@H](O)[C@H]1O)C(=O)N[C@@H]1[C@@H](O)[C@H](O)[C@@H](CO)O[C@@H]1O[C@H]1[C@H](O)[C@@H](O)[C@H](O)[C@@H](O)[C@H]1O
-OC(=O)[C@]1(C[C@@H](OC(=O)\C=C\c2ccc(O)c(O)c2)[C@H](OC(=O)\C=C\c2ccc(O)c(O)c2)[C@@H](C1)OC(=O)\C=C\c1ccc(O)c(O)c1)OC(=O)\C=C\c1ccc(O)c(O)c1
+# to confirm with Andrey/Bob/Miko
+# CC(=O)N[C@@H](CSSC[C@H](NC(C)=O)C(=O)N[C@@H]1[C@@H](O)[C@H](O)[C@@H](CO)O[C@@H]1O[C@H]1[C@H](O)[C@@H](O)[C@H](O)[C@@H](O)[C@H]1O)C(=O)N[C@@H]1[C@@H](O)[C@H](O)[C@@H](CO)O[C@@H]1O[C@H]1[C@H](O)[C@@H](O)[C@H](O)[C@@H](O)[C@H]1O
+# OC(=O)[C@]1(C[C@@H](OC(=O)\C=C\c2ccc(O)c(O)c2)[C@H](OC(=O)\C=C\c2ccc(O)c(O)c2)[C@@H](C1)OC(=O)\C=C\c1ccc(O)c(O)c1)OC(=O)\C=C\c1ccc(O)c(O)c1
 # ChEMBL examples
 NC[C@@H]1CC[C@@H](CNC(=O)N2CCN(CC2)C(=O)O[C@@H]3CCC[C@@H](CCC3)OC(=O)N4CCN(CC4)C(=O)NC[C@@H]5CC[C@@H](CN)CC5)CC1 r,r,s,s,r,r CHEMBL263454
 CC(C)(C)c1ccc(SCC(N2C(=O)N3CC=CC(N3C2=O)C(=O)NC[C@@H]4CC[C@@H](N)CC4)C(=O)O)cc1 r,r CHEMBL32428
