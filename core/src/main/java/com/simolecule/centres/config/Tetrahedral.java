@@ -84,7 +84,7 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
       }
 
       List<List<Edge<A,B>>> partition = comp.getSorter().getGroups(edges);
-
+      
       // expect a,a',b,b'!
       if (partition.size() != 2 || partition.get(0).size() != 2)
         return Descriptor.Unknown;
@@ -104,7 +104,7 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
         return Descriptor.Unknown;
 
       // make sure we go the 'right' way around
-      if (visit[a3] < visit[a2] || visit[a2] == 0) {
+      if (visit[a3] > 0 && (visit[a3] < visit[a2] || visit[a2] == 0)) {
         Collections.swap(edges, 2, 3);
       }
 
