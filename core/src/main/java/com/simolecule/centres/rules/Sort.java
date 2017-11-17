@@ -18,7 +18,6 @@
 
 package com.simolecule.centres.rules;
 
-import com.simolecule.centres.BaseMol;
 import com.simolecule.centres.Edge;
 import com.simolecule.centres.Node;
 
@@ -34,6 +33,8 @@ import java.util.List;
  */
 public class Sort<A, B> {
 
+  private int ruleMax = 0;
+
   private final List<SequenceRule<A, B>> rules = new ArrayList<>(5);
 
   public Sort(SequenceRule<A, B> comparator)
@@ -46,11 +47,13 @@ public class Sort<A, B> {
     rules.addAll(comparators);
   }
 
-  public List<SequenceRule<A,B>> getRules() {
+  public List<SequenceRule<A, B>> getRules()
+  {
     return Collections.unmodifiableList(rules);
   }
 
-  public Priority prioritise(Node<A, B> node, List<Edge<A, B>> edges) {
+  public Priority prioritise(Node<A, B> node, List<Edge<A, B>> edges)
+  {
     return prioritise(node, edges, true);
   }
 
@@ -76,10 +79,10 @@ public class Sort<A, B> {
         }
       }
 
-    return new Priority(unique, numPseudoAsym == 1);
+    return new Priority(unique, ruleMax, numPseudoAsym == 1);
   }
 
-  public int compareLigands(Node<A, B> node, Edge<A, B> a, Edge<A, B> b, boolean deep)
+  public final int compareLigands(Node<A, B> node, Edge<A, B> a, Edge<A, B> b, boolean deep)
   {
     // ensure 'up' edges are moved to the front
     if (!a.isBeg(node) && b.isBeg(node))
@@ -87,10 +90,13 @@ public class Sort<A, B> {
     else if (a.isBeg(node) && !b.isBeg(node))
       return -1;
 
-    for (SequenceRule<A, B> rule : rules) {
-      int cmp = rule.getComparision(a, b, deep);
-      if (cmp != 0)
+    for (int i = 0; i < rules.size(); i++) {
+      SequenceRule<A, B> rule = rules.get(i);
+      int                cmp  = rule.getComparision(a, b, deep);
+      if (cmp != 0) {
+        ruleMax = Math.max(ruleMax, i);
         return cmp;
+      }
     }
     return 0;
   }
@@ -104,19 +110,19 @@ public class Sort<A, B> {
   }
 
 
-  public List<List<Edge<A,B>>> getGroups(List<Edge<A,B>> sorted)
+  public List<List<Edge<A, B>>> getGroups(List<Edge<A, B>> sorted)
   {
 
     // would be nice to have this integrated whilst sorting - may provide a small speed increase
     // but as most of our lists are small we take use ugly sort then group approach
-    List<List<Edge<A,B>>> groups = new ArrayList<>();
+    List<List<Edge<A, B>>> groups = new ArrayList<>();
 
-    Edge<A,B> prev = null;
-    for (Edge<A,B> edge : sorted) {
+    Edge<A, B> prev = null;
+    for (Edge<A, B> edge : sorted) {
       if (prev == null || compareLigands(prev.getBeg(), prev, edge, true) != 0)
-        groups.add(new ArrayList<Edge<A,B>>());
+        groups.add(new ArrayList<Edge<A, B>>());
       prev = edge;
-      groups.get(groups.size()-1).add(edge);
+      groups.get(groups.size() - 1).add(edge);
     }
 
     return groups;
