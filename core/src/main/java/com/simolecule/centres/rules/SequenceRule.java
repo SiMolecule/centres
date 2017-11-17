@@ -77,6 +77,10 @@ public abstract class SequenceRule<A, B> implements Comparator<Edge<A, B>> {
     return label;
   }
 
+  public int getNumSubRules() {
+    return 1;
+  }
+
   public boolean isPseudoAsymmetric()
   {
     return false;
@@ -200,7 +204,7 @@ public abstract class SequenceRule<A, B> implements Comparator<Edge<A, B>> {
     this.sorter = sorter;
   }
 
-  public final Sort<A, B> getSorter()
+  public Sort<A, B> getSorter()
   {
     if (sorter == null)
       sorter = new Sort<A, B>(this);

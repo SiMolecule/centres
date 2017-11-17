@@ -30,12 +30,14 @@ public class Priority {
   private Boolean           unique;
   private boolean           pseudoAsym;
   private Set<Set<Integer>> duplicates;
+  private int               ruleIdx;
 
 
-  public Priority(Boolean unique, boolean pseudoAsym)
+  public Priority(Boolean unique, int ruleIdx, boolean pseudoAsym)
   {
     this.unique = unique;
     this.pseudoAsym = pseudoAsym;
+    this.ruleIdx = ruleIdx;
   }
 
   public Priority(Boolean unique, boolean pseudoAsym, Set<Set<Integer>> duplicates)
@@ -56,6 +58,10 @@ public class Priority {
     return unique;
   }
 
+  public int getRuleIdx()
+  {
+    return ruleIdx;
+  }
 
   /**
    * Indicates the descriptor type used to. This allows methods that represent
