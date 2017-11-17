@@ -5,12 +5,10 @@ import com.simolecule.centres.Descriptor;
 import com.simolecule.centres.Digraph;
 import com.simolecule.centres.Edge;
 import com.simolecule.centres.Node;
-import com.simolecule.centres.Stats;
 import com.simolecule.centres.rules.Priority;
 import com.simolecule.centres.rules.SequenceRule;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +82,7 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
       }
 
       List<List<Edge<A,B>>> partition = comp.getSorter().getGroups(edges);
-      
+
       // expect a,a',b,b'!
       if (partition.size() != 2 || partition.get(0).size() != 2)
         return Descriptor.Unknown;
@@ -124,8 +122,8 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
       ordered[idx] = focus;
 
 
-    if (node.getDigraph().getRoot() == node)
-      Stats.INSTANCE.countRule(priority.getRuleIdx());
+//    if (node.getDigraph().getRoot() == node)
+//      Stats.INSTANCE.countRule(priority.getRuleIdx());
 
     int parity = parity4(ordered, getCarriers());
 
