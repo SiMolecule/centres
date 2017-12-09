@@ -15,6 +15,7 @@ public final class Mancude {
     Nv4D3Plus, // =[N+]<
     Nv2D2Minus, // -[N-]-
     Cv3D3Minus, // -[CH-]-
+    Ov3D2Plus,  // -[O+]=
     Other
   }
 
@@ -49,7 +50,9 @@ public final class Mancude {
       if (ring) {
         int q = mol.getCharge(atom);
         switch (mol.getAtomicNum(atom)) {
-          case 6:
+          case 6:  // C
+          case 14: // Si
+          case 32: // Ge
             if (q == 0 && btypes == 0x0102)
               types[aidx] = Type.Cv4D4;
             else if (q == -1 && btypes == 0x0003) {
@@ -57,7 +60,9 @@ public final class Mancude {
               result = true;
             }
             break;
-          case 7:
+          case 7:  // N
+          case 15: // P
+          case 33: // As
             if (q == 0 && btypes == 0x0101) {
               types[aidx] = Type.Nv3D2;
               result = true;
@@ -66,6 +71,12 @@ public final class Mancude {
               result = true;
             } else if (q == +1 && btypes == 0x0102) {
               types[aidx] = Type.Nv4D3Plus;
+              result = true;
+            }
+            break;
+          case 8: // O
+            if (q == 1 && btypes == 0x0101) {
+              types[aidx] = Type.Ov3D2Plus;
               result = true;
             }
             break;
