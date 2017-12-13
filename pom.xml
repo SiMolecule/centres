@@ -2,96 +2,97 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.simolecule</groupId>
-    <artifactId>centres</artifactId>
-    <version>0.1-SNAPSHOT</version>
-    <packaging>pom</packaging>
+  <groupId>com.simolecule.centres</groupId>
+  <artifactId>centres</artifactId>
+  <version>0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
-    <modules>
-        <module>core</module>
-        <module>cdk</module>
-        <module>opsin</module>
-    </modules>
+  <modules>
+    <module>core</module>
+    <module>cdk</module>
+    <module>opsin</module>
+    <module>render</module>
+  </modules>
 
-    <name>centres</name>
-    <url>http://johnmay.github.com/centres</url>
+  <name>centres</name>
+  <url>http://johnmay.github.com/centres</url>
 
-    <licenses>
-        <license>
-            <name>GNU Lesser General Public License, Version 3.0</name>
-            <url>http://www.gnu.org/licenses/lgpl.html</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+  <licenses>
+    <license>
+      <name>GNU Lesser General Public License, Version 3.0</name>
+      <url>http://www.gnu.org/licenses/lgpl.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
-    <developers>
-        <developer>
-            <name>John May</name>
-            <organization>EMBL-EBI</organization>
-            <organizationUrl>http://www.ebi.ac.uk</organizationUrl>
-            <timezone>GMT</timezone>
-        </developer>
-    </developers>
+  <developers>
+    <developer>
+      <name>John May</name>
+      <organization>EMBL-EBI</organization>
+      <organizationUrl>http://www.ebi.ac.uk</organizationUrl>
+      <timezone>GMT</timezone>
+    </developer>
+  </developers>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.12</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.hamcrest</groupId>
-                <artifactId>hamcrest-all</artifactId>
-                <version>1.3</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.12</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-all</artifactId>
+        <version>1.3</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
-    <build>
+  <build>
 
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.6.1</version>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.8.1</version>
-                <configuration>
-                    <aggregate>true</aggregate>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>site</phase>
-                        <goals>
-                            <goal>aggregate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.6.1</version>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.8.1</version>
+        <configuration>
+          <aggregate>true</aggregate>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>site</phase>
+            <goals>
+              <goal>aggregate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
 
-        <!-- allow scp of artifacts to the ebi repositories -->
-        <extensions>
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-ssh</artifactId>
-                <version>2.2</version>
-            </extension>
-        </extensions>
+    <!-- allow scp of artifacts to the ebi repositories -->
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh</artifactId>
+        <version>2.2</version>
+      </extension>
+    </extensions>
 
-    </build>
+  </build>
 
 </project>
