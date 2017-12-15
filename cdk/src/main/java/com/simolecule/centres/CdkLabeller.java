@@ -31,7 +31,7 @@ public final class CdkLabeller extends Labeller<IAtom, IBond> {
           TetrahedralChirality thSe = (TetrahedralChirality) se;
           configs.add(new Tetrahedral<IAtom, IBond>(thSe.getFocus(),
                                                     thSe.getCarriers().toArray(new IAtom[4]),
-                                                    thSe.getConfig()));
+                                                    thSe.getConfigOrder()));
         }
         break;
         case IStereoElement.CT: {
@@ -42,7 +42,7 @@ public final class CdkLabeller extends Labeller<IAtom, IBond> {
                                     new IAtom[]{bond.getBegin(), bond.getEnd()},
                                     new IAtom[]{bonds[0].getOther(bond.getBegin()),
                                             bonds[1].getOther(bond.getEnd())},
-                                    dbSe.getConfig()));
+                                    dbSe.getConfigOrder()));
         }
         break;
         case IStereoElement.AT: {
@@ -52,7 +52,7 @@ public final class CdkLabeller extends Labeller<IAtom, IBond> {
                   bond,
                   new IAtom[]{bond.getBegin(), bond.getEnd()},
                   atSe.getCarriers().toArray(new IAtom[4]),
-                  atSe.getConfig()));
+                  atSe.getConfigOrder()));
         }
         break;
         case IStereoElement.AL: {
@@ -63,7 +63,7 @@ public final class CdkLabeller extends Labeller<IAtom, IBond> {
           IAtom[]             carriers = etSe.getCarriers().toArray(new IAtom[4]);
           configs.add(new com.simolecule.centres.config.ExtendedTetrahedral<IAtom, IBond>(focus,
                                                                                           carriers,
-                                                                                          etSe.getConfig()));
+                                                                                          etSe.getConfigOrder()));
         }
         break;
       }
