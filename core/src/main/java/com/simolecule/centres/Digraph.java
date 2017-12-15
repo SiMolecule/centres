@@ -107,7 +107,6 @@ public final class Digraph<A, B> {
    * 'up' edges to be 'down'.
    *
    * @param newroot the new root
-   * @return the old root of the digraph
    */
   public void changeRoot(Node<A, B> newroot)
   {

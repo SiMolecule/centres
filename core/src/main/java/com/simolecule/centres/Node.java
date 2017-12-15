@@ -18,7 +18,7 @@ public final class Node<A, B> {
 
   /**
    * Flag indicates whether the node was duplicated
-   * at a bond with order > 1.
+   * at a bond with order &gt; 1.
    */
   public static final int BOND_DUPLICATE = 0x4;
 

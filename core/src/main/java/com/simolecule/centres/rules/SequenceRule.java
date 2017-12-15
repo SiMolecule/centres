@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Queue;
 
 /**
- * An abstract comparator that provides construction of the {@link Comparison}
+ * An abstract comparator that provides construction of the {@link Sort}
  * wrapper allowing subclasses to focus on the actual comparison of ligands.
  *
  * @author John May

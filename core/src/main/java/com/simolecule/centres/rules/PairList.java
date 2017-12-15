@@ -134,7 +134,6 @@ public class PairList implements Comparable<PairList> {
    * present in the ignore set it will not be added to the list.
    *
    * @param descriptors a collection of descriptors to be added
-   * @return whether any of the provided descriptors was added
    */
   public void addAll(Collection<? extends Descriptor> descriptors)
   {
@@ -163,7 +162,7 @@ public class PairList implements Comparable<PairList> {
    * the contents of this list is 'RRSS' and we invoke append with two lists
    * 'SRS' and 'RSR'. Two new lists will be returned with their contents
    * 'RRSSSRS' and 'RRSSRSR' respectively.
-   * <p/>
+   * <br>
    * Empty descriptor lists are not appended, if all descriptor lists are
    * empty then 'this' list is the single returned list
    *
@@ -194,7 +193,7 @@ public class PairList implements Comparable<PairList> {
 
 
   /**
-   * @inheritDoc
+   * {@inheritDoc}
    */
   @Override
   public String toString()

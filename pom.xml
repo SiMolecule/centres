@@ -1,23 +1,27 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <groupId>com.simolecule.centres</groupId>
   <artifactId>centres</artifactId>
   <version>0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
-
   <modules>
     <module>core</module>
     <module>cdk</module>
     <module>opsin</module>
   </modules>
-
   <name>centres</name>
+  <description>Library of Labelling Stereochemistry</description>
   <url>http://johnmay.github.com/centres</url>
-
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+  <scm>
+    <url>https://github.com/simolecule/centres</url>
+    <connection>scm:git:git://github.com/simolecule/centres.git</connection>
+    <developerConnection>scm:git:git@github.com:simolecule/centres.git
+    </developerConnection>
+  </scm>
   <licenses>
     <license>
       <name>GNU Lesser General Public License, Version 3.0</name>
@@ -25,16 +29,26 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-
+  <issueManagement>
+    <url>https://github.com/simolecule/centres/issues</url>
+    <system>GitHub Issues</system>
+  </issueManagement>
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
   <developers>
     <developer>
-      <name>John May</name>
-      <organization>EMBL-EBI</organization>
-      <organizationUrl>http://www.ebi.ac.uk</organizationUrl>
+      <name>John Mayfield (ne May)</name>
       <timezone>GMT</timezone>
     </developer>
   </developers>
-
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -51,9 +65,7 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
   <build>
-
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -82,7 +94,6 @@
         </executions>
       </plugin>
     </plugins>
-
     <!-- allow scp of artifacts to the ebi repositories -->
     <extensions>
       <extension>
@@ -91,7 +102,65 @@
         <version>2.2</version>
       </extension>
     </extensions>
-
   </build>
-
+  <profiles>
+    <profile>
+      <id>ossrh</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <version>1.6.3</version>
+            <extensions>true</extensions>
+            <configuration>
+              <serverId>ossrh</serverId>
+              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+              <autoReleaseAfterClose>true</autoReleaseAfterClose>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.5</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>2.2.1</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.10.4</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
