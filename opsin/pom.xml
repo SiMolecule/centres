@@ -13,7 +13,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.simolecule</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>centres-core</artifactId>
       <version>${project.parent.version}</version>
     </dependency>
@@ -23,7 +23,7 @@
       <version>2.3.0</version>
     </dependency>
     <dependency>
-      <groupId>com.simolecule</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>centres-core</artifactId>
       <version>${project.parent.version}</version>
       <scope>test</scope>
