@@ -1,8 +1,11 @@
 package com.simolecule.centres;
 
 import com.simolecule.centres.config.Configuration;
+import com.simolecule.centres.config.Octahedral;
 import com.simolecule.centres.config.Sp2Bond;
+import com.simolecule.centres.config.SquarePlanar;
 import com.simolecule.centres.config.Tetrahedral;
+import com.simolecule.centres.config.TrigonalBipyramidal;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
@@ -64,6 +67,27 @@ public final class CdkLabeller extends Labeller<IAtom, IBond> {
           configs.add(new com.simolecule.centres.config.ExtendedTetrahedral<IAtom, IBond>(focus,
                                                                                           carriers,
                                                                                           etSe.getConfigOrder()));
+        }
+        break;
+        case IStereoElement.OC: {
+          org.openscience.cdk.stereo.Octahedral ocSe
+                  = ((org.openscience.cdk.stereo.Octahedral) se).normalize();
+          configs.add(new Octahedral<IAtom, IBond>(ocSe.getFocus(),
+                                                   ocSe.getCarriers().toArray(new IAtom[6])));
+        }
+        break;
+        case IStereoElement.SP: {
+          org.openscience.cdk.stereo.SquarePlanar spSe
+                  = ((org.openscience.cdk.stereo.SquarePlanar) se).normalize();
+          configs.add(new SquarePlanar<IAtom, IBond>(spSe.getFocus(),
+                                                     spSe.getCarriers().toArray(new IAtom[4])));
+        }
+        break;
+        case IStereoElement.TBPY: {
+          org.openscience.cdk.stereo.TrigonalBipyramidal tbpySe
+                  = ((org.openscience.cdk.stereo.TrigonalBipyramidal) se).normalize();
+          configs.add(new TrigonalBipyramidal<IAtom, IBond>(tbpySe.getFocus(),
+                                                            tbpySe.getCarriers().toArray(new IAtom[4])));
         }
         break;
       }
