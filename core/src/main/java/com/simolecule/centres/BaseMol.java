@@ -16,6 +16,7 @@ public abstract class BaseMol<A, B> {
   private Fraction[] atomnums;
 
   public static final String CIP_LABEL_KEY = "cip.label";
+  public static final String CONF_INDEX    = "conf.index";
 
   public abstract Object getBaseImpl();
 
