@@ -52,7 +52,11 @@ public enum Descriptor {
   M,
   P,
   m,
-  p;
+  p,
+
+  SP_4,
+  TBPY_5,
+  OC_6;
 
   boolean isPseudoAsymmetric()
   {
