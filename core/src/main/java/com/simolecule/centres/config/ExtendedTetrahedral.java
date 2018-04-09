@@ -82,9 +82,9 @@ public final class ExtendedTetrahedral<A, B> extends Configuration<A, B> {
 
     Object[] ordered = new Object[4];
     ordered[0] = edges1.get(0).getEnd().getAtom();
-    ordered[1] = edges1.size() > 0 ? edges1.get(1).getEnd().getAtom() : atom1;
+    ordered[1] = edges1.size() > 1 ? edges1.get(1).getEnd().getAtom() : atom1;
     ordered[2] = edges2.get(0).getEnd().getAtom();
-    ordered[3] = edges2.size() > 0 ? edges2.get(1).getEnd().getAtom() : atom2;
+    ordered[3] = edges2.size() > 1 ? edges2.get(1).getEnd().getAtom() : atom2;
 
     if (ordered[1] == null)
       ordered[1] = atom1;
