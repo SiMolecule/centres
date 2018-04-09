@@ -30,7 +30,7 @@
   <artifactId>centres-cdk</artifactId>
 
   <properties>
-    <cdk.version>2.1-SNAPSHOT</cdk.version>
+    <cdk.version>2.2-SNAPSHOT</cdk.version>
   </properties>
 
   <dependencies>
