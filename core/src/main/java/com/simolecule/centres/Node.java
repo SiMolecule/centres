@@ -144,6 +144,19 @@ public final class Node<A, B> {
     return edges;
   }
 
+  public List<Edge<A, B>> getEdges(A end)
+  {
+    List<Edge<A,B>> res = new ArrayList<>();
+    for (Edge<A,B> edge : getEdges()) {
+      if (edge.getEnd().isDuplicate())
+        continue;
+      if (end.equals(edge.getBeg().getAtom()) ||
+          end.equals(edge.getEnd().getAtom()))
+      res.add(edge);
+    }
+    return res;
+  }
+
   public List<Edge<A, B>> getOutEdges()
   {
     List<Edge<A,B>> edges = new ArrayList<>();

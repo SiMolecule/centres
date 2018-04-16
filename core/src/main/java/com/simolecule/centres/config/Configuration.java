@@ -5,6 +5,7 @@ import com.simolecule.centres.Descriptor;
 import com.simolecule.centres.Digraph;
 import com.simolecule.centres.Edge;
 import com.simolecule.centres.Node;
+import com.simolecule.centres.rules.Rules;
 import com.simolecule.centres.rules.SequenceRule;
 
 import java.lang.reflect.Array;
@@ -203,5 +204,9 @@ public abstract class Configuration<A, B> {
       if (e.getEnd().isDuplicate())
         iter.remove();
     }
+  }
+
+  public Descriptor label(Node<A, B> node, Digraph<A, B> digraph, Rules<A, B> rules) {
+    return Descriptor.Unknown;
   }
 }

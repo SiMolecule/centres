@@ -80,7 +80,7 @@ public class Rule4bNew<A, B>
     deque.add(node);
     while (!deque.isEmpty()) {
       Node<A, B> n = deque.poll();
-      if (getAtomLabel(n) != null)
+      if (n.getAux() != null)
         return true;
       for (Edge<A, B> e : n.getEdges()) {
         if (e.getEnd().equals(n))
@@ -107,7 +107,7 @@ public class Rule4bNew<A, B>
     int right = 0;
     int left  = 0;
     for (Node<A, B> node : nodes) {
-      Descriptor desc = getAtomLabel(node);
+      Descriptor desc = node.getAux();
       if (desc != null) {
         switch (desc) {
           case R:
@@ -211,7 +211,7 @@ public class Rule4bNew<A, B>
 
       // append any descriptors to the list
       for (PairList plist : plists)
-        plist.add(getAtomLabel(node));
+        plist.add(node.getAux());
 
       for (Edge<A, B> e : node.getEdges()) {
         if (e.isBeg(node)) {
@@ -274,7 +274,7 @@ public class Rule4bNew<A, B>
     queue.add(beg);
     while (!queue.isEmpty()) {
       Node<A, B> node = queue.poll();
-      plist.add(getAtomLabel(node));
+      plist.add(node.getAux());
       List<Edge<A, B>> edges = node.getEdges();
       sorter.prioritise(node, edges);
       for (Edge<A, B> edge : edges) {
@@ -297,8 +297,8 @@ public class Rule4bNew<A, B>
       Node<A, B> aNode = aQueue.poll();
       Node<A, B> bNode = bQueue.poll();
 
-      Descriptor desA = getAtomLabel(aNode);
-      Descriptor desB = getAtomLabel(bNode);
+      Descriptor desA = aNode.getAux();
+      Descriptor desB = bNode.getAux();
 
       desA = PairList.ref(desA);
       desB = PairList.ref(desB);
@@ -342,8 +342,8 @@ public class Rule4bNew<A, B>
         !b.getBeg().getDigraph().getCurrRoot().equals(b.getBeg())) {
       if (ref == null)
         return 0;
-      Descriptor aDesc = getAtomLabel(a.getEnd());
-      Descriptor bDesc = getAtomLabel(b.getEnd());
+      Descriptor aDesc = a.getEnd().getAux();
+      Descriptor bDesc = b.getEnd().getAux();
       if (aDesc != null && bDesc != null && aDesc != Descriptor.None && bDesc != Descriptor.None) {
         boolean alike = PairList.ref(ref) == PairList.ref(aDesc);
         boolean blike = PairList.ref(ref) == PairList.ref(bDesc);

@@ -53,11 +53,7 @@ public final class Rule3<A, B> extends SequenceRule<A, B> {
   @Override
   public int compare(Edge<A, B> a, Edge<A, B> b)
   {
-    int aOrdinal = ord(getBondLabel(a));
-    int bOrdinal = ord(getBondLabel(b));
-    int cmp      = Integer.compare(aOrdinal, bOrdinal);
-    if (cmp != 0) return cmp;
-    return Integer.compare(ord(getAtomLabel(a.getEnd())),
-                           ord(getAtomLabel(b.getEnd())));
+    return Integer.compare(ord(a.getEnd().getAux()),
+                           ord(b.getEnd().getAux()));
   }
 }

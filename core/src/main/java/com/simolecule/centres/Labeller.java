@@ -6,35 +6,27 @@ import com.simolecule.centres.rules.Rule1b;
 import com.simolecule.centres.rules.Rule2;
 import com.simolecule.centres.rules.Rule3;
 import com.simolecule.centres.rules.Rule4a;
-import com.simolecule.centres.rules.Rule4b;
 import com.simolecule.centres.rules.Rule4bNew;
 import com.simolecule.centres.rules.Rule4c;
 import com.simolecule.centres.rules.Rule5;
 import com.simolecule.centres.rules.Rules;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Labeller<A, B> {
 
-  static boolean labelIndependently = true;
-
   public void label(BaseMol<A, B> mol, List<Configuration<A, B>> configs)
-  {
-    if (labelIndependently)
-      labelIndependent(mol, configs);
-    else
-      labelIterative(mol, configs);
-  }
-
-  public void labelIndependent(BaseMol<A, B> mol, List<Configuration<A, B>> configs)
   {
     // constitutional rules
     final Rules<A, B> begRules = new Rules<A, B>(new Rule1a<A, B>(mol),
-                                                 new Rule1b<A, B>(mol),
-                                                 new Rule2<A, B>(mol)
+                                              new Rule1b<A, B>(mol),
+                                              new Rule2<A, B>(mol)
     );
     // all rules
     final Rules<A, B> allRules = new Rules<A, B>(new Rule1a<A, B>(mol),
@@ -47,115 +39,77 @@ public class Labeller<A, B> {
                                                  new Rule5<A, B>(mol)
     );
 
+    // Stats.INSTANCE.countNumCenters(configs.size());
+
     Map<Configuration<A, B>, Descriptor> finalLabels = new HashMap<>();
     for (Configuration<A, B> conf : configs) {
       conf.setDigraph(new Digraph<A, B>(mol));
       Descriptor desc = conf.label(begRules);
       if (desc != null && desc != Descriptor.Unknown) {
-        finalLabels.put(conf, desc);
+        conf.setPrimaryLabel(mol, desc);
       } else {
-        if (labelAux(configs, begRules, allRules, conf)) {
+
+        //System.out.println("C"+(mol.getAtomIdx(conf.getFocus())+1));
+        if (labelAux(configs, allRules, conf)) {
+
+        //  Stats.INSTANCE.numAuxCalculated.incrementAndGet();
           desc = conf.label(allRules);
-          if (desc != null && desc != Descriptor.Unknown)
-            finalLabels.put(conf, desc);
+
+          // System.out.println(mol.dumpDigraph(conf.getDigraph()));
+          if (desc != null && desc != Descriptor.Unknown) {
+      //      Stats.INSTANCE.numAuxLabelled.incrementAndGet();
+            conf.setPrimaryLabel(mol, desc);
+          }
         }
+      }
+      //Stats.INSTANCE.measureDigraph(conf.getDigraph());
+    }
+    //Stats.INSTANCE.numConfigLabelled.addAndGet(finalLabels.size());
+  }
+
+  private boolean labelAux(List<Configuration<A, B>> configs,
+                           Rules<A, B> rules,
+                           Configuration<A, B> center)
+  {
+    List<Map.Entry<Node<A,B>,Configuration<A,B>>> aux = new ArrayList<>();
+
+    Digraph<A,B> digraph = center.getDigraph();
+    for (Configuration<A,B> config : configs) {
+      if (config.equals(center))
+        continue;
+      A[] foci = config.getFoci();
+      for (Node<A, B> node : digraph.getNodes(foci[0])) {
+        if (node.isDuplicate())
+          continue;
+        Node<A,B> low = node;
+        if (foci.length == 2) {
+          for (Edge<A,B> edge : node.getEdges(foci[1])) {
+            if (edge.getOther(node).getDistance() < node.getDistance())
+              low = edge.getOther(node);
+          }
+        }
+        if (!low.isDuplicate())
+          aux.add(new AbstractMap.SimpleImmutableEntry<>(low, config));
       }
     }
-    setFinalLabels(mol, finalLabels);
-  }
 
-  private boolean labelAux(List<Configuration<A, B>> configs, Rules<A, B> begRules, Rules<A, B> allRules,
-                       Configuration<A, B> conf)
-  {
-    Map<Node<A, B>, Descriptor> auxqueue = new HashMap<>();
-    int                         done;
-    do {
-      done = auxqueue.size();
-      for (Configuration<A, B> c : configs) {
-        if (!c.equals(conf))
-          c.labelAux(auxqueue,
-                     conf.getDigraph(),
-                     done > 0 ? allRules : begRules);
-      }
-      if (!auxqueue.isEmpty()) {
-        setAuxLabels(auxqueue);
-      }
-    } while (auxqueue.size() > done);
-    return done > 0;
-  }
+    Collections.sort(aux,
+                     new Comparator<Map.Entry<Node<A, B>, Configuration<A, B>>>() {
+                       @Override
+                       public int compare(
+                               Map.Entry<Node<A, B>, Configuration<A, B>> a,
+                               Map.Entry<Node<A, B>, Configuration<A, B>> b) {
+                         return -Integer.compare(a.getKey().getDistance(),
+                                                 b.getKey().getDistance());
+                       }
+                     });
 
-  public void labelIterative(BaseMol<A, B> mol, List<Configuration<A, B>> configs)
-  {
-
-    // set primary digraphs
-    for (Configuration<A, B> config : configs)
-      config.setDigraph(new Digraph<A, B>(mol));
-
-    final Rules<A, B> rules = new Rules<A, B>(new Rule1a<A, B>(mol),
-                                              new Rule1b<A, B>(mol),
-                                              new Rule2<A, B>(mol),
-                                              new Rule3<A, B>(mol),
-                                              new Rule4a<A, B>(mol),
-                                              new Rule4bNew<A, B>(mol),
-                                              new Rule4c<A, B>(mol),
-                                              new Rule5<A, B>(mol)
-    );
-
-    List<Configuration<A, B>>            unspec = new ArrayList<>();
-    Map<Configuration<A, B>, Descriptor> map    = new HashMap<>();
-    unspec.addAll(configs);
-
-    do {
-      do {
-        map.clear();
-
-        for (Configuration<A, B> cfg : unspec) {
-          Descriptor desc = cfg.label(rules);
-          if (desc != Descriptor.Unknown) {
-            map.put(cfg, desc);
-          }
-        }
-
-        setFinalLabels(mol, map);
-        unspec.removeAll(map.keySet());
-
-      } while (!unspec.isEmpty() && !map.isEmpty());
-
-      // use auxiliary preceptors
-      if (!unspec.isEmpty()) {
-        for (Configuration<A, B> config : unspec) {
-
-          Map<Node<A, B>, Descriptor> aux = new HashMap<>();
-          for (Configuration<A, B> other : unspec) {
-            if (other == config)
-              continue;
-            other.labelAux(aux, config.getDigraph(), rules);
-          }
-          if (!aux.isEmpty()) {
-            setAuxLabels(aux);
-            Descriptor desc = config.label(rules);
-            if (desc != Descriptor.Unknown) {
-              map.put(config, desc);
-            }
-          }
-        }
-
-        setFinalLabels(mol, map);
-        unspec.removeAll(map.keySet());
-      }
-
-    } while (!unspec.isEmpty() && !map.isEmpty());
-  }
-
-  private void setFinalLabels(BaseMol<A, B> mol, Map<Configuration<A, B>, Descriptor> map)
-  {
-    for (Map.Entry<Configuration<A, B>, Descriptor> e : map.entrySet())
-      e.getKey().setPrimaryLabel(mol, e.getValue());
-  }
-
-  private void setAuxLabels(Map<Node<A, B>, Descriptor> map)
-  {
-    for (Map.Entry<Node<A, B>, Descriptor> e : map.entrySet())
-      e.getKey().setAux(e.getValue());
+    for (Map.Entry<Node<A,B>,Configuration<A,B>> e : aux) {
+      Node<A,B>          node   = e.getKey();
+      Configuration<A,B> config = e.getValue();
+      Descriptor         label  = config.label(node, digraph, rules);
+      node.setAux(label);
+    }
+    return true;
   }
 }

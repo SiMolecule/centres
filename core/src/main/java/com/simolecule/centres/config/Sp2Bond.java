@@ -6,6 +6,7 @@ import com.simolecule.centres.Digraph;
 import com.simolecule.centres.Edge;
 import com.simolecule.centres.Node;
 import com.simolecule.centres.rules.Priority;
+import com.simolecule.centres.rules.Rules;
 import com.simolecule.centres.rules.SequenceRule;
 
 import java.util.ArrayList;
@@ -91,68 +92,69 @@ public class Sp2Bond<A, B> extends Configuration<A, B> {
   }
 
   @Override
+  public Descriptor label(Node<A, B>    root1,
+                          Digraph<A, B> digraph,
+                          Rules<A, B>   rules) {
+    A focus1 = getFoci()[0];
+    A focus2 = getFoci()[1];
+
+    Edge<A,B> internal = findInternalEdge(root1.getEdges(), focus1, focus2);
+    if (internal == null)
+      return Descriptor.Unknown;
+    Node<A,B> root2 = internal.getOther(root1);
+
+    List<Edge<A,B>> edges1 = new ArrayList<>(root1.getEdges());
+    List<Edge<A,B>> edges2 = new ArrayList<>(root2.getEdges());
+    removeInternalEdges(edges1, focus1, focus2);
+    removeInternalEdges(edges2, focus1, focus2);
+
+    A[] carriers = getCarriers();
+    int config   = getConfig();
+
+    if (root1.getAtom().equals(focus2)) {
+      A tmp = carriers[1];
+      carriers[1] = carriers[0];
+      carriers[0] = tmp;
+    }
+
+    digraph.changeRoot(root1);
+    Priority priority1 = rules.sort(root1, edges1);
+    if (!priority1.isUnique())
+      return Descriptor.Unknown;
+    // swap
+    if (edges1.size() > 1 && carriers[0].equals(edges1.get(1).getEnd().getAtom()))
+      config ^= 0x3;
+    digraph.changeRoot(root2);
+    Priority priority2 = rules.sort(root2, edges2);
+    if (!priority2.isUnique())
+      return Descriptor.Unknown;
+    // swap
+    if (edges2.size() > 1 && carriers[1].equals(edges2.get(1).getEnd().getAtom()))
+      config ^= 0x3;
+
+    if (config == TOGETHER) {
+      if (priority1.isPseduoAsymettric() ||
+          priority2.isPseduoAsymettric()) {
+        return Descriptor.seqCis;
+      } else {
+        return Descriptor.Z;
+      }
+    } else if (config == OPPOSITE) {
+      if (priority1.isPseduoAsymettric() ||
+          priority2.isPseduoAsymettric()) {
+        return Descriptor.seqTrans;
+      } else {
+        return Descriptor.E;
+      }
+    }
+    return Descriptor.Unknown;
+  }
+
+  @Override
   public void labelAux(Map<Node<A, B>, Descriptor> map,
                        Digraph<A, B> digraph,
                        SequenceRule<A, B> comp)
   {
-    A focus1 = getFoci()[0];
-    A focus2 = getFoci()[1];
 
-    for (Node<A,B> root1 : digraph.getNodes(focus1)) {
-
-      Edge<A,B> internal = findInternalEdge(root1.getEdges(), focus1, focus2);
-      if (internal == null)
-        continue;
-      Node<A,B> root2 = internal.getOther(root1);
-      if (map.containsKey(root1) || map.containsKey(root2))
-        continue;
-
-      List<Edge<A,B>> edges1 = new ArrayList<>(root1.getEdges());
-      List<Edge<A,B>> edges2 = new ArrayList<>(root2.getEdges());
-      removeInternalEdges(edges1, focus1, focus2);
-      removeInternalEdges(edges2, focus1, focus2);
-
-      digraph.changeRoot(root1);
-      Priority priority1 = comp.sort(root1, edges1);
-      if (!priority1.isUnique())
-        continue;
-
-      digraph.changeRoot(root2);
-      Priority priority2 = comp.sort(root2, edges2);
-      if (!priority2.isUnique())
-        continue;
-
-      A[] carriers = getCarriers();
-      int config   = getConfig();
-
-      // swap
-      if (edges1.size() > 1 && carriers[0].equals(edges1.get(1).getEnd().getAtom()))
-        config ^= 0x3;
-      // swap
-      if (edges2.size() > 1 && carriers[1].equals(edges2.get(1).getEnd().getAtom()))
-        config ^= 0x3;
-
-      Node<A,B> tolabel;
-      if (root1.getDistance() < root2.getDistance())
-        tolabel = root1;
-      else
-        tolabel = root2;
-
-      if (config == TOGETHER) {
-        if (priority1.isPseduoAsymettric() ||
-            priority2.isPseduoAsymettric()) {
-          map.put(tolabel, Descriptor.seqCis);
-        } else {
-          map.put(tolabel, Descriptor.Z);
-        }
-      } else if (config == OPPOSITE) {
-        if (priority1.isPseduoAsymettric() ||
-            priority2.isPseduoAsymettric()) {
-          map.put(tolabel, Descriptor.seqTrans);
-        } else {
-          map.put(tolabel, Descriptor.E);
-        }
-      }
-    }
   }
 }

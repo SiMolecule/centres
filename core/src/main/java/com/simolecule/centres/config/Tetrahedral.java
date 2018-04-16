@@ -6,6 +6,7 @@ import com.simolecule.centres.Digraph;
 import com.simolecule.centres.Edge;
 import com.simolecule.centres.Node;
 import com.simolecule.centres.rules.Priority;
+import com.simolecule.centres.rules.Rules;
 import com.simolecule.centres.rules.SequenceRule;
 
 import java.util.ArrayList;
@@ -147,6 +148,12 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
     }
 
     return Descriptor.Unknown;
+  }
+
+  @Override
+  public Descriptor label(Node<A, B> node, Digraph<A,B> digraph, Rules<A, B> comp) {
+    digraph.changeRoot(node);
+    return label(node, comp);
   }
 
   @Override

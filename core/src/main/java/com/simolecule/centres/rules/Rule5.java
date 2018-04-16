@@ -66,8 +66,8 @@ public final class Rule5<A, B> extends SequenceRule<A, B> {
     int bOrdinal = ord(getBondLabel(b));
     int cmp = Integer.compare(aOrdinal, bOrdinal);
     if (cmp != 0) return cmp;
-    aOrdinal = ord(getAtomLabel(a.getEnd()));
-    bOrdinal = ord(getAtomLabel(b.getEnd()));
+    aOrdinal = ord(a.getEnd().getAux());
+    bOrdinal = ord(b.getEnd().getAux());
     return Integer.compare(aOrdinal, bOrdinal);
   }
 }

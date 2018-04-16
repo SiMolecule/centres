@@ -59,8 +59,8 @@ public final class Rule4c<A, B> extends SequenceRule<A, B> {
     int cmp = Integer.compare(aOrdinal, bOrdinal);
     if (cmp != 0) return cmp;
     // r vs s
-    aOrdinal = ord(getAtomLabel(a.getEnd()));
-    bOrdinal = ord(getAtomLabel(b.getEnd()));
+    aOrdinal = ord(a.getEnd().getAux());
+    bOrdinal = ord(b.getEnd().getAux());
     return Integer.compare(aOrdinal, bOrdinal);
   }
 }

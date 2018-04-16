@@ -81,7 +81,7 @@ public class Rule4b<A, B>
     deque.add(node);
     while (!deque.isEmpty()) {
       Node<A,B> n = deque.poll();
-      if (getAtomLabel(n) != null)
+      if (n.getAux() != null)
         return true;
       for (Edge<A,B> e : n.getEdges()) {
         if (e.getEnd().equals(n))
@@ -115,7 +115,7 @@ public class Rule4b<A, B>
       Edge<A, B> edge = queue.poll();
 
       descriptors.add(getBondLabel(edge));
-      descriptors.add(getAtomLabel(edge.getEnd()));
+      descriptors.add(edge.getEnd().getAux());
 
       Node<A, B>       node     = edge.getEnd();
       List<Edge<A, B>> edges    = getLigandsToSort(node, node.getEdges());

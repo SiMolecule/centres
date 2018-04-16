@@ -57,23 +57,6 @@ public abstract class SequenceRule<A, B> implements Comparator<Edge<A, B>> {
     Descriptor label = edge.getAux();
     if (label != null)
       return label;
-    label = mol.getBondProp(bond, BaseMol.CIP_LABEL_KEY);
-    if (label != null)
-      edge.setAux(label);
-    return label;
-  }
-
-  public Descriptor getAtomLabel(Node<A, B> node)
-  {
-    A atom = node.getAtom();
-    if (atom == null)
-      return null;
-    Descriptor label = node.getAux();
-    if (label != null)
-      return label;
-    label = mol.getAtomProp(atom, BaseMol.CIP_LABEL_KEY);
-    if (label != null)
-      node.setAux(label);
     return label;
   }
 
