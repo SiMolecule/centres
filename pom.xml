@@ -8,6 +8,7 @@
     <module>core</module>
     <module>cdk</module>
     <module>opsin</module>
+    <module>jchem</module>
   </modules>
   <name>centres</name>
   <description>Library of Labelling Stereochemistry</description>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>centres</artifactId>
+    <groupId>com.simolecule.centres</groupId>
+    <version>0.1-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>centres-jchem</artifactId>
+  <packaging>jar</packaging>
+  <properties>
+    <jchem.version>14.11.10.0</jchem.version>
+    <jchem.scope>provided</jchem.scope>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.simolecule.centres</groupId>
+      <artifactId>centres-core</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.chemaxon</groupId>
+      <artifactId>chemaxon-concurrent</artifactId>
+      <version>${jchem.version}</version>
+      <scope>${jchem.scope}</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.chemaxon</groupId>
+      <artifactId>chemaxon-concurrent-utils</artifactId>
+      <version>${jchem.version}</version>
+      <scope>${jchem.scope}</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.chemaxon</groupId>
+      <artifactId>chemaxon-core</artifactId>
+      <version>${jchem.version}</version>
+      <scope>${jchem.scope}</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.chemaxon</groupId>
+      <artifactId>chemaxon-io</artifactId>
+      <version>${jchem.version}</version>
+      <scope>${jchem.scope}</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.chemaxon</groupId>
+      <artifactId>chemaxon-io-smiles</artifactId>
+      <version>${jchem.version}</version>
+      <scope>${jchem.scope}</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.chemaxon</groupId>
+      <artifactId>chemaxon-license</artifactId>
+      <version>${jchem.version}</version>
+      <scope>${jchem.scope}</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.chemaxon</groupId>
+      <artifactId>chemaxon-common</artifactId>
+      <version>${jchem.version}</version>
+      <scope>${jchem.scope}</scope>
+    </dependency>
+  </dependencies>
+
+</project>
