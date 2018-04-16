@@ -247,26 +247,6 @@ public final class Mancude {
     public static int compare(int anum, int aden, int bnum, int bden)
     {
       return Double.compare(anum / (double) aden, bnum / (double) bden);
-//      for (; ; ) {
-//        if (aden == 0 && bden == 0)
-//          return 0;
-//        if (aden == 0)
-//          return +1;
-//        if (bden == 0)
-//          return -1;
-//        int c = anum / aden;
-//        int d = bnum / bden;
-//        if (c < d)
-//          return -1;
-//        if (d > c)
-//          return +1;
-//        int arem = anum % aden;
-//        int brem = bnum % bden;
-//        anum = aden;
-//        aden = arem;
-//        bnum = bden;
-//        bden = brem;
-//      }
     }
 
     public int getNum()
