@@ -22,6 +22,7 @@ public final class Digraph<A, B> {
   private       Node<A, B>    root;
   private       Node<A, B>    tmproot;
   private int numNodes = 0;
+  private A rule6Ref;
 
   public Digraph(BaseMol<A, B> mol)
   {
@@ -210,5 +211,20 @@ public final class Digraph<A, B> {
     Edge<A, B> e = new Edge<>(beg, end, bond);
     beg.add(e);
     end.add(e);
+  }
+
+  /**
+   * Used exclusively for Rule 6, we set one atom as the reference.
+   * @param ref reference atom
+   */
+  public void setRule6Ref(A ref) {
+    this.rule6Ref = ref;
+  }
+
+  /**
+   * Access the reference atom for Rule 6 (if one is set).
+   */
+  public A getRule6Ref() {
+    return rule6Ref;
   }
 }
