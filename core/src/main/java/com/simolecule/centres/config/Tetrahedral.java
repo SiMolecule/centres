@@ -5,7 +5,9 @@ import com.simolecule.centres.Descriptor;
 import com.simolecule.centres.Digraph;
 import com.simolecule.centres.Edge;
 import com.simolecule.centres.Node;
+import com.simolecule.centres.Stats;
 import com.simolecule.centres.rules.Priority;
+import com.simolecule.centres.rules.Rule6;
 import com.simolecule.centres.rules.Rules;
 import com.simolecule.centres.rules.SequenceRule;
 
@@ -70,42 +72,56 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
       return Descriptor.None;
 
     Priority priority = comp.sort(node, edges);
-
     boolean isUnique = priority.isUnique();
     if (!isUnique && edges.size() == 4) {
-
-      BaseMol<A, B> mol = comp.getMol();
-
-      // check for spiro cases
-      for (Edge<A, B> edge : edges) {
-        if (edge.getBond() != null && !mol.isInRing(edge.getBond()))
-          return Descriptor.Unknown;
-      }
-
+      if (comp.getNumSubRules() == 3)
+        return Descriptor.Unknown;
       List<List<Edge<A,B>>> partition = comp.getSorter().getGroups(edges);
-
-      // expect a,a',b,b'!
-      if (partition.size() != 2 || partition.get(0).size() != 2)
-        return Descriptor.Unknown;
-
-      int[] visit = new int[mol.getNumAtoms()];
-      A first = edges.get(0).getEnd().getAtom();
-      visit[mol.getAtomIdx(focus)] = 1;
-      visit[mol.getAtomIdx(first)] = 1;
-      visitRing(mol, focus, first, edges.get(0).getBond(), visit, 2);
-
-      // if with our spiro traversal we don't reach either atom in the
-      // the second partition then there it is not stereogenic
-      int a2 = mol.getAtomIdx(edges.get(2).getEnd().getAtom());
-      int a3 = mol.getAtomIdx(edges.get(3).getEnd().getAtom());
-      if (visit[a2] == 0 &&
-          visit[a3] == 0)
-        return Descriptor.Unknown;
-
-      // make sure we go the 'right' way around
-      if (visit[a3] > 0 && (visit[a3] < visit[a2] || visit[a2] == 0)) {
-        Collections.swap(edges, 2, 3);
+      if (partition.size() == 2) {
+        // a a' b b' and a a' a'' b
+//        System.out.println(partition.get(0).size() + " " + partition.get(1).size());
+        if (partition.get(0).size() >= 2) {
+          node.getDigraph().setRule6Ref(edges.get(0).getEnd().getAtom());
+          priority = comp.sort(node, edges);
+        } else if (partition.get(0).size() == 1) {
+          node.getDigraph().setRule6Ref(edges.get(1).getEnd().getAtom());
+          priority = comp.sort(node, edges);
+        }
+      } else if (partition.size() == 1) {
+        node.getDigraph().setRule6Ref(edges.get(0).getEnd().getAtom());
+        priority = comp.sort(node, edges);
       }
+
+      if (!priority.isUnique()) {
+        node.getDigraph().setRule6Ref(null);
+        return Descriptor.Unknown;
+      }
+      node.getDigraph().setRule6Ref(null);
+
+      // old way
+      // expect a,a',b,b'!
+//      if (partition.size() != 2 || partition.get(0).size() != 2)
+//        return Descriptor.Unknown;
+//
+//      BaseMol mol = digraph.getMol();
+//      int[] visit = new int[mol.getNumAtoms()];
+//      A first = edges.get(0).getEnd().getAtom();
+//      visit[mol.getAtomIdx(focus)] = 1;
+//      visit[mol.getAtomIdx(first)] = 1;
+//      visitRing(mol, focus, first, edges.get(0).getBond(), visit, 2);
+//
+//      // if with our spiro traversal we don't reach either atom in the
+//      // the second partition then there it is not stereogenic
+//      int a2 = mol.getAtomIdx(edges.get(2).getEnd().getAtom());
+//      int a3 = mol.getAtomIdx(edges.get(3).getEnd().getAtom());
+//      if (visit[a2] == 0 &&
+//          visit[a3] == 0)
+//        return Descriptor.Unknown;
+//
+//      // make sure we go the 'right' way around
+//      if (visit[a3] > 0 && (visit[a3] < visit[a2] || visit[a2] == 0)) {
+//        Collections.swap(edges, 2, 3);
+//      }
 
     } else if (!isUnique) {
       return Descriptor.Unknown;
@@ -122,9 +138,8 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
     if (idx < 4)
       ordered[idx] = focus;
 
-
-//    if (node.getDigraph().getRoot() == node)
-//      Stats.INSTANCE.countRule(priority.getRuleIdx());
+    if (node.getDigraph().getRoot() == node)
+      Stats.INSTANCE.countRule(priority.getRuleIdx());
 
     int parity = parity4(ordered, getCarriers());
 
