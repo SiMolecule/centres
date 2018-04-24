@@ -5,11 +5,13 @@ import com.simolecule.centres.Descriptor;
 import com.simolecule.centres.Digraph;
 import com.simolecule.centres.Edge;
 import com.simolecule.centres.Node;
+import com.simolecule.centres.Stats;
 import com.simolecule.centres.rules.Priority;
 import com.simolecule.centres.rules.Rules;
 import com.simolecule.centres.rules.SequenceRule;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -74,14 +76,16 @@ public class Sp2Bond<A, B> extends Configuration<A, B> {
     if (edges2.size() > 1 && carriers[1].equals(edges2.get(1).getEnd().getAtom()))
       config ^= 0x3;
 
+    Stats.INSTANCE.countRule(Math.max(priority1.getRuleIdx(), priority2.getRuleIdx()));
+
     if (config == TOGETHER) {
-      if (priority1.isPseduoAsymettric() ||
+      if (priority1.isPseduoAsymettric() !=
           priority2.isPseduoAsymettric())
         return Descriptor.seqCis;
       else
         return Descriptor.Z;
     } else if (config == OPPOSITE) {
-      if (priority1.isPseduoAsymettric() ||
+      if (priority1.isPseduoAsymettric() !=
           priority2.isPseduoAsymettric())
         return Descriptor.seqTrans;
       else
@@ -108,7 +112,7 @@ public class Sp2Bond<A, B> extends Configuration<A, B> {
     removeInternalEdges(edges1, focus1, focus2);
     removeInternalEdges(edges2, focus1, focus2);
 
-    A[] carriers = getCarriers();
+    A[] carriers = getCarriers().clone();
     int config   = getConfig();
 
     if (root1.getAtom().equals(focus2)) {
@@ -133,14 +137,14 @@ public class Sp2Bond<A, B> extends Configuration<A, B> {
       config ^= 0x3;
 
     if (config == TOGETHER) {
-      if (priority1.isPseduoAsymettric() ||
+      if (priority1.isPseduoAsymettric() !=
           priority2.isPseduoAsymettric()) {
         return Descriptor.seqCis;
       } else {
         return Descriptor.Z;
       }
     } else if (config == OPPOSITE) {
-      if (priority1.isPseduoAsymettric() ||
+      if (priority1.isPseduoAsymettric() !=
           priority2.isPseduoAsymettric()) {
         return Descriptor.seqTrans;
       } else {

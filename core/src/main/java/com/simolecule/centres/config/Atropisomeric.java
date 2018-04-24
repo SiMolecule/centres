@@ -5,6 +5,7 @@ import com.simolecule.centres.Descriptor;
 import com.simolecule.centres.Digraph;
 import com.simolecule.centres.Edge;
 import com.simolecule.centres.Node;
+import com.simolecule.centres.Stats;
 import com.simolecule.centres.rules.Priority;
 import com.simolecule.centres.rules.SequenceRule;
 
@@ -80,14 +81,17 @@ public final class Atropisomeric<A, B> extends Configuration<A, B> {
     if (parity == 1)
       config ^= 0x3;
 
+    Stats.INSTANCE.countRule(Math.max(priority1.getRuleIdx(),
+                                      priority2.getRuleIdx()));
+
     if (config == RIGHT) {
-      if (priority1.isPseduoAsymettric() ||
+      if (priority1.isPseduoAsymettric() !=
           priority2.isPseduoAsymettric())
         return Descriptor.m;
       else
         return Descriptor.M;
     } else if (config == LEFT) {
-      if (priority1.isPseduoAsymettric() ||
+      if (priority1.isPseduoAsymettric() !=
           priority2.isPseduoAsymettric())
         return Descriptor.p;
       else
