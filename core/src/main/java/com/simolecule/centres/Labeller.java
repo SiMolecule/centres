@@ -9,6 +9,7 @@ import com.simolecule.centres.rules.Rule4a;
 import com.simolecule.centres.rules.Rule4bNew;
 import com.simolecule.centres.rules.Rule4c;
 import com.simolecule.centres.rules.Rule5;
+import com.simolecule.centres.rules.Rule6;
 import com.simolecule.centres.rules.Rules;
 
 import java.util.AbstractMap;
@@ -21,22 +22,22 @@ import java.util.Map;
 
 public class Labeller<A, B> {
 
-  public void label(BaseMol<A, B> mol, List<Configuration<A, B>> configs)
-  {
+  public void label(BaseMol<A, B> mol, List<Configuration<A, B>> configs) {
     // constitutional rules
-    final Rules<A, B> begRules = new Rules<A, B>(new Rule1a<A, B>(mol),
-                                              new Rule1b<A, B>(mol),
-                                              new Rule2<A, B>(mol)
+    final Rules<A, B> begRules = new Rules<>(new Rule1a<>(mol),
+                                             new Rule1b<>(mol),
+                                             new Rule2<>(mol)
     );
     // all rules
-    final Rules<A, B> allRules = new Rules<A, B>(new Rule1a<A, B>(mol),
-                                                 new Rule1b<A, B>(mol),
-                                                 new Rule2<A, B>(mol),
-                                                 new Rule3<A, B>(mol),
-                                                 new Rule4a<A, B>(mol),
-                                                 new Rule4bNew<A, B>(mol),
-                                                 new Rule4c<A, B>(mol),
-                                                 new Rule5<A, B>(mol)
+    final Rules<A, B> allRules = new Rules<>(new Rule1a<>(mol),
+                                             new Rule1b<>(mol),
+                                             new Rule2<>(mol),
+                                             new Rule3<>(mol),
+                                             new Rule4a<>(mol),
+                                             new Rule4bNew<>(mol),
+                                             new Rule4c<>(mol),
+                                             new Rule5<>(mol),
+                                             new Rule6<>(mol)
     );
 
     // Stats.INSTANCE.countNumCenters(configs.size());
@@ -52,12 +53,12 @@ public class Labeller<A, B> {
         //System.out.println("C"+(mol.getAtomIdx(conf.getFocus())+1));
         if (labelAux(configs, allRules, conf)) {
 
-        //  Stats.INSTANCE.numAuxCalculated.incrementAndGet();
+          //  Stats.INSTANCE.numAuxCalculated.incrementAndGet();
           desc = conf.label(allRules);
 
           // System.out.println(mol.dumpDigraph(conf.getDigraph()));
           if (desc != null && desc != Descriptor.Unknown) {
-      //      Stats.INSTANCE.numAuxLabelled.incrementAndGet();
+            //      Stats.INSTANCE.numAuxLabelled.incrementAndGet();
             conf.setPrimaryLabel(mol, desc);
           }
         }
@@ -69,21 +70,20 @@ public class Labeller<A, B> {
 
   private boolean labelAux(List<Configuration<A, B>> configs,
                            Rules<A, B> rules,
-                           Configuration<A, B> center)
-  {
-    List<Map.Entry<Node<A,B>,Configuration<A,B>>> aux = new ArrayList<>();
+                           Configuration<A, B> center) {
+    List<Map.Entry<Node<A, B>, Configuration<A, B>>> aux = new ArrayList<>();
 
-    Digraph<A,B> digraph = center.getDigraph();
-    for (Configuration<A,B> config : configs) {
+    Digraph<A, B> digraph = center.getDigraph();
+    for (Configuration<A, B> config : configs) {
       if (config.equals(center))
         continue;
       A[] foci = config.getFoci();
       for (Node<A, B> node : digraph.getNodes(foci[0])) {
         if (node.isDuplicate())
           continue;
-        Node<A,B> low = node;
+        Node<A, B> low = node;
         if (foci.length == 2) {
-          for (Edge<A,B> edge : node.getEdges(foci[1])) {
+          for (Edge<A, B> edge : node.getEdges(foci[1])) {
             if (edge.getOther(node).getDistance() < node.getDistance())
               low = edge.getOther(node);
           }
@@ -104,12 +104,27 @@ public class Labeller<A, B> {
                        }
                      });
 
-    for (Map.Entry<Node<A,B>,Configuration<A,B>> e : aux) {
-      Node<A,B>          node   = e.getKey();
-      Configuration<A,B> config = e.getValue();
-      Descriptor         label  = config.label(node, digraph, rules);
-      node.setAux(label);
+    Map<Node<A, B>, Descriptor> queue = new HashMap<>();
+    int                         prev  = Integer.MAX_VALUE;
+    for (Map.Entry<Node<A, B>, Configuration<A, B>> e : aux) {
+      Node<A, B> node = e.getKey();
+
+      if (node.getDistance() < prev) {
+        for (Map.Entry<Node<A, B>, Descriptor> e2 : queue.entrySet())
+          e2.getKey().setAux(e2.getValue());
+        queue.clear();
+        prev = node.getDistance();
+      }
+      //System.out.println(node.getDistance());
+
+      Configuration<A, B> config = e.getValue();
+      Descriptor          label  = config.label(node, digraph, rules);
+      queue.put(node, label);
     }
+
+    for (Map.Entry<Node<A, B>, Descriptor> e : queue.entrySet())
+      e.getKey().setAux(e.getValue());
+
     return true;
   }
 }
