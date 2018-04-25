@@ -49,14 +49,11 @@ public class Labeller<A, B> {
       if (desc != null && desc != Descriptor.Unknown) {
         conf.setPrimaryLabel(mol, desc);
       } else {
-
-        //System.out.println("C"+(mol.getAtomIdx(conf.getFocus())+1));
         if (labelAux(configs, allRules, conf)) {
 
           //  Stats.INSTANCE.numAuxCalculated.incrementAndGet();
           desc = conf.label(allRules);
 
-          // System.out.println(mol.dumpDigraph(conf.getDigraph()));
           if (desc != null && desc != Descriptor.Unknown) {
             //      Stats.INSTANCE.numAuxLabelled.incrementAndGet();
             conf.setPrimaryLabel(mol, desc);
@@ -115,8 +112,6 @@ public class Labeller<A, B> {
         queue.clear();
         prev = node.getDistance();
       }
-      //System.out.println(node.getDistance());
-
       Configuration<A, B> config = e.getValue();
       Descriptor          label  = config.label(node, digraph, rules);
       queue.put(node, label);
