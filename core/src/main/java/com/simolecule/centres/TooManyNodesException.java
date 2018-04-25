@@ -23,6 +23,6 @@ package com.simolecule.centres;
  */
 public class TooManyNodesException extends RuntimeException {
     public TooManyNodesException(int limit) {
-        super("More than " + limit + " nodes were created. CIP assignment is probably intractable.");
+        super("More than " + limit + " nodes were created. CIP assignment for this atom is probably intractable.");
     }
 }

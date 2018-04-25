@@ -44,21 +44,25 @@ public class Labeller<A, B> {
 
     Map<Configuration<A, B>, Descriptor> finalLabels = new HashMap<>();
     for (Configuration<A, B> conf : configs) {
-      conf.setDigraph(new Digraph<A, B>(mol));
-      Descriptor desc = conf.label(begRules);
-      if (desc != null && desc != Descriptor.Unknown) {
-        conf.setPrimaryLabel(mol, desc);
-      } else {
-        if (labelAux(configs, allRules, conf)) {
+      conf.setDigraph(new Digraph<>(mol));
+      try {
+        Descriptor desc = conf.label(begRules);
+        if (desc != null && desc != Descriptor.Unknown) {
+          conf.setPrimaryLabel(mol, desc);
+        } else {
+          if (labelAux(configs, allRules, conf)) {
 
-          //  Stats.INSTANCE.numAuxCalculated.incrementAndGet();
-          desc = conf.label(allRules);
+            //  Stats.INSTANCE.numAuxCalculated.incrementAndGet();
+            desc = conf.label(allRules);
 
-          if (desc != null && desc != Descriptor.Unknown) {
-            //      Stats.INSTANCE.numAuxLabelled.incrementAndGet();
-            conf.setPrimaryLabel(mol, desc);
+            if (desc != null && desc != Descriptor.Unknown) {
+              //      Stats.INSTANCE.numAuxLabelled.incrementAndGet();
+              conf.setPrimaryLabel(mol, desc);
+            }
           }
         }
+      } catch (Exception e) {
+        System.err.println(e.getMessage());
       }
       //Stats.INSTANCE.measureDigraph(conf.getDigraph());
     }
