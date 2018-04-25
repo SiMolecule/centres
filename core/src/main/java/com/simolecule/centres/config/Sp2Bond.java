@@ -153,12 +153,4 @@ public class Sp2Bond<A, B> extends Configuration<A, B> {
     }
     return Descriptor.Unknown;
   }
-
-  @Override
-  public void labelAux(Map<Node<A, B>, Descriptor> map,
-                       Digraph<A, B> digraph,
-                       SequenceRule<A, B> comp)
-  {
-
-  }
 }

@@ -60,21 +60,6 @@ public abstract class Configuration<A, B> {
     return carriers;
   }
 
-  public void setFoci(A[] foci)
-  {
-    this.foci = foci;
-  }
-
-  public void setCarriers(A[] carriers)
-  {
-    this.carriers = carriers;
-  }
-
-  public void setCfg(int cfg)
-  {
-    this.cfg = cfg;
-  }
-
   public abstract void setPrimaryLabel(BaseMol<A, B> mol, Descriptor desc);
 
   public void setDigraph(Digraph<A,B> digraph) {
@@ -162,8 +147,6 @@ public abstract class Configuration<A, B> {
   }
 
   public abstract Descriptor label(SequenceRule<A, B> comp);
-
-  public abstract void labelAux(Map<Node<A,B>,Descriptor> map, Digraph<A,B> digraph, SequenceRule<A, B> comp);
 
   protected Edge<A, B> findInternalEdge(List<Edge<A, B>> edges, A f1, A f2)
   {

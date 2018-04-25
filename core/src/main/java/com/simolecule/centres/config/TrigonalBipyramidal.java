@@ -82,12 +82,4 @@ public final class TrigonalBipyramidal<A,B> extends Configuration<A,B> {
 
     return label(root, comp);
   }
-
-
-
-  @Override
-  public void labelAux(Map<Node<A, B>, Descriptor> map, Digraph<A, B> digraph,
-                       SequenceRule<A, B> comp) {
-
-  }
 }

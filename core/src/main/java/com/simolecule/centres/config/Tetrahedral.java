@@ -26,23 +26,6 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
     super(focus, carriers, cfg);
   }
 
-  private boolean visitRing(BaseMol<A,B> mol, A spiro, A atom, B prev, int[] visit, int depth) {
-    if (atom.equals(spiro))
-      return true;
-    visit[mol.getAtomIdx(atom)] = depth;
-    boolean res = false;
-    for (B bond : mol.getBonds(atom)) {
-      if (!mol.isInRing(bond) || bond == prev)
-        continue;
-      A other = mol.getOther(bond, atom);
-      if (visit[mol.getAtomIdx(other)] != 0)
-        continue;
-      if (visitRing(mol, spiro, other, bond, visit, depth+1))
-        res = true;
-    }
-    return res;
-  }
-
   @Override
   public void setPrimaryLabel(BaseMol<A, B> mol, Descriptor desc)
   {
@@ -142,22 +125,5 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
   public Descriptor label(Node<A, B> node, Digraph<A,B> digraph, Rules<A, B> comp) {
     digraph.changeRoot(node);
     return label(node, comp);
-  }
-
-  @Override
-  public void labelAux(Map<Node<A, B>, Descriptor> map,
-                       Digraph<A, B> digraph,
-                       SequenceRule<A, B> comp)
-  {
-    A                focus = getFocus();
-    List<Node<A, B>> nodes = digraph.getNodes(focus);
-    for (Node<A, B> node : nodes) {
-      if (map.containsKey(node))
-        continue;
-      digraph.changeRoot(node);
-      Descriptor label = label(node, comp);
-      if (label != Descriptor.Unknown)
-        map.put(node, label);
-    }
   }
 }
