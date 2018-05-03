@@ -18,10 +18,8 @@
 
 package com.simolecule.centres.rules;
 
-import com.google.common.collect.Lists;
 import com.simolecule.centres.BaseMol;
 import com.simolecule.centres.Edge;
-import com.simolecule.centres.Node;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,21 +32,21 @@ import java.util.List;
  */
 public class Rules<A, B> extends SequenceRule<A, B> {
 
+  private static final boolean SORT_BRANCHES_WITH_RULE5 = false;
+
   /**
    * Rule storage
    */
   private final List<SequenceRule<A, B>> rules = new ArrayList<>();
 
 
-  public Rules(SequenceRule<A, B> ... rules)
-  {
+  public Rules(SequenceRule<A, B>... rules) {
     super(null);
     for (SequenceRule<A, B> rule : rules)
       add(rule);
   }
 
-  public void add(SequenceRule<A, B> rule)
-  {
+  public void add(SequenceRule<A, B> rule) {
     if (rule == null)
       throw new NullPointerException("No sequence rule provided");
     rules.add(rule);
@@ -56,27 +54,29 @@ public class Rules<A, B> extends SequenceRule<A, B> {
   }
 
 
-  public Sort<A, B> createSorter(List<SequenceRule<A, B>> rules)
-  {
-    return new Sort<A, B>(rules); // restriction should be configurable
+  public Sort<A, B> createSorter(List<SequenceRule<A, B>> rules) {
+    List<SequenceRule<A, B>> subrules = new ArrayList<>(rules.size());
+    for (SequenceRule<A, B> rule : rules) {
+      if (!SORT_BRANCHES_WITH_RULE5 && rule instanceof Rule5)
+        continue;
+      subrules.add(rule);
+    }
+    return new Sort<A, B>(subrules);
   }
 
   @Override
-  public int getNumSubRules()
-  {
+  public int getNumSubRules() {
     return rules.size();
   }
 
-  public Sort<A, B> getSorter()
-  {
+  public Sort<A, B> getSorter() {
     return new Sort<A, B>(rules);
   }
 
   @Override
-  public BaseMol<A, B> getMol()
-  {
-    BaseMol<A,B> res = null;
-    for (SequenceRule<A,B> rule : rules) {
+  public BaseMol<A, B> getMol() {
+    BaseMol<A, B> res = null;
+    for (SequenceRule<A, B> rule : rules) {
       res = rule.getMol();
       if (res != null)
         break;
@@ -85,8 +85,7 @@ public class Rules<A, B> extends SequenceRule<A, B> {
   }
 
   @Override
-  public int compare(Edge<A, B> o1, Edge<A, B> o2)
-  {
+  public int compare(Edge<A, B> o1, Edge<A, B> o2) {
     // Try using each rules. The rules will expand the search exhaustively
     // to all child ligands
     for (SequenceRule<A, B> rule : rules) {
@@ -98,11 +97,10 @@ public class Rules<A, B> extends SequenceRule<A, B> {
   }
 
   @Override
-  public int getComparision(Edge<A, B> a, Edge<A, B> b, boolean deep)
-  {
+  public int getComparision(Edge<A, B> a, Edge<A, B> b, boolean deep) {
     // Try using each rules. The rules will expand the search exhaustively
     // to all child ligands
-    for (SequenceRule<A,B> rule : rules) {
+    for (SequenceRule<A, B> rule : rules) {
 
       // compare expands exhaustively across the whole graph
       int value = rule.recursiveCompare(a, b);
@@ -120,10 +118,9 @@ public class Rules<A, B> extends SequenceRule<A, B> {
   }
 
   @Override
-  public String toString()
-  {
+  public String toString() {
     StringBuilder builder = new StringBuilder("Combined rules:");
-    for (SequenceRule<A,B> rule : rules)
+    for (SequenceRule<A, B> rule : rules)
       builder.append(rule.toString()).append(", ");
     return builder.toString();
   }
