@@ -41,7 +41,7 @@ public final class Rule4a<A, B> extends SequenceRule<A, B> {
       return 0;
     switch (lab) {
       case Unknown:
-      case None:
+      case ns:
         return 0;
       case r:
       case s:

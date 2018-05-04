@@ -18,18 +18,18 @@
 
 package com.simolecule.centres.rules;
 
-import com.google.common.collect.Collections2;
 import com.simolecule.centres.BaseMol;
+import com.simolecule.centres.Descriptor;
+import com.simolecule.centres.Digraph;
 import com.simolecule.centres.Edge;
 import com.simolecule.centres.Node;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.NavigableSet;
 import java.util.Queue;
@@ -45,9 +45,18 @@ import java.util.TreeSet;
 public class Rule4b<A, B>
         extends SequenceRule<A, B> {
 
-  public Rule4b(BaseMol<A,B> mol)
+  private final Descriptor ref;
+
+  public Rule4b(BaseMol<A, B> mol)
   {
     super(mol);
+    ref = null;
+  }
+
+  public Rule4b(BaseMol<A, B> mol, Descriptor ref)
+  {
+    super(mol);
+    this.ref = ref;
   }
 
   /**
@@ -66,24 +75,15 @@ public class Rule4b<A, B>
     return new TreeSet<PairList>(generate(queue));
   }
 
-
-  @Override
-  public int recursiveCompare(Edge<A, B> a, Edge<A, B> b)
+  private boolean hasDescriptors(Node<A, B> node)
   {
-    // can't/don't need to do recursive on the pair rule
-    if (a.getEnd().getDistance() > 2 || b.getEnd().getDistance() > 2)
-      return 0;
-    return compare(a, b);
-  }
-
-  private boolean hasDescriptors(Node<A,B> node) {
-    Deque<Node<A,B>> deque = new ArrayDeque<>();
+    Deque<Node<A, B>> deque = new ArrayDeque<>();
     deque.add(node);
     while (!deque.isEmpty()) {
-      Node<A,B> n = deque.poll();
+      Node<A, B> n = deque.poll();
       if (n.getAux() != null)
         return true;
-      for (Edge<A,B> e : n.getEdges()) {
+      for (Edge<A, B> e : n.getEdges()) {
         if (e.getEnd().equals(n))
           continue;
         if (getBondLabel(e) != null)
@@ -92,6 +92,136 @@ public class Rule4b<A, B>
       }
     }
     return false;
+  }
+
+  public void printLevels(Node<A, B> node)
+  {
+    List<List<Node<A, B>>> prev = initialLevel(node);
+    while (!prev.isEmpty()) {
+      System.out.println(prev);
+      prev = getNextLevel(prev);
+    }
+  }
+
+  private boolean getReference(List<Node<A, B>> nodes, List<Descriptor> result)
+  {
+    int right = 0;
+    int left  = 0;
+    for (Node<A, B> node : nodes) {
+      Descriptor desc = node.getAux();
+      if (desc != null) {
+        switch (desc) {
+          case R:
+          case M:
+          case seqCis:
+            right++;
+            break;
+          case S:
+          case P:
+          case seqTrans:
+            left++;
+            break;
+        }
+      }
+    }
+    if (right + left == 0) {
+      return false;
+    } else if (right > left) {
+      result.add(Descriptor.R);
+      return true;
+    } else if (right < left) {
+      result.add(Descriptor.S);
+      return true;
+    } else {
+      result.add(Descriptor.R);
+      result.add(Descriptor.S);
+      return true;
+    }
+
+  }
+
+  public List<Descriptor> getReferenceDescriptors(Node<A, B> node)
+  {
+    if (true)
+      return Arrays.asList(Descriptor.R, Descriptor.S);
+    List<Descriptor>       result = new ArrayList<>(2);
+    List<List<Node<A, B>>> prev   = initialLevel(node);
+    while (!prev.isEmpty()) {
+      for (List<Node<A, B>> nodes : prev) {
+        if (getReference(nodes, result))
+          return result;
+      }
+      prev = getNextLevel(prev);
+    }
+    return null;
+  }
+
+  private List<List<Node<A, B>>> initialLevel(Node<A, B> node)
+  {
+    List<List<Node<A, B>>> levels = new ArrayList<>();
+    levels.add(Collections.singletonList(node));
+    return levels;
+  }
+
+  private List<List<Node<A, B>>> getNextLevel(List<List<Node<A, B>>> prevLevel)
+  {
+    List<List<Node<A, B>>> nextLevel = new ArrayList<>(4 * prevLevel.size());
+    for (List<Node<A, B>> prev : prevLevel) {
+
+      List<List<List<Edge<A, B>>>> tmp = new ArrayList<>();
+      for (Node<A, B> node : prev) {
+        List<Edge<A, B>> edges = node.getNonTerminalOutEdges();
+        sort(node, edges);
+        tmp.add(getSorter().getGroups(edges));
+      }
+
+      // check sizes
+      int size = -1;
+      for (int i = 0; i < tmp.size(); ++i) {
+        int localSize = tmp.get(0).size();
+        if (size < 0)
+          size = localSize;
+        else if (size != localSize)
+          throw new IllegalArgumentException("Something unexpected!");
+      }
+
+      for (int i = 0; i < size; i++) {
+        List<Node<A, B>> eq = new ArrayList<>();
+        for (List<List<Edge<A, B>>> aTmp : tmp) {
+          eq.addAll(toNodeList(aTmp.get(i)));
+        }
+        if (!eq.isEmpty())
+          nextLevel.add(eq);
+      }
+    }
+    return nextLevel;
+  }
+
+  private List<Node<A, B>> toNodeList(List<Edge<A, B>> eqEdges)
+  {
+    List<Node<A, B>> eqNodes = new ArrayList<>(eqEdges.size());
+    for (Edge<A, B> edge : eqEdges)
+      eqNodes.add(edge.getEnd());
+    return eqNodes;
+  }
+
+  private void visit(List<PairList> plists, Node<A, B> beg)
+  {
+    Deque<Node<A, B>> queue = new ArrayDeque<>();
+    queue.add(beg);
+    while (!queue.isEmpty()) {
+      Node<A, B> node = queue.poll();
+
+      // append any descriptors to the list
+      for (PairList plist : plists)
+        plist.add(node.getAux());
+
+      for (Edge<A, B> e : node.getEdges()) {
+        if (e.isBeg(node)) {
+          queue.add(e.getEnd());
+        }
+      }
+    }
   }
 
   /**
@@ -105,44 +235,7 @@ public class Rule4b<A, B>
   protected Set<PairList> generate(Queue<Edge<A, B>> queue)
   {
 
-    final Set<PairList> lists = new HashSet<PairList>();
-
-    // create a descriptor list with given exclusions
-    PairList descriptors = new PairList();
-
-    while (!queue.isEmpty()) {
-
-      Edge<A, B> edge = queue.poll();
-
-      descriptors.add(getBondLabel(edge));
-      descriptors.add(edge.getEnd().getAux());
-
-      Node<A, B>       node     = edge.getEnd();
-      List<Edge<A, B>> edges    = getLigandsToSort(node, node.getEdges());
-      Priority         priority = sort(node, edges);
-      if (priority.isUnique()) {
-        // unique
-        queue.addAll(edges);
-      } else {
-        // non unique need to subdivide and combine
-        List<List<Edge<A, B>>> groups = getSorter().getGroups(edges);
-        for (List<Edge<A,B>> combinated : permutate(groups)) {
-          Deque<Edge<A,B>> subqueue = new ArrayDeque<>(queue);
-          subqueue.addAll(combinated);
-          // add to current descriptor list
-          lists.addAll(descriptors.append(generate(subqueue)));
-        }
-
-        // queue was copied and delegated so we clear this instance
-        queue.clear();
-      }
-
-    }
-
-    if (lists.isEmpty())
-      lists.add(descriptors);
-
-    return lists;
+    return new HashSet<>();
   }
 
   /**
@@ -153,7 +246,7 @@ public class Rule4b<A, B>
    * @param edges a list of edges
    * @return a list of non-terminal ligands
    */
-  private List<Edge<A, B>> getLigandsToSort(Node<A,B> node, List<Edge<A, B>> edges)
+  private List<Edge<A, B>> getLigandsToSort(Node<A, B> node, List<Edge<A, B>> edges)
   {
     List<Edge<A, B>> filtered = new ArrayList<Edge<A, B>>();
     for (Edge<A, B> edge : edges) {
@@ -166,110 +259,137 @@ public class Rule4b<A, B>
     return filtered;
   }
 
-
-  /**
-   * Ugly piece of code to generate permutation of the given ligand groups.
-   * There may be a much better way to do this. This method converts lists
-   * with duplicates into all possible combinations. A, {B1, B2}, C would
-   * permutate to A, B1, B2, C and A, B2, B1, C.
-   * <p/>
-   * This method was adapted from http://goo.gl/s6R7E
-   *
-   * @see <a href="http://goo.gl/s6R7E">http://www.daniweb.com/</a>
-   */
-  private static <T> List<List<T>> permutate(List<List<T>> uncombinedList)
+  private List<PairList> newPairLists(List<Descriptor> descriptors)
   {
-
-    List<List<T>> list = new ArrayList<List<T>>();
-
-    // permeate the sublist
-    for (List sublist : uncombinedList) {
-      if (sublist.size() > 1) {
-        Collection<List> tmp = Collections2.permutations(sublist);
-        sublist.clear();
-        sublist.addAll(tmp);
-      }
+    if (descriptors == null)
+      return Collections.emptyList();
+    List<PairList> pairs = new ArrayList<PairList>();
+    for (Descriptor descriptor : descriptors) {
+      pairs.add(new PairList(descriptor));
     }
-
-    int index[]      = new int[uncombinedList.size()];
-    int combinations = combinations(uncombinedList) - 1;
-    // Initialize index
-    for (int i = 0; i < index.length; i++) {
-      index[i] = 0;
-    }
-    // First combination is always valid
-    List<T> combination = new ArrayList<T>();
-    for (int m = 0; m < index.length; m++) {
-      Object o = uncombinedList.get(m).get(index[m]);
-      if (o instanceof Collection) {
-        combination.addAll((Collection) o);
-      } else {
-        combination.add((T) o);
-      }
-    }
-    list.add(combination);
-
-
-    for (int k = 0; k < combinations; k++) {
-      combination = new ArrayList<T>();
-      boolean found = false;
-      // We Use reverse order
-      for (int l = index.length - 1; l >= 0 && found == false; l--) {
-        int currentListSize = uncombinedList.get(l).size();
-        if (index[l] < currentListSize - 1) {
-          index[l] = index[l] + 1;
-          found = true;
-        } else {
-          // Overflow
-          index[l] = 0;
-        }
-      }
-      for (int m = 0; m < index.length; m++) {
-        Object o = uncombinedList.get(m).get(index[m]);
-        if (o instanceof Collection) {
-          combination.addAll((Collection) o);
-        } else {
-          combination.add((T) o);
-        }
-      }
-      list.add(combination);
-    }
-    return list;
+    return pairs;
   }
 
-
-  private static <T> int combinations(List<List<T>> list)
+  private void fillPairs(Node<A, B> beg, PairList plist)
   {
-    int count = 1;
-    for (List<T> current : list) {
-      count = count * current.size();
+    Sort<A, B>        sorter = getRefSorter(plist.getRefDescriptor());
+    Deque<Node<A, B>> queue  = new ArrayDeque<>();
+    queue.add(beg);
+    while (!queue.isEmpty()) {
+      Node<A, B> node = queue.poll();
+      plist.add(node.getAux());
+      List<Edge<A, B>> edges = node.getEdges();
+      sorter.prioritise(node, edges);
+      for (Edge<A, B> edge : edges) {
+        if (edge.isBeg(node) && !edge.getEnd().isTerminal()) {
+          queue.add(edge.getEnd());
+        }
+      }
     }
-    return count;
+  }
+
+  private int comparePairs(Node<A, B> a, Node<A, B> b, Descriptor refA, Descriptor refB)
+  {
+    Sort<A, B>        aSorter = getRefSorter(refA);
+    Sort<A, B>        bSorter = getRefSorter(refB);
+    Deque<Node<A, B>> aQueue  = new ArrayDeque<>();
+    Deque<Node<A, B>> bQueue  = new ArrayDeque<>();
+    aQueue.add(a);
+    bQueue.add(b);
+    while (!aQueue.isEmpty() && !bQueue.isEmpty()) {
+      Node<A, B> aNode = aQueue.poll();
+      Node<A, B> bNode = bQueue.poll();
+
+      Descriptor desA = aNode.getAux();
+      Descriptor desB = bNode.getAux();
+
+      desA = PairList.ref(desA);
+      desB = PairList.ref(desB);
+
+      if (desA == refA && desB != refB)
+        return +1;
+      else if (desA != refA && desB == refB)
+        return -1;
+
+      List<Edge<A, B>> edges = aNode.getEdges();
+      aSorter.prioritise(aNode, edges);
+      for (Edge<A, B> edge : edges) {
+        if (edge.isBeg(aNode) && !edge.getEnd().isTerminal()) {
+          aQueue.add(edge.getEnd());
+        }
+      }
+
+      edges = bNode.getEdges();
+      bSorter.prioritise(bNode, edges);
+      for (Edge<A, B> edge : edges) {
+        if (edge.isBeg(bNode) && !edge.getEnd().isTerminal()) {
+          bQueue.add(edge.getEnd());
+        }
+      }
+    }
+    return 0;
+  }
+
+  private Sort<A, B> getRefSorter(Descriptor refA)
+  {
+    List<SequenceRule<A, B>> rules = new ArrayList<>(getSorter().getRules());
+    assert rules.remove(this);
+    rules.add(new Rule4b<A, B>(getMol(), refA));
+    return new Sort<A, B>(rules);
   }
 
   @Override
   public int compare(Edge<A, B> a, Edge<A, B> b)
   {
-    if (a.getEnd().getDistance() > 2 || b.getEnd().getDistance() > 2)
+    if (!a.getBeg().getDigraph().getCurrRoot().equals(a.getBeg()) ||
+        !b.getBeg().getDigraph().getCurrRoot().equals(b.getBeg())) {
+      if (ref == null)
+        return 0;
+      Descriptor aDesc = a.getEnd().getAux();
+      Descriptor bDesc = b.getEnd().getAux();
+      if (aDesc != null && bDesc != null && aDesc != Descriptor.ns && bDesc != Descriptor.ns) {
+        boolean alike = PairList.ref(ref) == PairList.ref(aDesc);
+        boolean blike = PairList.ref(ref) == PairList.ref(bDesc);
+        if (alike && !blike)
+          return +1;
+        if (blike && !alike)
+          return -1;
+      }
       return 0;
+    } else {
+      List<PairList> list1 = newPairLists(getReferenceDescriptors(a.getEnd()));
+      List<PairList> list2 = newPairLists(getReferenceDescriptors(b.getEnd()));
 
-    // produced pair lists are in order
-    Set<PairList> list1 = generate(a);
-    Set<PairList> list2 = generate(b);
+      if (list1.isEmpty() != list2.isEmpty())
+        throw new InternalError("Ligands should be topologically equivalent!");
 
-    Iterator<PairList> list1It = list1.iterator();
-    Iterator<PairList> list2It = list2.iterator();
+      if (list1.size() == 1) {
+        return comparePairs(a.getEnd(), b.getEnd(),
+                            list1.get(0).getRefDescriptor(),
+                            list2.get(0).getRefDescriptor());
+      } else if (list1.size() > 1) {
+        for (PairList plist : list1)
+          fillPairs(a.getEnd(), plist);
+        for (PairList plist : list2)
+          fillPairs(b.getEnd(), plist);
+        Collections.sort(list1, Collections.reverseOrder());
+        Collections.sort(list2, Collections.reverseOrder());
 
-    while (list1It.hasNext() && list2It.hasNext()) {
-      int value = list1It.next().compareTo(list2It.next());
-      if (value != 0) return value;
+        Digraph<A,B> digraph = a.getEnd().getDigraph();
+        BaseMol<A,B> mol     = digraph.getMol();
+        if (mol.getAtomIdx(digraph.getRoot().getAtom()) == 28 &&
+            mol.getAtomIdx(digraph.getCurrRoot().getAtom()) == 28) {
+          System.out.println(a + ": " + list1);
+          System.out.println(b + ": " + list2);
+        }
+
+        for (int i = 0; i < list1.size(); i++) {
+          int cmp = list1.get(0).compareTo(list2.get(0));
+          if (cmp != 0)
+            return cmp;
+        }
+      }
+      return 0;
     }
-
-    // there may be a different is list size but normally you'd have a
-    // constitutional rule (which would find this) before this pairing rule
-
-    // we don't go to the next level on this rule. We've already
-    // exhaustively create pair lists (generate) for each ligand.
-    return 0;
   }
 }
