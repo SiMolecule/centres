@@ -235,7 +235,7 @@ public final class Node<A, B> {
     }
     if (isDuplicate())
       sb.append(')');
-    if (aux != null)
+    if (aux != null && aux != Descriptor.Unknown)
       sb.append(':').append(aux);
     return sb.toString();
   }

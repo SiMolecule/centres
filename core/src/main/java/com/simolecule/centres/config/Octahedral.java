@@ -64,7 +64,7 @@ public final class Octahedral<A,B> extends Configuration<A,B> {
     List<List<Edge<A,B>>> parts    = comp.getSorter().getGroups(edges);
 
     if (!hasConfiguration(parts))
-      return Descriptor.None; // maybe return unknown?
+      return Descriptor.ns; // maybe return unknown?
 
     A fstAxisBeg = null, fstAxisEnd = null;
     int n1  = 7;
@@ -105,7 +105,7 @@ public final class Octahedral<A,B> extends Configuration<A,B> {
       return Descriptor.OC_6;
     }
 
-    return Descriptor.None;
+    return Descriptor.ns;
   }
 
   @Override

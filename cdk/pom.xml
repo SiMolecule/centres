@@ -23,7 +23,7 @@
   <parent>
     <artifactId>centres</artifactId>
     <groupId>com.simolecule.centres</groupId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.9-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -91,7 +91,26 @@
       <artifactId>cdk-silent</artifactId>
       <version>${cdk.version}</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.openscience.cdk</groupId>
+      <artifactId>cdk-smarts</artifactId>
+      <version>${cdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>uk.ac.ebi.beam</groupId>
+      <artifactId>beam-core</artifactId>
+      <version>1.2-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openscience.cdk</groupId>
+      <artifactId>cdk-inchi</artifactId>
+      <version>${cdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openscience.cdk</groupId>
+      <artifactId>cdk-depict</artifactId>
+      <version>${cdk.version}</version>
+    </dependency>
   </dependencies>
 
 </project>

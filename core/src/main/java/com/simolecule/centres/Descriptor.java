@@ -33,7 +33,7 @@ public enum Descriptor {
   /**
    * Other
    */
-  None,
+  ns,
   /**
    * Tetrahedral
    */

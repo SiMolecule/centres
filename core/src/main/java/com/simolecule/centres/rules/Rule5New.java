@@ -18,23 +18,9 @@
 
 package com.simolecule.centres.rules;
 
-import com.simolecule.centres.BaseMol;
-import com.simolecule.centres.Descriptor;
-import com.simolecule.centres.Digraph;
-import com.simolecule.centres.Edge;
-import com.simolecule.centres.Node;
+import com.simolecule.centres.*;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.List;
-import java.util.NavigableSet;
-import java.util.Queue;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * A descriptor pair rule. This rule defines that like descriptor pairs have
@@ -42,18 +28,18 @@ import java.util.TreeSet;
  *
  * @author John May
  */
-public class Rule4b<A, B>
+public class Rule5New<A, B>
         extends SequenceRule<A, B> {
 
   private final Descriptor ref;
 
-  public Rule4b(BaseMol<A, B> mol)
+  public Rule5New(BaseMol<A, B> mol)
   {
     super(mol);
     ref = null;
   }
 
-  public Rule4b(BaseMol<A, B> mol, Descriptor ref)
+  public Rule5New(BaseMol<A, B> mol, Descriptor ref)
   {
     super(mol);
     this.ref = ref;
@@ -138,6 +124,12 @@ public class Rule4b<A, B>
       return true;
     }
 
+  }
+
+  @Override
+  public boolean isPseudoAsymmetric()
+  {
+    return true;
   }
 
   public List<Descriptor> getReferenceDescriptors(Node<A, B> node)
@@ -332,7 +324,7 @@ public class Rule4b<A, B>
   {
     List<SequenceRule<A, B>> rules = new ArrayList<>(getSorter().getRules());
     assert rules.remove(this);
-    rules.add(new Rule4b<A, B>(getMol(), refA));
+    rules.add(new Rule5New<A, B>(getMol(), refA));
     return new Sort<A, B>(rules);
   }
 
@@ -355,30 +347,24 @@ public class Rule4b<A, B>
       }
       return 0;
     } else {
-      List<PairList> list1 = newPairLists(getReferenceDescriptors(a.getEnd()));
-      List<PairList> list2 = newPairLists(getReferenceDescriptors(b.getEnd()));
-
-      if (list1.isEmpty() != list2.isEmpty())
-        throw new InternalError("Ligands should be topologically equivalent!");
-
-      if (list1.size() == 1) {
-        return comparePairs(a.getEnd(), b.getEnd(),
-                            list1.get(0).getRefDescriptor(),
-                            list2.get(0).getRefDescriptor());
-      } else if (list1.size() > 1) {
-        for (PairList plist : list1)
-          fillPairs(a.getEnd(), plist);
-        for (PairList plist : list2)
-          fillPairs(b.getEnd(), plist);
-        Collections.sort(list1, Collections.reverseOrder());
-        Collections.sort(list2, Collections.reverseOrder());
-        for (int i = 0; i < list1.size(); i++) {
-          int cmp = list1.get(0).compareTo(list2.get(0));
-          if (cmp != 0)
-            return cmp;
-        }
-      }
-      return 0;
+      PairList listRA = new PairList(Descriptor.R);
+      PairList listRB = new PairList(Descriptor.R);
+      PairList listSA = new PairList(Descriptor.S);
+      PairList listSB = new PairList(Descriptor.S);
+      fillPairs(a.getEnd(), listRA);
+      fillPairs(a.getEnd(), listSA);
+      fillPairs(b.getEnd(), listRB);
+      fillPairs(b.getEnd(), listSB);
+      int cmpR = listRA.compareTo(listRB);
+      int cmpS = listSA.compareTo(listSB);
+      // -2/+2 for psuedo-asymetric
+      // -1/+1 if not (e.g. the R > R and S > S lists)
+      if (cmpR < 0)
+        return cmpS < 0 ? -1 : -2;
+      else if (cmpR > 0)
+        return cmpS > 0 ? +1 : +2;
+      else
+        return 0;
     }
   }
 }

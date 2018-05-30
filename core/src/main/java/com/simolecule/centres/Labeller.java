@@ -1,16 +1,7 @@
 package com.simolecule.centres;
 
 import com.simolecule.centres.config.Configuration;
-import com.simolecule.centres.rules.Rule1a;
-import com.simolecule.centres.rules.Rule1b;
-import com.simolecule.centres.rules.Rule2;
-import com.simolecule.centres.rules.Rule3;
-import com.simolecule.centres.rules.Rule4a;
-import com.simolecule.centres.rules.Rule4bNew;
-import com.simolecule.centres.rules.Rule4c;
-import com.simolecule.centres.rules.Rule5;
-import com.simolecule.centres.rules.Rule6;
-import com.simolecule.centres.rules.Rules;
+import com.simolecule.centres.rules.*;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -28,15 +19,15 @@ public class Labeller<A, B> {
                                              new Rule1b<>(mol),
                                              new Rule2<>(mol)
     );
-    // all rules
+    // all rules (require aux calc)
     final Rules<A, B> allRules = new Rules<>(new Rule1a<>(mol),
                                              new Rule1b<>(mol),
                                              new Rule2<>(mol),
                                              new Rule3<>(mol),
                                              new Rule4a<>(mol),
-                                             new Rule4bNew<>(mol),
+                                             new Rule4b<>(mol),
                                              new Rule4c<>(mol),
-                                             new Rule5<>(mol),
+                                             new Rule5New<>(mol),
                                              new Rule6<>(mol)
     );
 
@@ -63,6 +54,7 @@ public class Labeller<A, B> {
         }
       } catch (Exception e) {
         System.err.println(e.getMessage());
+//        throw new RuntimeException(e);
       }
       //Stats.INSTANCE.measureDigraph(conf.getDigraph());
     }
@@ -78,6 +70,7 @@ public class Labeller<A, B> {
     for (Configuration<A, B> config : configs) {
       if (config.equals(center))
         continue;
+      // FIXME: specific to each descriptor
       A[] foci = config.getFoci();
       for (Node<A, B> node : digraph.getNodes(foci[0])) {
         if (node.isDuplicate())

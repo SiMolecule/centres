@@ -189,7 +189,9 @@ public abstract class Configuration<A, B> {
     }
   }
 
-  public Descriptor label(Node<A, B> node, Digraph<A, B> digraph, Rules<A, B> rules) {
+  public Descriptor label(Node<A, B> node,
+                          Digraph<A, B> digraph,
+                          SequenceRule<A, B> comp) {
     return Descriptor.Unknown;
   }
 }

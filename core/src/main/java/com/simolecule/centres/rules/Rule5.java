@@ -68,6 +68,6 @@ public final class Rule5<A, B> extends SequenceRule<A, B> {
     if (cmp != 0) return cmp;
     aOrdinal = ord(a.getEnd().getAux());
     bOrdinal = ord(b.getEnd().getAux());
-    return Integer.compare(aOrdinal, bOrdinal);
+    return 2*Integer.compare(aOrdinal, bOrdinal);
   }
 }

@@ -98,7 +98,7 @@ public class Sp2Bond<A, B> extends Configuration<A, B> {
   @Override
   public Descriptor label(Node<A, B>    root1,
                           Digraph<A, B> digraph,
-                          Rules<A, B>   rules) {
+                          SequenceRule<A, B>   rules) {
     A focus1 = getFoci()[0];
     A focus2 = getFoci()[1];
 

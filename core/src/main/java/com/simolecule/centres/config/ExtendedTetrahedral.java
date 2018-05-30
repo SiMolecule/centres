@@ -7,13 +7,12 @@ import com.simolecule.centres.Edge;
 import com.simolecule.centres.Node;
 import com.simolecule.centres.Stats;
 import com.simolecule.centres.rules.Priority;
-import com.simolecule.centres.rules.Rules;
 import com.simolecule.centres.rules.SequenceRule;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public final class ExtendedTetrahedral<A, B> extends Configuration<A, B> {
 
@@ -34,6 +33,50 @@ public final class ExtendedTetrahedral<A, B> extends Configuration<A, B> {
     mol.setAtomProp(getFocus(), BaseMol.CIP_LABEL_KEY, desc);
   }
 
+  private List<Edge<A,B>> getEdges(Node<A, B> node) {
+    List<Edge<A, B>> edges = node.getEdges();
+    List<Edge<A,B>>  res   = new ArrayList<>();
+    for (Edge<A,B> edge : edges) {
+      if (!edge.getBeg().equals(node))
+        continue;
+      if (edge.getEnd().isDuplicate())
+        continue;
+      res.add(edge);
+    }
+    return res;
+  }
+
+  private Node<A,B> findOther(Node<A,B> node, Node<A,B> skip) {
+    BaseMol<A, B> mol = node.getDigraph().getMol();
+    for (Edge<A,B> e : getEdges(node)) {
+      if (e.getEnd().equals(skip))
+        continue;
+      if (e.getBond() == null ||
+          mol.getBondOrder(e.getBond()) != 2)
+        continue;
+      return e.getEnd();
+    }
+    return null;
+  }
+
+  private Node<A,B>[] getEnds(Node<A,B> root) {
+    List<Edge<A,B>> edges = getEdges(root);
+    Node<A,B> pEnd1 = root;
+    Node<A,B> pEnd2 = root;
+    Node<A,B> end1  = edges.get(0).getEnd();
+    Node<A,B> end2  = edges.get(1).getEnd();
+    Node<A,B> tmp;
+    while (end1 != null && end2 != null) {
+      tmp = findOther(end1, pEnd1);
+      pEnd1 = end1;
+      end1  = tmp;
+      tmp = findOther(end2, pEnd2);
+      pEnd2 = end2;
+      end2  = tmp;
+    }
+    return (Node<A,B>[]) new Node[]{pEnd1, pEnd2};
+  }
+
   @Override
   public Descriptor label(SequenceRule<A, B> comp)
   {
@@ -44,13 +87,10 @@ public final class ExtendedTetrahedral<A, B> extends Configuration<A, B> {
     else
       root = digraph.getRoot();
     digraph.changeRoot(root);
+    Node<A,B>[] ends = getEnds(root);
 
-    List<Edge<A, B>> edges = root.getEdges();
-    if (edges.size() != 2)
-      return Descriptor.Unknown;
-
-    Node<A, B> end1 = edges.get(0).getEnd();
-    Node<A, B> end2 = edges.get(1).getEnd();
+    Node<A, B> end1 = ends[0];
+    Node<A, B> end2 = ends[1];
 
     A atom1 = getFoci()[1];
     A atom2 = getFoci()[2];
@@ -65,13 +105,7 @@ public final class ExtendedTetrahedral<A, B> extends Configuration<A, B> {
       return Descriptor.Unknown;
     }
 
-    List<Edge<A, B>> edges1 = new ArrayList<>(end1.getEdges());
-    List<Edge<A, B>> edges2 = new ArrayList<>(end2.getEdges());
-
-    edges1.remove(edges.get(0));
-    edges2.remove(edges.get(1));
-
-    return label2(comp, end1, end2, atom1, atom2, edges1, edges2);
+    return label2(comp, end1, end2, atom1, atom2, getEdges(end1), getEdges(end2));
   }
 
   private void removeDuplicates(List<Edge<A,B>> e) {
@@ -85,7 +119,7 @@ public final class ExtendedTetrahedral<A, B> extends Configuration<A, B> {
   @Override
   public Descriptor label(Node<A, B>    node,
                           Digraph<A, B> digraph,
-                          Rules<A, B>   comp) {
+                          SequenceRule<A, B>   comp) {
 
     A[] foci = getFoci();
     A focus = foci[0];
@@ -138,7 +172,9 @@ public final class ExtendedTetrahedral<A, B> extends Configuration<A, B> {
 
     BaseMol<A,B> mol = end1.getDigraph().getMol();
 
+    end1.getDigraph().changeRoot(end1);
     Priority priority1 = comp.sort(end1, edges1);
+    end2.getDigraph().changeRoot(end2);
     Priority priority2 = comp.sort(end2, edges2);
     if (!priority1.isUnique() && !priority2.isUnique() &&
         mol.isInRing(edges1.get(0).getBond()) &&
@@ -165,7 +201,8 @@ public final class ExtendedTetrahedral<A, B> extends Configuration<A, B> {
     int parity = parity4(ordered, getCarriers());
 
     if (parity == 0)
-      throw new RuntimeException("Could not calculate parity! Carrier mismatch");
+      return Descriptor.Unknown;
+    // throw new RuntimeException("Could not calculate parity! Carrier mismatch");
 
     int config = this.getConfig();
     if (parity == 1)

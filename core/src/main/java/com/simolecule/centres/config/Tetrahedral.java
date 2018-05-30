@@ -7,14 +7,11 @@ import com.simolecule.centres.Edge;
 import com.simolecule.centres.Node;
 import com.simolecule.centres.Stats;
 import com.simolecule.centres.rules.Priority;
-import com.simolecule.centres.rules.Rule6;
 import com.simolecule.centres.rules.Rules;
 import com.simolecule.centres.rules.SequenceRule;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class Tetrahedral<A, B> extends Configuration<A, B> {
 
@@ -52,7 +49,7 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
 
     // something not right!?! bad creation
     if (edges.size() < 3)
-      return Descriptor.None;
+      return Descriptor.ns;
 
     Priority priority = comp.sort(node, edges);
     boolean isUnique = priority.isUnique();
@@ -62,19 +59,19 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
       List<List<Edge<A,B>>> partition = comp.getSorter().getGroups(edges);
       if (partition.size() == 2) {
         // a a' b b' and a a' a'' b
-        if (partition.get(0).size() >= 2) {
-          node.getDigraph().setRule6Ref(edges.get(0).getEnd().getAtom());
-          priority = comp.sort(node, edges);
-          System.out.println(comp.getSorter().getGroups(edges));
-          node.getDigraph().setRule6Ref(null);
-        } else if (partition.get(0).size() == 1) {
-          node.getDigraph().setRule6Ref(edges.get(1).getEnd().getAtom());
-          priority = comp.sort(node, edges);
-          node.getDigraph().setRule6Ref(null);
-        }
-      } else if (partition.size() == 1) {
-        node.getDigraph().setRule6Ref(edges.get(0).getEnd().getAtom());
+        node.getDigraph().setRule6Ref(edges.get(1).getEnd().getAtom());
         priority = comp.sort(node, edges);
+        node.getDigraph().setRule6Ref(null);
+      } else if (partition.size() == 1) {
+        // S4 symmetric case
+        node.getDigraph().setRule6Ref(edges.get(0).getEnd().getAtom());
+        comp.sort(node, edges);
+        Edge[] nbrs1 = edges.toArray(new Edge[4]);
+        node.getDigraph().setRule6Ref(edges.get(1).getEnd().getAtom());
+        priority = comp.sort(node, edges);
+        Edge[] nbrs2 = edges.toArray(new Edge[4]);
+        if (parity4(nbrs1, nbrs2) == 1)
+          return Descriptor.Unknown;
         node.getDigraph().setRule6Ref(null);
       }
       if (!priority.isUnique())
@@ -122,7 +119,7 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
   }
 
   @Override
-  public Descriptor label(Node<A, B> node, Digraph<A,B> digraph, Rules<A, B> comp) {
+  public Descriptor label(Node<A, B> node, Digraph<A,B> digraph, SequenceRule<A, B> comp) {
     digraph.changeRoot(node);
     return label(node, comp);
   }

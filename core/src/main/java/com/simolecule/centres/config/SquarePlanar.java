@@ -64,7 +64,7 @@ public final class SquarePlanar<A,B> extends Configuration<A,B> {
     List<List<Edge<A,B>>> parts    = comp.getSorter().getGroups(edges);
 
     if (!hasConfiguration(parts))
-      return Descriptor.None; // maybe return unknown?
+      return Descriptor.ns; // maybe return unknown?
 
     int low = 5;
     for (Edge<A,B> edge : parts.get(0)) {
@@ -81,7 +81,7 @@ public final class SquarePlanar<A,B> extends Configuration<A,B> {
       return Descriptor.SP_4;
     }
 
-    return Descriptor.None;
+    return Descriptor.ns;
   }
 
   @Override

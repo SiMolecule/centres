@@ -174,12 +174,7 @@ public abstract class SequenceRule<A, B> implements Comparator<Edge<A, B>> {
 
   public int getComparision(Edge<A, B> a, Edge<A, B> b, boolean deep)
   {
-    final int cmp = deep ? recursiveCompare(a, b) : compare(a, b);
-    assert cmp < 2 && cmp > -2;
-    if (isPseudoAsymmetric())
-      return 2 * cmp; // -2,0,+2
-    else
-      return cmp; // -1,0,+1
+    return deep ? recursiveCompare(a, b) : compare(a, b);
   }
 
   public void setSorter(Sort<A, B> sorter)

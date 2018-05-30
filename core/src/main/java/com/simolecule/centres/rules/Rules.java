@@ -105,12 +105,8 @@ public class Rules<A, B> extends SequenceRule<A, B> {
       // compare expands exhaustively across the whole graph
       int value = rule.recursiveCompare(a, b);
 
-      if (value != 0) {
-        if (rule.isPseudoAsymmetric())
-          return 2 * value;
-        else
-          return value;
-      }
+      if (value != 0)
+        return value;
 
     }
 

@@ -50,7 +50,7 @@ public final class TrigonalBipyramidal<A,B> extends Configuration<A,B> {
     List<List<Edge<A,B>>> parts    = comp.getSorter().getGroups(edges);
 
     if (!hasConfiguration(parts))
-      return Descriptor.None; // maybe return unknown?
+      return Descriptor.ns; // maybe return unknown?
 
     A[] carriers = getCarriers();
     for (Edge<A,B> edge : edges) {
@@ -67,7 +67,7 @@ public final class TrigonalBipyramidal<A,B> extends Configuration<A,B> {
       }
     }
 
-    return Descriptor.None;
+    return Descriptor.ns;
   }
 
   @Override

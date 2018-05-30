@@ -1,10 +1,7 @@
 package com.simolecule.centres;
 
-import com.sun.org.apache.bcel.internal.generic.FREM;
 
 import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Deque;
 
 public final class Mancude {
