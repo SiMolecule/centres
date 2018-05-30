@@ -49,8 +49,9 @@ mvn install -DskipTests
 John Mayfield (né May)
 
 ### Limitations
- - Helicene winding not supported
- - SMILES does not capture axial atropisomer stereochemistry
+ - Helicene and chirality planes are not supported
+ - SMILES does not capture axial atropisomerism but this is supported in 2D/3D
+ - When using CDK the 3D SDfile must find stereocentres with little information available, the current algorithm does not find all centres in the test sets by default. To prevent this a modified version of CDK is used in Centres that captures all possible tetrahedral/double bond stereochemistries.
 
 ### References
 * Robert M. Hanson John Mayfield Mikko J. Vainio Andrey Yerin Dmitry Redkin Sophia Musacchio. Algorithmic Analysis of Cahn-Ingold-Prelog Rules of Stereochemistry: Proposals for Revised Rules and a Guide for Machine Implementation. __Submitted__ [preprint](https://chemrxiv.org/articles/Algorithmic_Analysis_of_Cahn-Ingold-Prelog_Rules_of_Stereochemistry_Proposals_for_Revised_Rules_and_a_Guide_for_Machine_Implementation/6342881).
