@@ -102,7 +102,7 @@ C[C@H]1CC[C@H](C)CC1  r,r (1r,4r)-p-dimethylcyclohexane
 C[C@H]1CC[C@H](CC1)B([C@@H]1CC[C@H](C)CC1)[C@@H]1CC[C@H](C)CC1 s,s,s,s,s,s bis[4-methylcyclohexyl]-4-methylcyclohexylborane
 CC([H])=[C@]=C([C@@H](O)CC)[C@H](O)CC A4m,6S,10R pseudo assymetric elongated tetrahedral (explicit hydrogens)
 CC([H])=[C@]=C([C@H](O)CC)[C@@H](O)CC A4p,6R,10S pseudo assymetric elongated tetrahedral (explicit hydrogens)
-C\1/2=C3/CC[C@H]4CC.C1C[C@H]5CC.C4C/3.C2C5 seqTrans,s,s
+C\1/2=C3/CC[C@H]4CC.C1C[C@H]5CC.C4C/3.C2C5 E,s,s
 [C@](CCC[C@@H](O)C)(CCC[C@H](O)C)(CCCC[C@H](O)C)CCCC[C@@H](O)C R,S,R,R,S non-pseudo asymmetric
 # Bob's Examples
 C1=C\C[C@H](C)C/C=C/C[C@H](C)C\1 E,s,E,s Bob 30 Apr
