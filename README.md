@@ -43,7 +43,7 @@ mvn install -DskipTests
 ```
 
 ### License
-[Lesser General Public License 3.0](http://www.gnu.org/licenses/lgpl.html)
+[BSD 2-Clause](https://opensource.org/licenses/BSD-2-Clause)
 
 ### Authors
 John Mayfield (né May)
