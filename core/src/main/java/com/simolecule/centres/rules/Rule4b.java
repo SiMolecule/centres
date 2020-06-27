@@ -381,7 +381,7 @@ public class Rule4b<A, B>
         Collections.sort(list1, Collections.reverseOrder());
         Collections.sort(list2, Collections.reverseOrder());
         for (int i = 0; i < list1.size(); i++) {
-          int cmp = list1.get(0).compareTo(list2.get(0));
+          int cmp = list1.get(i).compareTo(list2.get(i));
           if (cmp != 0)
             return cmp;
         }
