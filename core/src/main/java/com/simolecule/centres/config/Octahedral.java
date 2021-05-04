@@ -161,11 +161,16 @@ public final class Octahedral<A, B> extends Configuration<A, B> {
     }
     n2 = ccw_plane.get((low + 2) % 4);
 
-    int cmp = Integer.compare(ccw_plane.get((low + 1) % 4), ccw_plane.get((low + 4 - 1) % 4));
-    if (cmp == 0)
+    int cmp = 0;
+
+    // don't need rotation if two axes are the same
+    if (n1 != n2) {
       cmp = Integer.compare(ccw_plane.get((low + 1) % 4), ccw_plane.get((low + 4 - 1) % 4));
-    if (cmp == 0)
-      cmp = Integer.compare(ccw_plane.get((low + 2) % 4), ccw_plane.get((low + 4 - 2) % 4));
+      if (cmp == 0)
+        cmp = Integer.compare(ccw_plane.get((low + 1) % 4), ccw_plane.get((low + 4 - 1) % 4));
+      if (cmp == 0)
+        cmp = Integer.compare(ccw_plane.get((low + 2) % 4), ccw_plane.get((low + 4 - 2) % 4));
+    }
 
     final String rotate;
     if (cmp < 0)
