@@ -2,13 +2,13 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.simolecule.centres</groupId>
   <artifactId>centres</artifactId>
-  <version>1.0</version>
+  <version>1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>core</module>
     <module>cdk</module>
     <module>opsin</module>
-    <module>jchem</module>
+<!--    <module>jchem</module>-->
   </modules>
   <name>centres</name>
   <description>Library of Labelling Stereochemistry</description>
