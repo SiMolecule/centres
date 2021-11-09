@@ -65,7 +65,10 @@ public class ValidateCdkTest extends AbstractValidationSuite {
   {
     for (IAtom atom : mol.atoms()) {
       Descriptor descriptor = atom.getProperty(BaseMol.CIP_LABEL_KEY);
-      if (descriptor != null && descriptor != Descriptor.Unknown)
+      String configIdx = atom.getProperty(BaseMol.CONF_INDEX);
+      if (configIdx != null)
+        atom.setProperty(CDKConstants.COMMENT, configIdx);
+      else if (descriptor != null && descriptor != Descriptor.Unknown)
         atom.setProperty(CDKConstants.COMMENT, descriptor);
     }
     for (IBond bond : mol.bonds()) {

@@ -270,10 +270,16 @@ public abstract class AbstractValidationSuite {
       A atom = mol.getAtom(i);
       if (checked.contains(atom))
         continue;
-      Descriptor desc = mol.getAtomProp(atom, BaseMol.CIP_LABEL_KEY);
-      if (desc != null && desc != Descriptor.Unknown) {
+      String cidx = mol.getAtomProp(atom, BaseMol.CONF_INDEX);
+      if (cidx != null) {
         smiles = callback.generate(mol);
-        Assert.fail("No expected value for Atom idx=" + mol.getAtomIdx(atom) + " was=" + desc + "\n" + smiles);
+        Assert.fail("No expected value for Atom idx=" + mol.getAtomIdx(atom) + " was=" + cidx + "\n" + smiles);
+      } else {
+        Descriptor desc = mol.getAtomProp(atom, BaseMol.CIP_LABEL_KEY);
+        if (desc != null && desc != Descriptor.Unknown) {
+          smiles = callback.generate(mol);
+          Assert.fail("No expected value for Atom idx=" + mol.getAtomIdx(atom) + " was=" + desc + "\n" + smiles);
+        }
       }
     }
     for (int i = 0; i < mol.getNumBonds(); i++) {

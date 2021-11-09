@@ -133,15 +133,20 @@ public final class Octahedral<A, B> extends Configuration<A, B> {
       return Descriptor.ns; // maybe return unknown?
 
     A   fstAxisBeg = null;
-    int n1         = 0;
-    int n2         = 0;
+    int fstAxisBegRank = 0;
+    int fstAxisEndRank = 0;
+    int sndAxisBegRank = 0;
+    int sndAxisEndRank = 0;
+    int thdAxisBegRank = 0;
+    int thdAxisEndRank = 0;
 
     for (Edge<A, B> edge : parts.get(0)) {
       A   beg = edge.getEnd().getAtom();
       A   end = findTransAtom(beg);
       int num = getPriorityNumber(parts, end);
-      if (num > n1) {
-        n1         = num;
+      if (num > fstAxisEndRank) {
+        fstAxisBegRank = getPriorityNumber(parts, beg);
+        fstAxisEndRank = num;
         fstAxisBeg = beg;
       }
     }
@@ -159,12 +164,19 @@ public final class Octahedral<A, B> extends Configuration<A, B> {
         low = i;
       }
     }
-    n2 = ccw_plane.get((low + 2) % 4);
+
+    sndAxisBegRank = ccw_plane.get(low);
+    sndAxisEndRank = ccw_plane.get((low + 2) % 4);
+    thdAxisBegRank = ccw_plane.get((low + 1) % 4);
+    thdAxisEndRank = ccw_plane.get((low + 3) % 4);
 
     int cmp = 0;
 
-    // don't need rotation if two axes are the same
-    if (n1 != n2) {
+    // don't need rotation if two axes are the same or if there is a symmetric axis
+    if (fstAxisEndRank != sndAxisEndRank &&
+        (fstAxisBegRank != fstAxisEndRank ||
+         sndAxisBegRank != sndAxisEndRank ||
+         thdAxisBegRank != thdAxisEndRank)) {
       cmp = Integer.compare(ccw_plane.get((low + 1) % 4), ccw_plane.get((low + 4 - 1) % 4));
       if (cmp == 0)
         cmp = Integer.compare(ccw_plane.get((low + 1) % 4), ccw_plane.get((low + 4 - 1) % 4));
@@ -180,8 +192,8 @@ public final class Octahedral<A, B> extends Configuration<A, B> {
     else
       rotate = "";
 
-    if (n1 < 7 && n2 < 7) {
-      cache.put(getFocus(), "OC-6-" + n1 + "" + n2 + rotate);
+    if (fstAxisEndRank < 7 && sndAxisEndRank < 7) {
+      cache.put(getFocus(), "OC-6-" + fstAxisEndRank + "" + sndAxisEndRank + rotate);
       return Descriptor.OC_6;
     }
 
