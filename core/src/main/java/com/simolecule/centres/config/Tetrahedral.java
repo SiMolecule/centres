@@ -72,6 +72,21 @@ import java.util.List;
  *  Down/Hashed wedge, c[1..3] are anti-clockwise/left-handed.
  * </pre>
  *
+ * Note - If one of the carriers is a hydrogen or lone pair you can re-use
+ * the focus as a placeholder in the carriers:
+ *
+ * <pre>
+ *           f
+ *           |
+ *           |
+ *   c[2] -- f ... c[0]
+ *           |
+ *           |
+ *           c[1]
+ *
+ *  Down/Hashed wedge, {c[1..2],f} are anti-clockwise/left-handed.
+ * </pre>
+ *
  * @param <A> the atom class
  * @param <B> the bond class
  */
