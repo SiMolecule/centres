@@ -137,7 +137,7 @@ CC1=CC=C2[C@@H](C3=CC=C(N=C3OC2=N1)C1=CC=C(C=C1)C(=O)N1CCOCC1)C(C)(C)C(=O)NC1=NN
 CC1=CC=C2[C@@H](C3=C(OC2=N1)N=C(C=C3)C1=CC=C(C=C1)C(=O)N1CCOCC1)C(C)(C)C(=O)NC1=NN=C(S1)C(=O)NC1CCOCC1 S
 CC1=NC2=C(C=C1)[C@@H](C1=C(O2)N=C(C=C1)C1=CC=C(C=C1)C(=O)N1CCOCC1)C(C)(C)C(=O)NC1=NN=C(S1)C(=O)NC1CCOCC1 S
 CC1=NC2=C(C=C1)[C@@H](C1=CC=C(N=C1O2)C1=CC=C(C=C1)C(=O)N1CCOCC1)C(C)(C)C(=O)NC1=NN=C(S1)C(=O)NC1CCOCC1 S
-# Octahedral
-[Co@OH2](I)(I)(I)(I)([NH3])[NH3]
-[Co@OH1](I)(Br)(Cl)(F)([OH2])[NH3] OC-6-34-A
-[Co@OH2](I)(Br)(Cl)(F)([OH2])[NH3] OC-6-32-C
+# Octahedral (expected values not parsed yet)
+# [Co@OH2](I)(I)(I)(I)([NH3])[NH3] OC-6-22
+# [Co@OH1](I)(Br)(Cl)(F)([OH2])[NH3] OC-6-64-A
+# [Co@OH2](I)(Br)(Cl)(F)([OH2])[NH3] OC-6-64-C
