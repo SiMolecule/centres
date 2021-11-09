@@ -39,6 +39,42 @@ import com.simolecule.centres.rules.SequenceRule;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Describes a Sp3 tetrahedral centre using a "focus" (the central atom) and
+ * four "carrier" (the neighbours of the central atom). The arrangement of these
+ * atoms is described as {@link #LEFT} or {@link #RIGHT} handed. This is the
+ * ordering of the carries (c[1],c[2],c[3]) looking from the first carrier
+ * (c[0]). For example in the diagram below if the bond from f to c[0] was a
+ * bold wedge (pointing towards the viewer) the neighbours would be ordered
+ * clockwise:
+ * <pre>
+ *           c[3]
+ *           |
+ *           |
+ *   c[2] -- f -=# c[0]
+ *           |
+ *           |
+ *           c[1]
+ *
+ *  Up/Bold wedge, c[1..3] are clockwise/right-handed.
+ * </pre>
+ * If the bond was a hashed wedged (pointing towards the viewer) the ordering
+ * is now left-handed.
+ * <pre>
+ *           c[3]
+ *           |
+ *           |
+ *   c[2] -- f ... c[0]
+ *           |
+ *           |
+ *           c[1]
+ *
+ *  Down/Hashed wedge, c[1..3] are anti-clockwise/left-handed.
+ * </pre>
+ *
+ * @param <A> the atom class
+ * @param <B> the bond class
+ */
 public class Tetrahedral<A, B> extends Configuration<A, B> {
 
   public static final int LEFT  = 0x1;
@@ -129,12 +165,12 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
     if (parity == 1)
       config ^= 0x3;
 
-    if (config == 0x1) {
+    if (config == LEFT) {
       if (priority.isPseduoAsymettric())
         return Descriptor.s;
       else
         return Descriptor.S;
-    } else if (config == 0x2) {
+    } else if (config == RIGHT) {
       if (priority.isPseduoAsymettric())
         return Descriptor.r;
       else

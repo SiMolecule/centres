@@ -38,6 +38,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * An octahedral configuration is described by a focus and six carriers. The
+ * configuration index can be a number 1..20 and describes the relative
+ * arrangement of the neighbours. The configs allow any possible orderings
+ * but to input an trigonal bipyramidal we can just use 1 (TB1). It looks like
+ * this, the axis is made of the first and last carrier 'c[0]-f-c[4]'. The
+ * remaining carriers c[1..3] and then ordered anti-clockwise around the focus:
+ *
+ * <pre>
+ *
+ *            c[0]
+ *       c[2] |
+ *           \|
+ *            f -- c[1] = TB1
+ *           /|       where c[0]: carriers
+ *       c[3] |             f: focus
+ *            c[4]          'c[0]' is in front of the focus 'f', 'c[3]' is behind
+ *
+ * </pre>
+ *
+ * @param <A> the atom class
+ * @param <B> the bond class
+ * @see <a href="http://opensmiles.org/opensmiles.html#_trigonal_bipyramidal_centers">OpenSMILES Trigonal Bipyramidal Centers</a>
+ */
 public final class TrigonalBipyramidal<A,B> extends Configuration<A,B> {
 
   private final Map<A,String> cache = new HashMap<>();

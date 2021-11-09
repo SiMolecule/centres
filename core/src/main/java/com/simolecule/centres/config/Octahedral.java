@@ -39,6 +39,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * An octahedral configuration is described by a focus and six carriers. The
+ * configuration index can be a number 1..30 and describes the relative
+ * arrangement of the neighbours. The configs allow any possible orderings
+ * but to input an octahedral we can just use 1 (OH1). It looks like this,
+ * the axis is made of the first and last carrier 'c[0]-f-c[5]'. The remaining
+ * carriers c[1..4] and then ordered anti-clockwise around the focus:
+ *
+ * <pre>
+ *
+ *            c[2]
+ *            | c[5]
+ *            |/
+ *     c[3]---f---c[1] = OH1
+ *           /|       where c[0]: carriers
+ *       c[0] |             f: focus
+ *            c[4]          'c[0]' is in front of the focus 'f', 'c[5]' is behind
+ *
+ * </pre>
+ *
+ * @param <A> the atom class
+ * @param <B> the bond class
+ * @see <a href="http://opensmiles.org/opensmiles.html#_octahedral_centers">OpenSMILES Octahedral Centers</a>
+ */
 public final class Octahedral<A, B> extends Configuration<A, B> {
 
   private final Map<A, String> cache = new HashMap<>();

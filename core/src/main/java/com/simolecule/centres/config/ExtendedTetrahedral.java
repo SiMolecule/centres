@@ -40,6 +40,42 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * This configurations is used to describe the extended tetrahedral specification
+ * of cumulated Sp2 bonds. It described in terms of two foci (the atoms at each
+ * end) and four carries (each attached to either end atom). The arrangement of the
+ * carriers can either be {@link #LEFT} or {@link #RIGHT}.
+ * Importantly carrier[0,1] should be bonded to foci[1] and carrier[1,2] to
+ * foci[1]. The first foci, foci[0], is used to determine where the label is
+ * set.
+ *
+ * <pre>
+ *    c[0]                  c[2]
+ *     \                   /
+ *      \                 /
+ *       f[1] == f[0] == f[2]
+ *      /                 \
+ *     /                   \
+ *   c[1]                   c[3]
+ * </pre>
+ *
+ * The relative position of the carriers is described the same as {@link Tetrahedral}
+ * as if the foci where all laid on top of each other:
+ *
+ * <pre>
+ *    c[0]   c[2]
+ *     \    /
+ *      \  /            - if the bond f[2]..c[0] pointed towards us the carriers
+ *       f[1,0,2]         c[1..3] are arranged clockwise/right-handed
+ *      /  \            - if the bond f[2]..c[0] pointed away from us the carriers
+ *     /    \             c[1..3] are arranged anti-clockwise/left-handed
+ *   c[1]    c[3]
+ * </pre>
+ *
+ *
+ * @param <A> the atom class
+ * @param <B> the bond class
+ */
 public final class ExtendedTetrahedral<A, B> extends Configuration<A, B> {
 
   public static final int LEFT  = 0x1;

@@ -40,6 +40,44 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This configurations is used to describe the extended cis-trans specification
+ * of cumulated Sp2 bonds. It described in terms of two foci (the atoms at each
+ * end) and two carries (each attached to either end atom). The arrangement of the
+ * carriers can either be {@link #OPPOSITE} (trans) or {@link #TOGETHER} (cis).
+ * Importantly carrier[0] should be bonded to foci[0] and carrier[1] to
+ * foci[1]. If there are additional atoms bonded they should be ignored, it
+ * does not matter which atom is ignored as the labeler will inspect the
+ * molecule and flip the labelling if needed. Only odd numbers of double bonds
+ * make cis-trans, even numbers lead to {@link ExtendedTetrahedral}.
+ * The central bond is also provided as to where the label should be set.
+ *
+ * <pre>
+ *    c[0]                   c[1]
+ *     \                    /
+ *      \                  /
+ *       f[0] == x == x == f[1]
+ *                         \
+ *                          \
+ *                           x - ignored atom
+ * "Together"
+ * </pre>
+ *
+ * <pre>
+ *    c[0]
+ *     \
+ *      \
+ *       f[0] == x == x == f[1]
+ *                         \
+ *                          \
+ *                           c[1]
+ * "Opposite"
+ * </pre>
+ *
+ *
+ * @param <A> the atom class
+ * @param <B> the bond class
+ */
 public class ExtendedCisTrans<A, B> extends Configuration<A, B> {
 
   public static final int OPPOSITE = 0x1;

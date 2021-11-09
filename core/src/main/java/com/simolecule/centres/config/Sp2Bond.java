@@ -41,6 +41,44 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This configurations is used to describe the cis-trans specification of an
+ * Sp2 bond. It described in terms of two foci (the atoms of the double bond)
+ * and two carries (each attached to either atom). The arrangement of the
+ * carriers can either be {@link #OPPOSITE} (trans) or {@link #TOGETHER} (cis).
+ * Importantly carrier[0] should be bonded to foci[0] and carrier[1] to
+ * foci[1]. If there are additional atoms bonded they should be ignored, it
+ * does not matter which atom is ignored as the labeler will inspect the
+ * molecule and flip the labelling if needed. The bond is provided as to where
+ * the label should be set.
+ *
+ * <pre>
+ *    c[0]           c[1]
+ *     \           /
+ *      \         /
+ *       f[0] == f[1]
+ *                \
+ *                 \
+ *                  x - ignored atom
+ * "Together"
+ * </pre>
+ *
+ * <pre>
+ *    c[0]
+ *     \
+ *      \
+ *       f[0] == f[1]
+ *                \
+ *                 \
+ *                  c[1]
+ * "Opposite"
+ * </pre>
+ *
+ *
+ *
+ * @param <A>
+ * @param <B>
+ */
 public class Sp2Bond<A, B> extends Configuration<A, B> {
 
   public static final int OPPOSITE = 0x1;

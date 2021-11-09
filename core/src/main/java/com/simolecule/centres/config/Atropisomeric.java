@@ -39,6 +39,33 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * An atropisomer describes the configuration around an Ar-Ar single bond. It
+ * works similar to extended-tetrahedral (and tetrahedral) where-by we describe
+ * the carriers as {@link #LEFT} or {@link #RIGHT} around the central bond as
+ * if the foci were laid out ontop of each other. The bond is provided as to
+ * where the label should be set.
+ *
+ * <pre>
+ *       x
+ *      /
+ *     /
+ * === c[0]           c[2] --- x
+ *      \            //         \\
+ *       \          //           \\
+ *        f[0] --- f[1]           x
+ *      //          \            /
+ *     //            \          /
+ * --- c[1]           c[3] === x
+ *     \             /
+ *      \           /
+ *       x         x
+ * </pre>
+ *
+ * @param <A> the atom class
+ * @param <B> the bond class
+ * @see ExtendedTetrahedral
+ */
 public final class Atropisomeric<A, B> extends Configuration<A, B> {
 
   public static final int LEFT  = 0x1;

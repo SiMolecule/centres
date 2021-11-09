@@ -38,6 +38,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * An square-planar configuration is described by a focus and four carriers. The
+ * configuration index can be a number 1..3 and describes the relative
+ * arrangement/shape of the neighbours in the plane. The configs allow any
+ * possible orderings but to input an square planar we can just use 1 (SP1).
+ * This describes the carriers as appearing sequentially either clockwise
+ * or anticlockwise (there is no mirror image).
+ *
+ * <pre>
+ *
+ *            c[0]
+ *            |
+ *            |
+ *     c[3]---f---c[1] = SP1
+ *            |       where c[0]: carriers
+ *            |             f: focus
+ *            c[2]
+ *
+ * </pre>
+ *
+ * @param <A> the atom class
+ * @param <B> the bond class
+ * @see <a href="http://opensmiles.org/opensmiles.html#_square_planar_centers">OpenSMILES Square Planar Centers</a>
+ */
 public final class SquarePlanar<A,B> extends Configuration<A,B> {
 
   private final Map<A,String> cache = new HashMap<>();
