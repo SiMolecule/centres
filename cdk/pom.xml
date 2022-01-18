@@ -30,7 +30,7 @@
     <artifactId>centres-cdk</artifactId>
 
     <properties>
-        <cdk.version>2.3</cdk.version>
+        <cdk.version>2.7.1</cdk.version>
     </properties>
 
     <dependencies>
@@ -51,11 +51,6 @@
             <artifactId>junit</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>30.0-jre</version>
-        </dependency>
         <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-interfaces</artifactId>
