@@ -57,9 +57,6 @@ public class Labeller<A, B> {
                                              new Rule6<>(mol)
     );
 
-    // Stats.INSTANCE.countNumCenters(configs.size());
-
-    Map<Configuration<A, B>, Descriptor> finalLabels = new HashMap<>();
     for (Configuration<A, B> conf : configs) {
       conf.setDigraph(new Digraph<>(mol));
       try {
@@ -68,23 +65,16 @@ public class Labeller<A, B> {
           conf.setPrimaryLabel(mol, desc);
         } else {
           if (labelAux(configs, allRules, conf)) {
-
-            //  Stats.INSTANCE.numAuxCalculated.incrementAndGet();
             desc = conf.label(allRules);
-
             if (desc != null && desc != Descriptor.Unknown) {
-              //      Stats.INSTANCE.numAuxLabelled.incrementAndGet();
               conf.setPrimaryLabel(mol, desc);
             }
           }
         }
       } catch (Exception e) {
         System.err.println(e.getMessage());
-//        throw new RuntimeException(e);
       }
-      //Stats.INSTANCE.measureDigraph(conf.getDigraph());
     }
-    //Stats.INSTANCE.numConfigLabelled.addAndGet(finalLabels.size());
   }
 
   private boolean labelAux(List<Configuration<A, B>> configs,
