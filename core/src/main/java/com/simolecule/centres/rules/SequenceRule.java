@@ -46,7 +46,7 @@ import java.util.Queue;
 public abstract class SequenceRule<A, B> implements Comparator<Edge<A, B>> {
 
   public Sort<A, B> sorter = null;
-  private BaseMol<A, B> mol;
+  private final BaseMol<A, B> mol;
 
   public SequenceRule(BaseMol<A, B> mol)
   {
@@ -62,10 +62,7 @@ public abstract class SequenceRule<A, B> implements Comparator<Edge<A, B>> {
     B bond = edge.getBond();
     if (bond == null)
       return null;
-    Descriptor label = edge.getAux();
-    if (label != null)
-      return label;
-    return label;
+    return edge.getAux();
   }
 
   public int getNumSubRules() {
@@ -87,8 +84,8 @@ public abstract class SequenceRule<A, B> implements Comparator<Edge<A, B>> {
     int cmp = compare(a, b);
     if (cmp != 0) return cmp;
 
-    Queue<Edge<A, B>> aQueue = new LinkedList<Edge<A, B>>();
-    Queue<Edge<A, B>> bQueue = new LinkedList<Edge<A, B>>();
+    Queue<Edge<A, B>> aQueue = new LinkedList<>();
+    Queue<Edge<A, B>> bQueue = new LinkedList<>();
 
     aQueue.add(a);
     bQueue.add(b);
@@ -96,6 +93,7 @@ public abstract class SequenceRule<A, B> implements Comparator<Edge<A, B>> {
     while (!aQueue.isEmpty() && !bQueue.isEmpty()) {
       a = aQueue.poll();
       b = bQueue.poll();
+      assert a != null && b != null;
       List<Edge<A, B>> as = a.getEnd().getEdges();
       List<Edge<A, B>> bs = b.getEnd().getEdges();
 
@@ -193,7 +191,7 @@ public abstract class SequenceRule<A, B> implements Comparator<Edge<A, B>> {
   public Sort<A, B> getSorter()
   {
     if (sorter == null)
-      sorter = new Sort<A, B>(this);
+      sorter = new Sort<>(this);
     return sorter;
   }
 

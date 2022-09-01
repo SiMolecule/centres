@@ -159,10 +159,10 @@ public final class Octahedral<A, B> extends Configuration<A, B> {
     A   fstAxisBeg = null;
     int fstAxisBegRank = 0;
     int fstAxisEndRank = 0;
-    int sndAxisBegRank = 0;
-    int sndAxisEndRank = 0;
-    int thdAxisBegRank = 0;
-    int thdAxisEndRank = 0;
+    int sndAxisBegRank;
+    int sndAxisEndRank;
+    int thdAxisBegRank;
+    int thdAxisEndRank;
 
     for (Edge<A, B> edge : parts.get(0)) {
       A   beg = edge.getEnd().getAtom();

@@ -92,7 +92,7 @@ public final class Mancude {
             } else if (q == -1 && btypes == 0x0002) {
               types[aidx] = Type.Nv2D2Minus;
               result = true;
-            } else if (q == +1 && btypes == 0x0102) {
+            } else if (q == 1 && btypes == 0x0102) {
               types[aidx] = Type.Nv4D3Plus;
               result = true;
             }

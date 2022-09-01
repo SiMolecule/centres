@@ -66,7 +66,7 @@ public final class Node<A, B> {
   private final short         atomicnumNum;
   private final short         atomicnumDen;
   private       Descriptor    aux;
-  private int flags = 0;
+  private int flags;
 
 
   final         char[]           visit;

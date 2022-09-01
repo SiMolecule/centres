@@ -75,7 +75,7 @@ public class Sort<A, B> {
 
         int cmp = compareLigands(node, edges.get(j - 1), edges.get(j), deep);
 
-        if (cmp < -1 || cmp > +1)
+        if (cmp < -1 || cmp > 1)
           numPseudoAsym++;
 
         if (cmp < 0) {

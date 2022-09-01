@@ -32,7 +32,7 @@ import com.simolecule.centres.Mancude;
 
 public final class Rule1a<A, B> extends SequenceRule<A, B> {
 
-  private BaseMol<A, B> mol;
+  private final BaseMol<A, B> mol;
 
   public Rule1a(BaseMol<A, B> mol)
   {

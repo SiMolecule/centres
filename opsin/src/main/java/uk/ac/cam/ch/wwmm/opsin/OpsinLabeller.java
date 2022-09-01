@@ -77,7 +77,7 @@ public class OpsinLabeller extends Labeller<Atom, Bond> {
       BondStereo bstereo = bond.getBondStereo();
       if (bstereo == null)
         continue;
-      Atom       ref[]   = bstereo.getAtomRefs4();
+      Atom[] ref = bstereo.getAtomRefs4();
       int        cfg     = 0;
       switch (bstereo.getBondStereoValue()) {
         case CIS:
@@ -87,10 +87,10 @@ public class OpsinLabeller extends Labeller<Atom, Bond> {
           cfg = Sp2Bond.OPPOSITE;
           break;
       }
-      configs.add(new Sp2Bond<Atom, Bond>(bond,
-                                          new Atom[]{ref[1], ref[2]},
-                                          new Atom[]{ref[0], ref[3]},
-                                          cfg));
+      configs.add(new Sp2Bond<>(bond,
+                                new Atom[]{ref[1], ref[2]},
+                                new Atom[]{ref[0], ref[3]},
+                                cfg));
     }
 
     return configs;

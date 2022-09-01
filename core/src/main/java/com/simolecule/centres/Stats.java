@@ -39,18 +39,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 public enum Stats {
   INSTANCE;
 
-  public static String[] RULE_NAMES = new String[]{"1a", "1b", "2", "3", "4a", "4b", "4c", "5", "6"};
+  public final static String[] RULE_NAMES = new String[]{"1a", "1b", "2", "3", "4a", "4b", "4c", "5", "6"};
 
 
-  public AtomicInteger         numConfigs        = new AtomicInteger();
-  public AtomicInteger         numConfigLabelled = new AtomicInteger();
-  public AtomicInteger         numAuxCalculated  = new AtomicInteger();
-  public AtomicInteger         numAuxLabelled    = new AtomicInteger();
+  public final AtomicInteger         numConfigs        = new AtomicInteger();
+  public final AtomicInteger         numConfigLabelled = new AtomicInteger();
+  public final AtomicInteger         numAuxCalculated  = new AtomicInteger();
+  public final AtomicInteger         numAuxLabelled    = new AtomicInteger();
   public int[]                 numCentresFreq    = new int[256];
-  public Map<Integer, Counter> digraphOrder      = new HashMap<>();
-  public Map<Integer, Counter> digraphSpheres    = new HashMap<>();
-  public int[]                 ruleFreq          = new int[9];
-  public int[]                 ruleFreqPrev      = new int[9];
+  public final Map<Integer, Counter> digraphOrder      = new HashMap<>();
+  public final Map<Integer, Counter> digraphSpheres    = new HashMap<>();
+  public final int[]                 ruleFreq          = new int[9];
+  public final int[]                 ruleFreqPrev      = new int[9];
 
   Stats()
   {
@@ -90,7 +90,7 @@ public enum Stats {
     if (!node.isSet(Node.EXPANDED))
       return 1;
     int max = 0;
-    int d   = 0;
+    int d;
     for (Edge<A, B> edge : node.getOutEdges()) {
       d = depth(edge.getEnd());
       if (d > max)

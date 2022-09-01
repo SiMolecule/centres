@@ -45,15 +45,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class DescriptorListTest {
 
   @Test
-  public void testIgnoreConstruction_null() throws Exception
-  {
+  public void testIgnoreConstruction_null() {
     PairList descriptors = new PairList();
     Assert.assertFalse("Null should be ignored", descriptors.add(null));
   }
 
   @Test
-  public void testIgnoreConstruction_Pseudo() throws Exception
-  {
+  public void testIgnoreConstruction_Pseudo() {
 
     PairList descriptors = new PairList();
 
@@ -65,8 +63,7 @@ public class DescriptorListTest {
 
 
   @Test
-  public void testIgnoreConstruction_Pairing() throws Exception
-  {
+  public void testIgnoreConstruction_Pairing() {
 
     PairList descriptors = new PairList();
 
@@ -157,7 +154,7 @@ public class DescriptorListTest {
   }
 
   @Test
-  public void pairRM() throws Exception {
+  public void pairRM() {
     PairList list1 = new PairList();
     PairList list2 = new PairList();
     list1.add(Descriptor.R);
@@ -174,8 +171,7 @@ public class DescriptorListTest {
 
 
   @Test
-  public void testClear() throws Exception
-  {
+  public void testClear() {
 
     PairList descriptors = new PairList();
     descriptors.add(Descriptor.R);

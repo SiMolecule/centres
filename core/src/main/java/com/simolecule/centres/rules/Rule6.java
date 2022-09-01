@@ -27,7 +27,6 @@
 package com.simolecule.centres.rules;
 
 import com.simolecule.centres.BaseMol;
-import com.simolecule.centres.Descriptor;
 import com.simolecule.centres.Digraph;
 import com.simolecule.centres.Edge;
 

@@ -27,7 +27,6 @@
 package uk.ac.cam.ch.wwmm.opsin;
 
 import com.simolecule.centres.BaseMol;
-import com.simolecule.centres.Descriptor;
 import com.simolecule.centres.Digraph;
 
 import java.util.ArrayList;

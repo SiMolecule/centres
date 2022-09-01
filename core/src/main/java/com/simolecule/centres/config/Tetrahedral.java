@@ -33,7 +33,6 @@ import com.simolecule.centres.Edge;
 import com.simolecule.centres.Node;
 import com.simolecule.centres.Stats;
 import com.simolecule.centres.rules.Priority;
-import com.simolecule.centres.rules.Rules;
 import com.simolecule.centres.rules.SequenceRule;
 
 import java.util.ArrayList;

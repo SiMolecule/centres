@@ -33,8 +33,7 @@ import org.junit.Test;
 
 public class ValidateOpsinTest extends AbstractValidationSuite {
   @Test
-  public void testAssignment() throws Exception
-  {
+  public void testAssignment() {
     try {
       IDManager             idManager   = new IDManager();
       SMILESFragmentBuilder fragbuilder = new SMILESFragmentBuilder(idManager);

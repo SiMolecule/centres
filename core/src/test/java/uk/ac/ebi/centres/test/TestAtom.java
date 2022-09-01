@@ -33,8 +33,8 @@ package uk.ac.ebi.centres.test;
  */
 public class TestAtom {
 
-    private String symbol       = "";
-    private int    atomicNumber = 0;
+    private String symbol;
+    private int    atomicNumber;
     private int    massNumber   = 0;
 
 

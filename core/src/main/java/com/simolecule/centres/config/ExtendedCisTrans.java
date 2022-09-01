@@ -33,11 +33,9 @@ import com.simolecule.centres.Edge;
 import com.simolecule.centres.Node;
 import com.simolecule.centres.Stats;
 import com.simolecule.centres.rules.Priority;
-import com.simolecule.centres.rules.Rules;
 import com.simolecule.centres.rules.SequenceRule;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -83,7 +81,7 @@ public class ExtendedCisTrans<A, B> extends Configuration<A, B> {
   public static final int OPPOSITE = 0x1;
   public static final int TOGETHER = 0x2;
 
-  private B bond;
+  private final B bond;
 
   public ExtendedCisTrans(B bond, A[] foci, A[] carriers, int cfg)
   {

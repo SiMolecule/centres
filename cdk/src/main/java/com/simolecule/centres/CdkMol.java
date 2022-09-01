@@ -43,7 +43,6 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public final class CdkMol extends BaseMol<IAtom, IBond> {
 
@@ -205,11 +204,9 @@ public final class CdkMol extends BaseMol<IAtom, IBond> {
           continue;
         Node<IAtom, IBond> nodeEnd = e.getEnd();
         IAtom              end     = createAtom(mol, res, amap, nodeEnd);
-        if (end != null) {
-          IBond bond = new Bond(beg, end, IBond.Order.SINGLE);
-          res.addBond(bond);
-          deque.add(nodeEnd);
-        }
+        IBond bond = new Bond(beg, end, IBond.Order.SINGLE);
+        res.addBond(bond);
+        deque.add(nodeEnd);
       }
     }
 

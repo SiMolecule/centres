@@ -356,8 +356,7 @@ public abstract class AbstractValidationSuite {
         if (line.isEmpty() || line.charAt(0) == '#')
           continue;
         TestUnit tunit = parseLine(line, linenum);
-        if (tunit != null)
-          testunits.add(new Object[]{tunit, tunit.getName()});
+        testunits.add(new Object[]{tunit, tunit.getName()});
       }
     } catch (IOException e) {
       System.err.println("Could not load validation suite");
@@ -365,7 +364,7 @@ public abstract class AbstractValidationSuite {
     return testunits;
   }
 
-  @Parameterized.Parameter(0)
+  @Parameterized.Parameter()
   public TestUnit expected;
 
   @Parameterized.Parameter(1)

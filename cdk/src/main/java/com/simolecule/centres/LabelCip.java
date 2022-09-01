@@ -35,8 +35,6 @@ import org.openscience.cdk.interfaces.IStereoElement;
 import org.openscience.cdk.io.iterator.IteratingSDFReader;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.smiles.SmilesParser;
-import org.openscience.cdk.stereo.Atropisomeric;
-import org.openscience.cdk.stereo.StereoElementFactory;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -44,12 +42,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 public class LabelCip {
@@ -163,8 +157,8 @@ public class LabelCip {
         }
         System.out.println(mol.getTitle() + "\n" +
                            "  expected=" + expected + "\n" +
-                           "       was=" + actual   + "\n" +
-                           "           " + diff.toString());
+                           "       was=" + actual + "\n" +
+                           "           " + diff);
       }
     } else {
       System.out.println(actual + "\t" + mol.getTitle());
@@ -231,7 +225,7 @@ public class LabelCip {
     return false;
   }
 
-  public static void main(String[] args) throws InvalidSmilesException {
+  public static void main(String[] args) {
     if (!processCommandLine(args)) {
       System.err.println("Usage: label {input.sdf}");
       return;

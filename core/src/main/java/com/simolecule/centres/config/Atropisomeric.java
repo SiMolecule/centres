@@ -37,7 +37,6 @@ import com.simolecule.centres.rules.SequenceRule;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * An atropisomer describes the configuration around an Ar-Ar single bond. It

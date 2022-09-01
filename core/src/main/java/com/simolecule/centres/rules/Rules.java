@@ -69,7 +69,7 @@ public class Rules<A, B> extends SequenceRule<A, B> {
         continue;
       subrules.add(rule);
     }
-    return new Sort<A, B>(subrules);
+    return new Sort<>(subrules);
   }
 
   @Override
@@ -78,7 +78,7 @@ public class Rules<A, B> extends SequenceRule<A, B> {
   }
 
   public Sort<A, B> getSorter() {
-    return new Sort<A, B>(rules);
+    return new Sort<>(rules);
   }
 
   @Override

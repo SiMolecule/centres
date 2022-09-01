@@ -63,13 +63,13 @@ public final class Digraph<A, B> {
 
   public Node<A, B> init(A atom)
   {
-    this.root = new Node<A, B>(this,
-                               new char[mol.getNumAtoms()],
-                               atom,
-                               mol.getAtomicNum(atom),
-                               1,
-                               (char) 1,
-                               0);
+    this.root = new Node<>(this,
+                           new char[mol.getNumAtoms()],
+                           atom,
+                           mol.getAtomicNum(atom),
+                           1,
+                           (char) 1,
+                           0);
     int atomIdx = mol.getAtomIdx(atom);
     this.root.visit[atomIdx] = 1;
     numNodes++;

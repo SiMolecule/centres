@@ -43,7 +43,6 @@ import org.openscience.cdk.stereo.ExtendedTetrahedral;
 import org.openscience.cdk.stereo.TetrahedralChirality;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public final class CdkLabeller extends Labeller<IAtom, IBond> {
@@ -78,7 +77,7 @@ public final class CdkLabeller extends Labeller<IAtom, IBond> {
         case IStereoElement.AT: {
           Atropisomeric atSe = (Atropisomeric) se;
           IBond         bond = atSe.getFocus();
-          configs.add(new com.simolecule.centres.config.Atropisomeric<IAtom, IBond>(
+          configs.add(new com.simolecule.centres.config.Atropisomeric<>(
                   bond,
                   new IAtom[]{bond.getBegin(), bond.getEnd()},
                   atSe.getCarriers().toArray(new IAtom[4]),
@@ -103,11 +102,11 @@ public final class CdkLabeller extends Labeller<IAtom, IBond> {
           IBond   bond  = ectElem.getFocus();
           IBond[] bonds = ectElem.getCarriers().toArray(new IBond[2]);
           IAtom[] ends  = org.openscience.cdk.stereo.ExtendedCisTrans.findTerminalAtoms(mol, bond);
-          configs.add(new ExtendedCisTrans<IAtom, IBond>(bond,
-                                                         new IAtom[]{ends[0], ends[1]},
-                                                         new IAtom[]{bonds[0].getOther(ends[0]),
-                                                                     bonds[1].getOther(ends[1])},
-                                                         ectElem.getConfigOrder()));
+          configs.add(new ExtendedCisTrans<>(bond,
+                                             new IAtom[]{ends[0], ends[1]},
+                                             new IAtom[]{bonds[0].getOther(ends[0]),
+                                                     bonds[1].getOther(ends[1])},
+                                             ectElem.getConfigOrder()));
         }
         break;
         case IStereoElement.OC: {

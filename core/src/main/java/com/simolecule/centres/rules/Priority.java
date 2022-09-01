@@ -35,8 +35,8 @@ import java.util.Set;
  */
 public class Priority {
 
-  private Boolean           unique;
-  private boolean           pseudoAsym;
+  private final Boolean           unique;
+  private final boolean           pseudoAsym;
   private Set<Set<Integer>> duplicates;
   private int               ruleIdx;
 
@@ -82,37 +82,5 @@ public class Priority {
   {
     return pseudoAsym;
   }
-
-//  public <A> List<List<Node<A>>> createBins(List<Node<A>> nodes)
-//  {
-//    if (duplicates == null)
-//      throw new IllegalArgumentException("No duplicates stored at time of sort!");
-//
-//    List<List<Node<A>>> bins = new ArrayList<List<Node<A>>>(nodes.size());
-//
-//    // now need to place in bins
-//    for (int i = 0; i < nodes.size(); i++) {
-//      List<Node<A>> bin = new ArrayList<Node<A>>();
-//      bin.add(nodes.get(0));
-//      bins.add(bin);
-//    }
-//
-//    Set<Integer> removed = new HashSet<Integer>();
-//    // and compact (could be doing something wrong
-//    for (Set<Integer> pair : duplicates) {
-//      Iterator<Integer> it = pair.iterator();
-//      int               i  = it.next();
-//      int               j  = it.next();
-//      if (!removed.contains(i) || !removed.contains(j)) {
-//        bins.get(i).addAll(bins.get(j));
-//        removed.add(j);
-//      }
-//    }
-//    for (Integer remove : removed)
-//      bins.remove(remove);
-//
-//    return bins;
-//
-//  }
 
 }

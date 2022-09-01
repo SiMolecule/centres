@@ -46,7 +46,7 @@ import java.util.List;
  */
 public class PairList implements Comparable<PairList> {
 
-  private final List<Descriptor> descriptors = new ArrayList<Descriptor>();
+  private final List<Descriptor> descriptors = new ArrayList<>();
   private       int              pairing     = 0;
 
   public PairList() {
@@ -125,7 +125,6 @@ public class PairList implements Comparable<PairList> {
    * bit (32-bit integer).
    *
    * @param descriptor the descriptor to add an pair
-   * @return whether the descriptor was added
    */
   private void addAndPair(Descriptor descriptor)
   {
@@ -180,7 +179,7 @@ public class PairList implements Comparable<PairList> {
   public List<PairList> append(Collection<? extends PairList> lists)
   {
 
-    List<PairList> created = new ArrayList<PairList>(lists.size());
+    List<PairList> created = new ArrayList<>(lists.size());
 
     for (PairList list : lists) {
 

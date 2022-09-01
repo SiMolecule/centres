@@ -31,13 +31,11 @@ import com.simolecule.centres.Descriptor;
 import com.simolecule.centres.Digraph;
 import com.simolecule.centres.Edge;
 import com.simolecule.centres.Node;
-import com.simolecule.centres.rules.Rules;
 import com.simolecule.centres.rules.SequenceRule;
 
 import java.lang.reflect.Array;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public abstract class Configuration<A, B> {
 
