@@ -26,11 +26,8 @@
 
 package com.simolecule.centres;
 
-import com.google.common.base.Joiner;
-
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -55,7 +52,7 @@ public enum Stats {
   public int[]                 ruleFreq          = new int[9];
   public int[]                 ruleFreqPrev      = new int[9];
 
-  private Stats()
+  Stats()
   {
   }
 
@@ -143,13 +140,13 @@ public enum Stats {
     File rules  = new File(fname + ".rules");
     try (FileOutputStream fout = new FileOutputStream(info);
          BufferedWriter bwtr = new BufferedWriter(new OutputStreamWriter(fout))) {
-      bwtr.write(Joiner.on('\t').join("Num Centres", Stats.INSTANCE.numConfigs));
+      bwtr.write("Num Centres\t" + Stats.INSTANCE.numConfigs);
       bwtr.newLine();
-      bwtr.write(Joiner.on('\t').join("Num Centres Labelled", Stats.INSTANCE.numConfigLabelled));
+      bwtr.write("Num Centres Labelled\t" + Stats.INSTANCE.numConfigLabelled);
       bwtr.newLine();
-      bwtr.write(Joiner.on('\t').join("Num Aux Required", Stats.INSTANCE.numAuxCalculated));
+      bwtr.write("Num Aux Required\t" + Stats.INSTANCE.numAuxCalculated);
       bwtr.newLine();
-      bwtr.write(Joiner.on('\t').join("Num Aux Used", Stats.INSTANCE.numAuxLabelled));
+      bwtr.write("Num Aux Used\t" + Stats.INSTANCE.numAuxLabelled);
       bwtr.newLine();
     } catch (IOException e) {
       System.err.println("Could not write info stats: " + info);
@@ -159,7 +156,7 @@ public enum Stats {
 
     try (FileOutputStream fout = new FileOutputStream(sphere);
          BufferedWriter bwtr = new BufferedWriter(new OutputStreamWriter(fout))) {
-      bwtr.write(Joiner.on('\t').join("Dataset", "Sphere", "Freq", "Frac"));
+      bwtr.write("Dataset\tSphere\tFreq\tFrac");
       bwtr.newLine();
       for (Map.Entry<Integer, Stats.Counter> e : Stats.INSTANCE.digraphSpheres.entrySet()) {
         bwtr.write(dataset + "\t" + e.getKey() + "\t" + e.getValue() + "\t" + String.format("%.06f", 100 * (e.getValue().count / (double) numConfigs)));
@@ -171,7 +168,7 @@ public enum Stats {
 
     try (FileOutputStream fout = new FileOutputStream(count);
          BufferedWriter bwtr = new BufferedWriter(new OutputStreamWriter(fout))) {
-      bwtr.write(Joiner.on('\t').join("Dataset", "Count", "Freq", "Frac"));
+      bwtr.write("Dataset\tCount\tFreq\tFrac");
       bwtr.newLine();
       int total = 0;
       for (int i = 0; i < Stats.INSTANCE.numCentresFreq.length; i++) {
@@ -187,7 +184,7 @@ public enum Stats {
 
     try (FileOutputStream fout = new FileOutputStream(rules);
          BufferedWriter bwtr = new BufferedWriter(new OutputStreamWriter(fout))) {
-      bwtr.write(Joiner.on('\t').join("Dataset", "Rule", "Freq", "Frac"));
+      bwtr.write("Dataset\tRule\tFreq\tFrac");
       bwtr.newLine();
       for (int i = 0; i < Stats.INSTANCE.ruleFreq.length; i++) {
         bwtr.write(dataset + "\t" + Stats.RULE_NAMES[i] + "\t" + Stats.INSTANCE.ruleFreq[i] + "\t" + String.format("%.06f", 100*(Stats.INSTANCE.ruleFreq[i]/(double)numConfigs)));
