@@ -28,21 +28,14 @@ package com.simolecule.centres.rules;
 
 import com.simolecule.centres.BaseMol;
 import com.simolecule.centres.Descriptor;
-import com.simolecule.centres.Digraph;
 import com.simolecule.centres.Edge;
 import com.simolecule.centres.Node;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
-import java.util.HashSet;
 import java.util.List;
-import java.util.NavigableSet;
-import java.util.Queue;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * A descriptor pair rule. This rule defines that like descriptor pairs have
@@ -65,50 +58,6 @@ public class Rule4b<A, B>
   {
     super(mol);
     this.ref = ref;
-  }
-
-  /**
-   * Generates a set of descriptor lists that maintain the like/unlike pairing
-   * whilst descriptors are added. The set is navigable and maintains priority
-   * ordering when multiple lists are present. This method is a wrapper for
-   * adding the seeding ligand to the queue.
-   *
-   * @return navigable set of descriptor lists
-   */
-  protected NavigableSet<PairList> generate(Edge<A, B> e)
-  {
-    // would be good to give an expected size
-    Queue<Edge<A, B>> queue = new ArrayDeque<>();
-    queue.add(e);
-    return new TreeSet<PairList>(generate(queue));
-  }
-
-  private boolean hasDescriptors(Node<A, B> node)
-  {
-    Deque<Node<A, B>> deque = new ArrayDeque<>();
-    deque.add(node);
-    while (!deque.isEmpty()) {
-      Node<A, B> n = deque.poll();
-      if (n.getAux() != null)
-        return true;
-      for (Edge<A, B> e : n.getEdges()) {
-        if (e.getEnd().equals(n))
-          continue;
-        if (getBondLabel(e) != null)
-          return true;
-        deque.add(e.getEnd());
-      }
-    }
-    return false;
-  }
-
-  public void printLevels(Node<A, B> node)
-  {
-    List<List<Node<A, B>>> prev = initialLevel(node);
-    while (!prev.isEmpty()) {
-      System.out.println(prev);
-      prev = getNextLevel(prev);
-    }
   }
 
   private boolean getReference(List<Node<A, B>> nodes, List<Descriptor> result)
@@ -211,65 +160,11 @@ public class Rule4b<A, B>
     return eqNodes;
   }
 
-  private void visit(List<PairList> plists, Node<A, B> beg)
-  {
-    Deque<Node<A, B>> queue = new ArrayDeque<>();
-    queue.add(beg);
-    while (!queue.isEmpty()) {
-      Node<A, B> node = queue.poll();
-
-      // append any descriptors to the list
-      for (PairList plist : plists)
-        plist.add(node.getAux());
-
-      for (Edge<A, B> e : node.getEdges()) {
-        if (e.isBeg(node)) {
-          queue.add(e.getEnd());
-        }
-      }
-    }
-  }
-
-  /**
-   * Generates a set of descriptor lists that maintain the like/unlike pairing
-   * whilst descriptors are added. The set is navigable and maintains priority
-   * ordering when multiple lists are present.
-   *
-   * @param queue a queue of ligands for which to get descriptors and expand
-   * @return navigable set of descriptor lists
-   */
-  protected Set<PairList> generate(Queue<Edge<A, B>> queue)
-  {
-
-    return new HashSet<>();
-  }
-
-  /**
-   * Reduce the number of combinations by not including terminal ligands in
-   * the permuting. They can't be stereocentres and so won't contribute the
-   * the like / unlike list.
-   *
-   * @param edges a list of edges
-   * @return a list of non-terminal ligands
-   */
-  private List<Edge<A, B>> getLigandsToSort(Node<A, B> node, List<Edge<A, B>> edges)
-  {
-    List<Edge<A, B>> filtered = new ArrayList<Edge<A, B>>();
-    for (Edge<A, B> edge : edges) {
-      if (edge.isEnd(node) || edge.getEnd().isTerminal())
-        continue;
-      if (!hasDescriptors(node))
-        continue;
-      filtered.add(edge);
-    }
-    return filtered;
-  }
-
   private List<PairList> newPairLists(List<Descriptor> descriptors)
   {
     if (descriptors == null)
       return Collections.emptyList();
-    List<PairList> pairs = new ArrayList<PairList>();
+    List<PairList> pairs = new ArrayList<>();
     for (Descriptor descriptor : descriptors) {
       pairs.add(new PairList(descriptor));
     }
@@ -306,6 +201,7 @@ public class Rule4b<A, B>
       Node<A, B> aNode = aQueue.poll();
       Node<A, B> bNode = bQueue.poll();
 
+      assert aNode != null && bNode != null;
       Descriptor desA = aNode.getAux();
       Descriptor desB = bNode.getAux();
 
@@ -339,9 +235,9 @@ public class Rule4b<A, B>
   private Sort<A, B> getRefSorter(Descriptor refA)
   {
     List<SequenceRule<A, B>> rules = new ArrayList<>(getSorter().getRules());
-    assert rules.remove(this);
-    rules.add(new Rule4b<A, B>(getMol(), refA));
-    return new Sort<A, B>(rules);
+    rules.remove(this);
+    rules.add(new Rule4b<>(getMol(), refA));
+    return new Sort<>(rules);
   }
 
   @Override
@@ -361,7 +257,6 @@ public class Rule4b<A, B>
         if (blike && !alike)
           return -1;
       }
-      return 0;
     } else {
       List<PairList> list1 = newPairLists(getReferenceDescriptors(a.getEnd()));
       List<PairList> list2 = newPairLists(getReferenceDescriptors(b.getEnd()));
@@ -386,7 +281,7 @@ public class Rule4b<A, B>
             return cmp;
         }
       }
-      return 0;
     }
+    return 0;
   }
 }

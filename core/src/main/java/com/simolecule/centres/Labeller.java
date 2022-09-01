@@ -41,11 +41,13 @@ public class Labeller<A, B> {
 
   public void label(BaseMol<A, B> mol, List<Configuration<A, B>> configs) {
     // constitutional rules
+    @SuppressWarnings("unchecked")
     final Rules<A, B> begRules = new Rules<>(new Rule1a<>(mol),
                                              new Rule1b<>(mol),
                                              new Rule2<>(mol)
     );
     // all rules (require aux calc)
+    @SuppressWarnings("unchecked")
     final Rules<A, B> allRules = new Rules<>(new Rule1a<>(mol),
                                              new Rule1b<>(mol),
                                              new Rule2<>(mol),
