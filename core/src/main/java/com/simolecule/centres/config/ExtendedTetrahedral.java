@@ -68,7 +68,64 @@ import java.util.List;
  *       f[1,0,2]         c[1..3] are arranged clockwise/right-handed
  *      /  \            - if the bond f[2]..c[0] pointed away from us the carriers
  *     /    \             c[1..3] are arranged anti-clockwise/left-handed
- *   c[1]    c[3]
+ *    c[1]   c[3]
+ * </pre>
+ *
+ * You can handle extended tetrahedrals > 3 atoms by only including the middle
+ * and end atoms.
+ *
+ * <pre>
+ *    c[0]                            c[2]
+ *     \                             /
+ *      \                           /
+ *       f[1] == x == f[0] == x == f[2]
+ *      /                           \
+ *     /                             \
+ *    c[1]                            c[3]
+ * </pre>
+ *
+ * To handle implicit hydrogens you should use the "foci" of the atom the
+ * hydrogen is attached to. For example:
+ *
+ * <pre>
+ *    H                     H
+ *     \                   /
+ *      \                 /
+ *       f[1] == f[0] == f[2]
+ *      /                 \
+ *     /                   \
+ *   c[1]                   c[3]
+ * </pre>
+ *
+ * We use the f[1] and f[2] as place holders.
+ *
+ * <pre>
+ *   f[1]                   f[2]
+ *     \                   /
+ *      \                 /
+ *       f[1] == f[0] == f[2]
+ *      /                 \
+ *     /                   \
+ *   c[1]                   c[3]
+ * </pre>
+ *
+ * For this input SMILES the arguments are shown below:
+ * <pre>
+ *   [CH3:1][CH:2]=[C@:3]=[CH:4][CH3:5]
+ *   foci:     [C@:3], [CH:2], [CH:4]
+ *   carriers: [CH3:1], [CH:2] (ImplH), [CH:4] (ImplH), [CH3:5]
+ * </pre>
+ * Note the ordering is important:
+ * <pre>
+ *   [CH:2]([CH3:1])=[C@:3]=[CH:4][CH3:5]
+ *   foci:     [C@:3], [CH:2], [CH:4]
+ *   carriers: [CH:2] (ImplH), [CH3:1], [CH:4] (ImplH), [CH3:5]
+ * </pre>
+ * A longer extended tetrahedral example:
+ * <pre>
+ *   [CH3:1][CH:2]=C=[C@:3]=C=[CH:4][CH3:5]
+ *   foci:     [C@:3], [CH:2], [CH:4]
+ *   carriers: [CH3:1], [CH:2] (ImplH), [CH:4] (ImplH), [CH3:5]
  * </pre>
  *
  *
