@@ -4,7 +4,7 @@ Centres is an Open Source Java library for that allows perception and labelling 
 
 ### How to Use
 
-You can use Centres interatively at <a href="http://www.simolecule.com/cdkdepict">http://www.simolecule.com/cdkdepict</a> by selecting the annotation "CIP Stereo Label". Alternatively you can download the ``centres.jar`` (built on CDK) from the releases page. This JAR can be used to label and test an SD or SMILES file.
+You can use Centres interactively at <a href="http://www.simolecule.com/cdkdepict">http://www.simolecule.com/cdkdepict</a> by selecting the annotation "CIP Stereo Label". Alternatively you can download the `centres.jar` (built on CDK) from the releases page. This JAR can be used to label and test an SD or SMILES file.
 
 ```
 java -jar centres.jar input.sdf
@@ -21,7 +21,7 @@ java -jar centres.jar compounds.smi -e 1
 ### Key Features
 * Generic library allowing [dependency injection](http://en.wikipedia.org/wiki/Dependency_injection) of any molecule/atom object representation. Currently
 supported 'endpoints':
-  * [Chemistry Development Kit](github.com/cdk/cdk)
+  * [Chemistry Development Kit](https://github.com/cdk/cdk)
   * [OPSIN](https://bitbucket.org/dan2097/opsin/)
   * [JChem](https://chemaxon.com/products/jchem-engines)
 * Perception and labelling of tetrahedral (__R__/__S__/__r__/__s__) and geometric double bonds (__Z__/__E__).
