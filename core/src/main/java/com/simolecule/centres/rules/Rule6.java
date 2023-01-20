@@ -56,10 +56,12 @@ public final class Rule6<A, B> extends SequenceRule<A, B> {
       return 0;
     A aAtom = a.getEnd().getAtom();
     A bAtom = b.getEnd().getAtom();
+    // JWM: note we had to go through rule 5 (pseudoasymmetric) to get here
+    // so the return type is -2/+2
     if (ref.equals(aAtom) && !ref.equals(bAtom))
-      return +1; // a is ref (has priority)
+      return +2; // a is ref (has priority)
     else if (!ref.equals(aAtom) && ref.equals(bAtom))
-      return -1; // b is ref (has priority)
+      return -2; // b is ref (has priority)
     return 0;
   }
 }
