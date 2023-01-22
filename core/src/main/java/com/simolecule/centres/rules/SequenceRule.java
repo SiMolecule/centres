@@ -40,10 +40,22 @@ import java.util.Queue;
 /**
  * An abstract comparator that provides construction of the {@link Sort}
  * wrapper allowing subclasses to focus on the actual comparison of ligands.
+ * <br/>
+ * Note there is some special semantics on the return value of the comparison.
+ * Possible values are -3 (COMP_TO_WILDCARD), -2 (LESS using rule &le; 5),
+ * -1 (LESS), 0 (EQ), +1 (MORE), +2 (MORE using rule &ge; 5). We need thse
+ * to indicate back up to the caller that this is either undefined
+ * stereochemistry or it is defined by pseudo-asymmetric (super-impossible
+ * mirror image R=>r, S=>s, etc).
  *
  * @author John May
  */
 public abstract class SequenceRule<A, B> implements Comparator<Edge<A, B>> {
+
+  /* Sentinel value returned if a comparison was made to a wildcard (any atom).
+   * Since these have undefined ranking we need to indicate back up the call
+   * stack that this centre is undefined. */
+  public static final int COMP_TO_WILDCARD = -3;
 
   public Sort<A, B> sorter = null;
   private final BaseMol<A, B> mol;
@@ -76,11 +88,6 @@ public abstract class SequenceRule<A, B> implements Comparator<Edge<A, B>> {
 
   public int recursiveCompare(Edge<A, B> a, Edge<A, B> b)
   {
-    // pseudo atoms (atomic no. 0) match all
-    if (mol.getAtomicNum(a.getEnd().getAtom()) == 0 ||
-        mol.getAtomicNum(b.getEnd().getAtom()) == 0)
-      return 0;
-
     int cmp = compare(a, b);
     if (cmp != 0) return cmp;
 
@@ -98,8 +105,10 @@ public abstract class SequenceRule<A, B> implements Comparator<Edge<A, B>> {
       List<Edge<A, B>> bs = b.getEnd().getEdges();
 
       // shallow sort first of all
-      sort(a.getEnd(), as, false);
-      sort(b.getEnd(), bs, false);
+      if (sort(a.getEnd(), as, false).wasWildcardFound())
+        return COMP_TO_WILDCARD;
+      if (sort(b.getEnd(), bs, false).wasWildcardFound())
+        return COMP_TO_WILDCARD;
 
       int sizediff = Integer.compare(as.size(), bs.size());
 
@@ -114,12 +123,6 @@ public abstract class SequenceRule<A, B> implements Comparator<Edge<A, B>> {
 
           if (areUpEdges(aNode, bNode, aEdge, bEdge))
             continue;
-
-          // pseudo atoms (atomic no. 0) match all
-          if (mol.getAtomicNum(aEdge.getEnd().getAtom()) == 0 ||
-              mol.getAtomicNum(bEdge.getEnd().getAtom()) == 0)
-            return 0;
-
           cmp = compare(aEdge, bEdge);
           if (cmp != 0) return cmp;
         }
@@ -128,8 +131,10 @@ public abstract class SequenceRule<A, B> implements Comparator<Edge<A, B>> {
       if (sizediff != 0)
         return sizediff;
 
-      sort(a.getEnd(), as);
-      sort(b.getEnd(), bs);
+      if (sort(a.getEnd(), as).wasWildcardFound())
+        return COMP_TO_WILDCARD;
+      if (sort(b.getEnd(), bs).wasWildcardFound())
+        return COMP_TO_WILDCARD;
 
       {
         Iterator<Edge<A, B>> aIt = as.iterator();
@@ -142,12 +147,6 @@ public abstract class SequenceRule<A, B> implements Comparator<Edge<A, B>> {
 
           if (areUpEdges(aNode, bNode, aEdge, bEdge))
             continue;
-
-          // pseudo atoms (atomic no. 0) match all
-          if (mol.getAtomicNum(aEdge.getEnd().getAtom()) == 0 ||
-              mol.getAtomicNum(bEdge.getEnd().getAtom()) == 0)
-            return 0;
-
           cmp = compare(aEdge, bEdge);
           if (cmp != 0) return cmp;
 

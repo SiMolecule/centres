@@ -151,6 +151,8 @@ public final class Octahedral<A, B> extends Configuration<A, B> {
   private Descriptor label(Node<A, B> root, SequenceRule<A, B> comp) {
     List<Edge<A, B>>       edges    = root.getEdges();
     Priority               priority = comp.sort(root, edges);
+    if (priority.wasWildcardFound())
+      return Descriptor.Unknown;
     List<List<Edge<A, B>>> parts    = comp.getSorter().getGroups(edges);
 
     if (!hasConfiguration(parts))

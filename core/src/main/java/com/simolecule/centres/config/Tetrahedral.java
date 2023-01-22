@@ -128,6 +128,9 @@ public class Tetrahedral<A, B> extends Configuration<A, B> {
       return Descriptor.ns;
 
     Priority priority = comp.sort(node, edges);
+    if (priority.wasWildcardFound())
+      return Descriptor.Unknown;
+
     boolean isUnique = priority.isUnique();
     if (!isUnique && edges.size() == 4) {
       if (comp.getNumSubRules() == 3)

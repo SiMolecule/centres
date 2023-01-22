@@ -54,8 +54,6 @@ public class Rule2<A, B> extends SequenceRule<A, B> {
   {
     int aAtomNum = mol.getAtomicNum(a.getEnd().getAtom());
     int bAtomNum = mol.getAtomicNum(b.getEnd().getAtom());
-    if (aAtomNum == 0 || bAtomNum == 0)
-      return 0;
     int aMassNum = a.getEnd().isDuplicate() ? 0 : mol.getMassNum(a.getEnd().getAtom());
     int bMassNum = b.getEnd().isDuplicate() ? 0 : mol.getMassNum(b.getEnd().getAtom());
     if (aMassNum == 0 && bMassNum == 0)

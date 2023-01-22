@@ -35,22 +35,29 @@ import java.util.Set;
  */
 public class Priority {
 
-  private final Boolean           unique;
-  private final boolean           pseudoAsym;
+  private final Boolean unique;
+  private final boolean foundWildcard;
+  private final boolean pseudoAsym;
   private Set<Set<Integer>> duplicates;
-  private int               ruleIdx;
+  private int ruleIdx;
 
 
-  public Priority(Boolean unique, int ruleIdx, boolean pseudoAsym)
-  {
+  public Priority(boolean unique,
+                  boolean foundWildcard,
+                  int ruleIdx,
+                  boolean pseudoAsym) {
     this.unique = unique;
+    this.foundWildcard = foundWildcard;
     this.pseudoAsym = pseudoAsym;
     this.ruleIdx = ruleIdx;
   }
 
-  public Priority(Boolean unique, boolean pseudoAsym, Set<Set<Integer>> duplicates)
-  {
+  public Priority(boolean unique,
+                  boolean foundWildcard,
+                  boolean pseudoAsym,
+                  Set<Set<Integer>> duplicates) {
     this.unique = unique;
+    this.foundWildcard = foundWildcard;
     this.pseudoAsym = pseudoAsym;
     this.duplicates = duplicates;
   }
@@ -61,13 +68,11 @@ public class Priority {
    *
    * @return whether the ligands were unique
    */
-  public Boolean isUnique()
-  {
+  public boolean isUnique() {
     return unique;
   }
 
-  public int getRuleIdx()
-  {
+  public int getRuleIdx() {
     return ruleIdx;
   }
 
@@ -78,9 +83,16 @@ public class Priority {
    *
    * @return The type of the descriptor that should be assigned
    */
-  public boolean isPseduoAsymettric()
-  {
+  public boolean isPseduoAsymettric() {
     return pseudoAsym;
+  }
+
+  /**
+   * Indicates
+   * @return
+   */
+  public  boolean wasWildcardFound() {
+    return foundWildcard;
   }
 
 }

@@ -48,7 +48,7 @@ public final class Rule1a<A, B> extends SequenceRule<A, B> {
     final int bnum = b.getEnd().getAtomicNumNumerator();
     final int bden = b.getEnd().getAtomicNumDenominator();
     if (anum == 0 || bnum == 0)
-      return 0;
+      return SequenceRule.COMP_TO_WILDCARD;
     if (aden == 1 && bden == 1)
       return Integer.compare(anum, bnum);
     return Mancude.Fraction.compare(anum, aden, bnum, bden);

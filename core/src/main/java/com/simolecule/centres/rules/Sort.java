@@ -67,14 +67,25 @@ public class Sort<A, B> {
 
   public Priority prioritise(Node<A, B> node, List<Edge<A, B>> edges, boolean deep)
   {
-    Boolean unique        = Boolean.TRUE;
+    boolean unique = true;
+    boolean foundWildcard  = false;
     int     numPseudoAsym = 0;
 
-    for (int i = 0; i < edges.size(); i++)
+    outer:
+    for (int i = 0; i < edges.size(); i++) {
       for (int j = i; j > 0; j--) {
 
         int cmp = compareLigands(node, edges.get(j - 1), edges.get(j), deep);
 
+
+        if (cmp == SequenceRule.COMP_TO_WILDCARD) {
+          unique = false;
+          foundWildcard = true;
+          break outer;
+        }
+
+        // -2/+2 means we used Rule 5 (or more) and the ligands are mirror
+        // images
         if (cmp < -1 || cmp > 1)
           numPseudoAsym++;
 
@@ -86,8 +97,9 @@ public class Sort<A, B> {
           break;
         }
       }
+    }
 
-    return new Priority(unique, ruleMax, numPseudoAsym == 1);
+    return new Priority(unique, foundWildcard, ruleMax, numPseudoAsym == 1);
   }
 
   public final int compareLigands(Node<A, B> node, Edge<A, B> a, Edge<A, B> b, boolean deep)
