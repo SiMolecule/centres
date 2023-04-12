@@ -71,7 +71,7 @@ import java.util.List;
  *    c[1]   c[3]
  * </pre>
  *
- * You can handle extended tetrahedrals > 3 atoms by only including the middle
+ * You can handle extended tetrahedrals &gt; 3 atoms by only including the middle
  * and end atoms.
  *
  * <pre>

@@ -40,13 +40,13 @@ import java.util.Queue;
 /**
  * An abstract comparator that provides construction of the {@link Sort}
  * wrapper allowing subclasses to focus on the actual comparison of ligands.
- * <br/>
+ * <br>
  * Note there is some special semantics on the return value of the comparison.
  * Possible values are -3 (COMP_TO_WILDCARD), -2 (LESS using rule &le; 5),
  * -1 (LESS), 0 (EQ), +1 (MORE), +2 (MORE using rule &ge; 5). We need thse
  * to indicate back up to the caller that this is either undefined
  * stereochemistry or it is defined by pseudo-asymmetric (super-impossible
- * mirror image R=>r, S=>s, etc).
+ * mirror image R=&gt;r, S=&gt;s, etc).
  *
  * @author John May
  */
