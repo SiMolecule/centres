@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "John"
+  given-names: "Mayfield"
+  orcid: "https://orcid.org/0000-0001-7730-2646"
+title: "centres"
+version: 1.0
+doi: 10.1021/acs.jcim.8b00324
+date-released: 2018-06-28
+url: "https://github.com/SiMolecule/centres"
