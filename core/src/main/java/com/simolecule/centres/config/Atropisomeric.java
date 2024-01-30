@@ -94,25 +94,18 @@ public final class Atropisomeric<A, B> extends Configuration<A, B> {
     final A focus1 = getFoci()[0];
     final A focus2 = getFoci()[1];
 
-    Node<A, B> root1 = digraph.getRoot();
-    if (root1 == null)
-      root1 = digraph.init(focus1);
-    else
-      digraph.changeRoot(root1);
-
-    Edge<A,B> internal = findInternalEdge(root1.getEdges(), focus1, focus2);
+    Node<A, B> root1 = new Digraph<>(digraph.getMol(), focus1, bond).getRoot();
+    Node<A, B> root2 = new Digraph<>(digraph.getMol(), focus2, bond).getRoot();
 
     List<Edge<A, B>> edges1 = new ArrayList<>(root1.getEdges());
-    edges1.remove(internal);
+    edges1.remove(findInternalEdge(edges1, focus1, focus2));
 
     Priority priority1 = comp.sort(root1, edges1);
     if (!priority1.isUnique())
       return Descriptor.Unknown;
 
-    Node<A,B> root2 = internal.getOther(root1);
-    digraph.changeRoot(root2);
     List<Edge<A, B>> edges2 = new ArrayList<>(root2.getEdges());
-    edges2.remove(internal);
+    edges2.remove(findInternalEdge(edges2, focus1, focus2));
 
     Priority priority2 = comp.sort(root2, edges2);
     if (!priority2.isUnique())

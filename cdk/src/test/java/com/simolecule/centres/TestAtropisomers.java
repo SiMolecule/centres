@@ -26,7 +26,9 @@
 
 package com.simolecule.centres;
 
+import org.junit.Assert;
 import org.junit.Test;
+import org.openscience.cdk.graph.Cycles;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IStereoElement;
 import org.openscience.cdk.io.MDLV2000Reader;
@@ -50,6 +52,7 @@ public class TestAtropisomers {
       mol.setStereoElements(StereoElementFactory.using2DCoordinates(mol)
                                                 .interpretProjections(Projection.Chair, Projection.Haworth)
                                                 .createAll());
+      Cycles.markRingAtomsAndBonds(mol);
       return mol;
     }
   }
@@ -84,5 +87,62 @@ public class TestAtropisomers {
       }
     }
   }
+
+  @Test
+  public void testShouldBeNs() throws Exception
+  {
+    IAtomContainer mol = loadMolfile("issue14.mol");
+    CdkLabeller.label(mol);
+    boolean seen = true;
+    for (IStereoElement se : mol.stereoElements()) {
+      switch (se.getConfigClass()) {
+        case IStereoElement.AT:
+          Descriptor label = se.getFocus().getProperty(BaseMol.CIP_LABEL_KEY);
+          Assert.assertNull(label);
+          seen = true;
+          break;
+      }
+    }
+    Assert.assertTrue(seen);
+  }
+
+  @Test
+  public void testShouldBeP_1() throws Exception
+  {
+    IAtomContainer mol = loadMolfile("issue15-1.mol");
+    CdkLabeller.label(mol);
+    CdkLabeller.label(mol);
+    boolean seen = true;
+    for (IStereoElement se : mol.stereoElements()) {
+      switch (se.getConfigClass()) {
+        case IStereoElement.AT:
+          Descriptor label = se.getFocus().getProperty(BaseMol.CIP_LABEL_KEY);
+          Assert.assertEquals(label, Descriptor.P);
+          seen = true;
+          break;
+      }
+    }
+    Assert.assertTrue(seen);
+  }
+
+  @Test
+  public void testShouldBeP_2() throws Exception
+  {
+    IAtomContainer mol = loadMolfile("issue15-2.mol");
+    CdkLabeller.label(mol);
+    CdkLabeller.label(mol);
+    boolean seen = true;
+    for (IStereoElement se : mol.stereoElements()) {
+      switch (se.getConfigClass()) {
+        case IStereoElement.AT:
+          Descriptor label = se.getFocus().getProperty(BaseMol.CIP_LABEL_KEY);
+          Assert.assertEquals(label, Descriptor.P);
+          seen = true;
+          break;
+      }
+    }
+    Assert.assertTrue(seen);
+  }
+
 
 }

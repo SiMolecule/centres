@@ -47,6 +47,7 @@ public final class Digraph<A, B> {
   private final BaseMol<A, B> mol;
   private       Node<A, B>    root;
   private       Node<A, B>    tmproot;
+  private       A             atomFocus;
   private int numNodes = 0;
   private A rule6Ref;
 
@@ -55,13 +56,19 @@ public final class Digraph<A, B> {
     this.mol = mol;
   }
 
+  public Digraph(BaseMol<A, B> mol, A atom, B bond)
+  {
+    this.mol = mol;
+    init(atom, bond);
+  }
+
   public Digraph(BaseMol<A, B> mol, A atom)
   {
     this.mol = mol;
     init(atom);
   }
 
-  public Node<A, B> init(A atom)
+  public Node<A, B> init(A atom, B bond)
   {
     this.root = new Node<>(this,
                            new char[mol.getNumAtoms()],
@@ -72,8 +79,15 @@ public final class Digraph<A, B> {
                            0);
     int atomIdx = mol.getAtomIdx(atom);
     this.root.visit[atomIdx] = 1;
+    if (bond == null)
+      this.atomFocus = atom;
     numNodes++;
     return this.root;
+  }
+
+  public Node<A, B> init(A atom)
+  {
+    return init(atom, null);
   }
 
   public int getNumNodes()
@@ -179,7 +193,7 @@ public final class Digraph<A, B> {
 
         // duplicate nodes for bond orders (except for root atoms...)
         // for example >S=O
-        if (!root.equals(beg)) {
+        if (!atom.equals(atomFocus)) {
           if (mol.getCharge(atom) < 0 && mol.getFractionalAtomicNum(atom).getDen() > 1) {
             end = beg.newTerminalChild(nbrIdx, nbr, Node.BOND_DUPLICATE);
             numNodes++;
@@ -195,7 +209,7 @@ public final class Digraph<A, B> {
       }
       // bond order expansion (backwards)
       else if (bond.equals(prev)) {
-        if (!root.getAtom().equals(nbr)) {
+        if (!nbr.equals(atomFocus)) {
           for (int i = 1; i < bord; i++) {
             Node<A, B> end = beg.newTerminalChild(nbrIdx, nbr, Node.BOND_DUPLICATE);
             numNodes++;
