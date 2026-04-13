@@ -10,6 +10,7 @@
         <version>1.4</version>
     </parent>
 
+    <name>centres-core</name>
     <artifactId>centres-core</artifactId>
     <packaging>jar</packaging>
 
