@@ -34,19 +34,9 @@
     <url>https://github.com/simolecule/centres/issues</url>
     <system>GitHub Issues</system>
   </issueManagement>
-  <distributionManagement>
-    <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-    <repository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
-  </distributionManagement>
   <developers>
     <developer>
-      <name>John Mayfield (ne May)</name>
+      <name>John Mayfield</name>
       <timezone>GMT</timezone>
     </developer>
   </developers>
@@ -73,8 +63,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.6.1</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>8</source>
+          <target>8</target>
           <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
@@ -95,44 +85,44 @@
         </executions>
       </plugin>
     </plugins>
-    <!-- allow scp of artifacts to the ebi repositories -->
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-ssh</artifactId>
-        <version>2.2</version>
-      </extension>
-    </extensions>
   </build>
   <profiles>
     <profile>
-      <id>ossrh</id>
+      <id>central</id>
       <build>
         <plugins>
           <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
-            <version>1.6.8</version>
-            <extensions>true</extensions>
-            <configuration>
-              <serverId>ossrh</serverId>
-              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-              <autoReleaseAfterClose>true</autoReleaseAfterClose>
-            </configuration>
+              <groupId>org.sonatype.central</groupId>
+              <artifactId>central-publishing-maven-plugin</artifactId>
+              <version>0.10.0</version>
+              <extensions>true</extensions>
+              <configuration>
+                  <publishingServerId>central-centres</publishingServerId>
+                  <autoPublish>true</autoPublish>
+                  <waitUntil>published</waitUntil>
+              </configuration>
           </plugin>
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <version>3.0.1</version>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-gpg-plugin</artifactId>
+              <version>3.2.8</version>
+              <executions>
+                  <execution>
+                      <id>sign-artifacts</id>
+                      <phase>verify</phase>
+                      <goals>
+                          <goal>sign</goal>
+                      </goals>
+                      <configuration>
+                          <executable>gpg</executable>
+                          <gpgArguments>
+                              <arg>--pinentry-mode</arg>
+                              <arg>loopback</arg>
+                          </gpgArguments>
+                          <passphrase>${gpg.passphrase}</passphrase>
+                      </configuration>
+                  </execution>
+              </executions>
           </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
