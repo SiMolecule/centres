@@ -72,27 +72,27 @@ public final class Octahedral<A, B> extends Configuration<A, B> {
 
   /* We are in normal form:
    *        c
-   *        | a
+   *        | f
    *        |/
    *    d---x---b = OH1
    *       /|       where a: first carrier, b: second carried, etc
-   *      f |             x: focus
+   *      a |             x: focus
    *        e             'a' is in front of the focus 'x', 'f' is behind
    *
    * storage index: a@0, b@1, c@2, d@3, e@4, f@5
    *
    * so if our axis is:
    *   a-f (0->5) the plane atoms are b,c,d,e (1,2,3,4) anticlockwise
-   *   b-d (1->3) the plane atoms are a,c,f,e (0,2,5,4) anticlockwise
-   *   c-e (2->4) the plane atoms are a,d,f,b (0,3,5,1) anticlockwise
+   *   b-d (1->3) the plane atoms are a,e,f,c (0,4,5,2) anticlockwise
+   *   c-e (2->4) the plane atoms are a,b,f,d (0,1,5,3) anticlockwise
    */
   private final int[][] PLANE_INDEX = new int[][]{
-      {1, 2, 3, 4}, // a-f
-      {0, 2, 5, 4}, // b-d
-      {0, 3, 5, 1}, // c-e
-      {4, 5, 2, 0}, // d-b
-      {1, 5, 3, 0}, // e-c
-      {4, 3, 2, 1}, // f-a
+      {1, 2, 3, 4}, // 0: a-f
+      {0, 4, 5, 2}, // 1: b-d
+      {0, 1, 5, 3}, // 2: c-e
+      {2, 5, 4, 0}, // 3: d-b
+      {3, 5, 1, 0}, // 4: e-c
+      {4, 3, 2, 1}, // 5: f-a
   };
 
   public Octahedral(A focus, A[] carriers) {
