@@ -121,9 +121,22 @@ public final class CdkLabeller extends Labeller<IAtom, IBond> {
         case IStereoElement.OC: {
           org.openscience.cdk.stereo.Octahedral ocSe
                   = ((org.openscience.cdk.stereo.Octahedral) se).normalize();
-          configs.add(new Octahedral<IAtom, IBond>(ocSe.getFocus(),
-                                                   ocSe.getCarriers()
-                                                       .toArray(new IAtom[6])));
+          IAtom focus = ocSe.getFocus();
+
+          List<IAtom> carriers = ocSe.getCarriers();
+
+          // actually square planar!
+          if (focus.getImplicitHydrogenCount() == 0 &&
+              focus.getBondCount() == 4 &&
+              carriers.get(0).equals(focus) && carriers.get(5).equals(focus)) {
+            configs.add(new SquarePlanar<>(focus,
+                                           ocSe.getCarriers().subList(1,5)
+                                               .toArray(new IAtom[6])));
+          } else {
+            configs.add(new Octahedral<IAtom, IBond>(focus,
+                                                     ocSe.getCarriers()
+                                                         .toArray(new IAtom[6])));
+          }
         }
         break;
         case IStereoElement.SP: {

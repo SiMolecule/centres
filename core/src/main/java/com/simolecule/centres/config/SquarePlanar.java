@@ -35,8 +35,11 @@ import com.simolecule.centres.rules.Priority;
 import com.simolecule.centres.rules.SequenceRule;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * An square-planar configuration is described by a focus and four carriers. The
@@ -102,10 +105,24 @@ public final class SquarePlanar<A,B> extends Configuration<A,B> {
     throw new IllegalArgumentException();
   }
 
-  private boolean hasConfiguration(List<List<Edge<A,B>>> parts) {
-    return parts.size() > 2 ||
+  private boolean hasConfiguration(List<List<Edge<A,B>>> parts,
+                                   Map<A,Integer> primes) {
+    if (parts.size() > 2 ||
            parts.size() == 2 &&
-           parts.get(0).size() != 1 && parts.get(0).size() != 3;
+           parts.get(0).size() != 1 && parts.get(0).size() != 3) {
+      return true;
+    }
+    // check prime partitions
+    int numParts = parts.size();
+    for (List<Edge<A,B>> part : parts) {
+      for (int i=1; i<part.size(); i++) {
+        Integer primeA = primes.get(part.get(i-1).getEnd().getAtom());
+        Integer primeB = primes.get(part.get(i).getEnd().getAtom());
+        if (!Objects.equals(primeA, primeB))
+          numParts++;
+      }
+    }
+    return numParts > 2;
   }
 
   private Descriptor label(Node<A, B> root, SequenceRule<A, B> comp) {
@@ -113,23 +130,38 @@ public final class SquarePlanar<A,B> extends Configuration<A,B> {
     Priority              priority = comp.sort(root, edges);
     if (priority.wasWildcardFound())
       return Descriptor.Unknown;
-    List<List<Edge<A,B>>> parts    = comp.getSorter().getGroups(edges);
+    List<List<Edge<A,B>>> parts = comp.getSorter().getGroups(edges);
+    Map<A,Integer> primes = new HashMap<>();
 
-    if (!hasConfiguration(parts))
-      return Descriptor.ns; // maybe return unknown?
+    if (!priority.isUnique()) {
 
-    int low = 5;
+      // will be revisited
+      if (comp.getNumSubRules() == 3)
+        return Descriptor.Unknown;
+
+      assignPrimeLocants(parts, primes);
+
+//      if (!hasConfiguration(parts, primes))
+//        return Descriptor.ns;
+    }
+
+    CipRank axisBeg = null;
+    CipRank axisEnd = null;
     for (Edge<A,B> edge : parts.get(0)) {
       A beg = edge.getEnd().getAtom();
       A end = findTransAtom(beg);
-      int num = getPriorityNumber(parts, end);
-      if (num < low) {
-        low = num;
+      CipRank rankBeg = new CipRank(getPriorityNumber(parts, beg), primes.get(beg));
+      CipRank rankEnd = new CipRank(getPriorityNumber(parts, end), primes.get(end));
+      if (axisBeg != null && !rankEnd.equals(axisBeg))
+        continue;
+      if (axisEnd == null || rankEnd.compareTo(axisEnd) > 0) {
+        axisBeg = rankBeg;
+        axisEnd = rankEnd;
       }
     }
 
-    if (low < 5) {
-      cache.put(getFocus(), "SP-4-" + low);
+    if (axisEnd != null) {
+      cache.put(getFocus(), "SP-4-" + axisEnd);
       return Descriptor.SP_4;
     }
 
