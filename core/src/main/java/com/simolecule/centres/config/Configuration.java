@@ -34,8 +34,11 @@ import com.simolecule.centres.Node;
 import com.simolecule.centres.rules.SequenceRule;
 
 import java.lang.reflect.Array;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public abstract class Configuration<A, B> {
 
@@ -217,5 +220,45 @@ public abstract class Configuration<A, B> {
                           Digraph<A, B> digraph,
                           SequenceRule<A, B> comp) {
     return Descriptor.Unknown;
+  }
+
+  protected void assignPrimeLocants(List<List<Edge<A, B>>> parts,
+                                    Map<A, Integer> primes) {
+
+    // note this procedure is only for bidentate ligands, assigning primes
+    // to high order dentate ligands is a bit more complicated
+
+    BaseMol<A,B> mol = digraph.getMol();
+    for (List<Edge<A,B>> part : parts) {
+      if (part.size() > 1) {
+        boolean assigned = false;
+        int primeNum = 0;
+        for (Edge<A, B> abEdge : part) {
+          Node<A, B> atom = abEdge.getEnd();
+          if (mol.isInRing(abEdge.getBond()) &&
+              !primes.containsKey(atom.getAtom())) {
+            assigned = true;
+            Deque<Edge<A, B>> queue = new ArrayDeque<>();
+            queue.add(abEdge);
+            while (!queue.isEmpty()) {
+              Edge<A, B> e = queue.poll();
+              if (e.getEnd().getAtom() != null) {
+                primes.put(e.getEnd().getAtom(), primeNum);
+                queue.addAll(e.getEnd().getOutEdges());
+              }
+            }
+            primeNum++;
+          }
+        }
+
+        if (assigned) {
+          part.sort((o1, o2) -> {
+            Integer o1prime = primes.get(o1.getEnd().getAtom());
+            Integer o2prime = primes.get(o2.getEnd().getAtom());
+            return Integer.compare(o1prime, o2prime);
+          });
+        }
+      }
+    }
   }
 }

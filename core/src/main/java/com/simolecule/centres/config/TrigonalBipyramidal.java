@@ -34,6 +34,8 @@ import com.simolecule.centres.Node;
 import com.simolecule.centres.rules.Priority;
 import com.simolecule.centres.rules.SequenceRule;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,7 +101,17 @@ public final class TrigonalBipyramidal<A,B> extends Configuration<A,B> {
     Priority              priority = comp.sort(root, edges);
     if (priority.wasWildcardFound())
       return Descriptor.Unknown;
-    List<List<Edge<A,B>>> parts    = comp.getSorter().getGroups(edges);
+    List<List<Edge<A,B>>> parts = comp.getSorter().getGroups(edges);
+    Map<A,Integer> primes = new HashMap<>();
+
+    if (!priority.isUnique()) {
+      assignPrimeLocants(parts, primes);
+
+      // primes can change the order
+      edges = new ArrayList<>();
+      for (List<Edge<A,B>> part : parts)
+        edges.addAll(part);
+    }
 
     if (!hasConfiguration(parts))
       return Descriptor.ns; // maybe return unknown?
@@ -108,13 +120,46 @@ public final class TrigonalBipyramidal<A,B> extends Configuration<A,B> {
     for (Edge<A,B> edge : edges) {
       A beg = edge.getEnd().getAtom();
       A end = null;
-      if (beg.equals(carriers[0]))
+
+      CipRank[] equatorial = new CipRank[3];
+      if (beg.equals(carriers[0])) {
         end = carriers[4];
-      else if (beg.equals(carriers[4]))
+        equatorial = new CipRank[] {
+                new CipRank(getPriorityNumber(parts, carriers[1]), primes.get(carriers[1])),
+                new CipRank(getPriorityNumber(parts, carriers[2]), primes.get(carriers[2])),
+                new CipRank(getPriorityNumber(parts, carriers[3]), primes.get(carriers[3]))
+        };
+      }
+      else if (beg.equals(carriers[4])) {
         end = carriers[0];
+        equatorial = new CipRank[] {
+                new CipRank(getPriorityNumber(parts, carriers[3]), primes.get(carriers[3])),
+                new CipRank(getPriorityNumber(parts, carriers[2]), primes.get(carriers[2])),
+                new CipRank(getPriorityNumber(parts, carriers[1]), primes.get(carriers[1]))
+        };
+      }
       if (end != null) {
-        cache.put(getFocus(), "TBPY-5-" + getPriorityNumber(parts, beg)
-                              + "" + getPriorityNumber(parts, end));
+
+        String rotate = "";
+        if (!equatorial[0].equals(equatorial[1]) &&
+            !equatorial[0].equals(equatorial[2]) &&
+            !equatorial[1].equals(equatorial[2])) {
+          // find the lowest
+          int off = 0;
+          for (int i = 1; i < equatorial.length; i++) {
+            if (equatorial[i].compareTo(equatorial[off]) < 0)
+              off = i;
+          }
+          if (equatorial[off].compareTo(equatorial[(off+1)%equatorial.length]) < 0 &&
+              equatorial[(off+1)%equatorial.length].compareTo(equatorial[(off+2)%equatorial.length]) < 0)
+            rotate = "-A";
+          else
+            rotate = "-C";
+        }
+
+        cache.put(getFocus(), "TBPY-5-" + new CipRank(getPriorityNumber(parts, beg), primes.get(beg))
+                              + new CipRank(getPriorityNumber(parts, end), primes.get(end)) +
+                              rotate);
         return Descriptor.TBPY_5;
       }
     }

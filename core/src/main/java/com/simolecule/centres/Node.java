@@ -240,6 +240,8 @@ public final class Node<A, B> {
         return "Br";
       case 9:
         return "F";
+      case 16:
+        return "S";
       default:
         return "#" + elem;
     }
