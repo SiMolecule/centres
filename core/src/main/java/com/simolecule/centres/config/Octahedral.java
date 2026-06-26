@@ -304,23 +304,36 @@ public final class Octahedral<A, B> extends Configuration<A, B> {
         CipRank axisRank = new CipRank(getPriorityNumber(parts, axis), primes.get(axis));
 
         // note we are upside down so the plane is clockwise not anti-clockwise
-        CipRank sndAxisBeg = null;
-        CipRank sndAxisEnd = null;
+        List<CipRank> cw_plane = new ArrayList<>();
         for (int i=1; i<5; i++) {
           A beg = getCarriers()[i];
-          A end = getCarriers()[1+SquarePlanar.TRANS_INDEX[i-1]];
           CipRank begRank = new CipRank(getPriorityNumber(parts, beg), primes.get(beg));
-          CipRank endRank = new CipRank(getPriorityNumber(parts, end), primes.get(end));
+          cw_plane.add(begRank);
+        }
+
+        CipRank sndAxisBeg = null;
+        CipRank sndAxisEnd = null;
+        String rotation = "";
+        for (int i=0; i<4; i++) {
+          CipRank begRank = cw_plane.get(i);
+          CipRank endRank = cw_plane.get((i+2)%4);
           if (sndAxisBeg == null ||
               begRank.compareTo(sndAxisBeg) < 0 ||
               begRank.equals(sndAxisBeg) && endRank.compareTo(sndAxisEnd) > 0) {
             sndAxisBeg = begRank;
             sndAxisEnd = endRank;
+            rotation = "";
+
+            CipRank b = cw_plane.get((i+1)%4);
+            CipRank d = cw_plane.get((i+3)%4);
+            int cmp;
+            if ((cmp = b.compareTo(d)) != 0)
+              rotation = cmp < 0 ? "-C" : "-A";
           }
         }
 
         // now label like SP-4 (square planar)
-        cache.put(getFocus(), "SPY-5-" + axisRank + sndAxisEnd);
+        cache.put(getFocus(), "SPY-5-" + axisRank + sndAxisEnd + rotation);
       }
     }
 
