@@ -61,7 +61,8 @@ public class InorganicConfigTest {
   }
 
   static void assertConfig(String smi, String config) {
-    Assert.assertEquals(config, getConfig(smi));
+    Assert.assertEquals("Incorrect config", config, getConfig(smi));
+    // System.err.println(smi + " " + getConfig(smi));
   }
 
   @Test
@@ -75,6 +76,14 @@ public class InorganicConfigTest {
   public void testSimpleOCasSP() {
     assertConfig("[Pt@OH25](Cl)(Cl)([NH3])[NH3]", "SP-4-2");
     assertConfig("[Pt@OH27](Cl)(Cl)([NH3])[NH3]", "SP-4-1");
+  }
+
+  @Test
+  public void testSimpleOC() {
+    assertConfig("[Co@OH1](Cl)(Cl)([NH3])([NH3])([NH3])[NH3]", "OC-6-22");
+    assertConfig("[Co@OH25](Cl)(Cl)([NH3])([NH3])([NH3])[NH3]", "OC-6-12");
+    assertConfig("[Co@OH1](Cl)(Cl)(Cl)(Cl)([NH3])[NH3]", "OC-6-22");
+    assertConfig("[Co@OH12](Cl)(Cl)(Cl)(Cl)([NH3])[NH3]", "OC-6-11");
   }
 
   @Test
@@ -95,6 +104,18 @@ public class InorganicConfigTest {
   public void testBisBidentateOC() {
     assertConfig("[Mo@OH1](C)(1SCCO1)(1SCCO1)[H]", "OC-6-1′2′-C");
     assertConfig("[Mo@OH2](C)(1SCCO1)(1SCCO1)[H]", "OC-6-1′2′-A");
+  }
+
+  @Test
+  public void testBisBidentateSPY5() {
+    assertConfig("[Mo@OH1](C)(1SCCO1)1SCCO1", "SPY-5-1′3");
+    assertConfig("[Mo@OH2](C)(1SCCO1)1SCCO1", "SPY-5-1′3");
+    assertConfig("[Mo@OH25](C)(1SCCO1)1SCCO1", "SPY-5-31′");
+    assertConfig("[Mo@OH26](C)(1SCCO1)1SCCO1", "SPY-5-32′");
+    assertConfig("[Mo@OH1](C)(1OCCO1)1OCCO1", "SPY-5-1′2");
+    assertConfig("[Mo@OH2](C)(1OCCO1)1OCCO1", "SPY-5-1′2");
+    assertConfig("[Mo@OH25](C)(1OCCO1)1OCCO1", "SPY-5-21′");
+    assertConfig("[Mo@OH26](C)(1OCCO1)1OCCO1", "SPY-5-21′");
   }
 
   @Test

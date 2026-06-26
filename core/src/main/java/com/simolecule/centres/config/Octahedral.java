@@ -35,6 +35,7 @@ import com.simolecule.centres.rules.Priority;
 import com.simolecule.centres.rules.SequenceRule;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -145,15 +146,13 @@ public final class Octahedral<A, B> extends Configuration<A, B> {
     throw new IllegalArgumentException();
   }
 
-  private boolean hasConfiguration(List<List<Edge<A, B>>> parts, Map<A,Integer> primes) {
-    if (parts.size() > 2 ||
-        parts.size() == 2 && parts.get(0).size() != 1 && parts.get(0).size() != 5) {
-      return true;
-    }
+  private boolean hasOctahedralConfig(List<List<Edge<A, B>>> parts, Map<A,Integer> primes) {
 
     // check prime partitions
+    int total = 0;
     int numParts = parts.size();
     for (List<Edge<A,B>> part : parts) {
+      total += part.size();
       for (int i=1; i<part.size(); i++) {
         Integer primeA = primes.get(part.get(i-1).getEnd().getAtom());
         Integer primeB = primes.get(part.get(i).getEnd().getAtom());
@@ -162,18 +161,49 @@ public final class Octahedral<A, B> extends Configuration<A, B> {
       }
     }
 
+    if (total != 6)
+      return false; // not OC-6!
+
+    if (numParts > 2 ||
+        parts.size() == 2 &&
+        ((parts.get(0).size() != 1 && parts.get(0).size() != 5) ||
+         (parts.get(0).size() != 5 && parts.get(0).size() != 1))) {
+      return true;
+    }
+
+    return false;
+  }
+
+  private boolean hasSPY5(List<List<Edge<A, B>>> parts, Map<A,Integer> primes) {
+
+    // check prime partitions
+    int total = 0;
+    int numParts = parts.size();
+    for (List<Edge<A,B>> part : parts) {
+      total += part.size();
+      for (int i=1; i<part.size(); i++) {
+        Integer primeA = primes.get(part.get(i-1).getEnd().getAtom());
+        Integer primeB = primes.get(part.get(i).getEnd().getAtom());
+        if (!Objects.equals(primeA, primeB))
+          numParts++;
+      }
+    }
+
+    if (total != 5)
+      return false; // not SPY-5!
+
     return numParts > 2;
   }
 
   private Descriptor label(Node<A, B> root, SequenceRule<A, B> comp) {
-    List<Edge<A, B>>       edges    = root.getEdges();
-    Priority               priority = comp.sort(root, edges);
+    List<Edge<A, B>> edges = root.getEdges();
+    Priority priority = comp.sort(root, edges);
     if (priority.wasWildcardFound())
       return Descriptor.Unknown;
-    List<List<Edge<A, B>>> parts    = comp.getSorter().getGroups(edges);
+    List<List<Edge<A, B>>> parts = comp.getSorter().getGroups(edges);
 
     // add on prime locants if not unique
-    Map<A,Integer> primes = new HashMap<>();
+    Map<A, Integer> primes = new HashMap<>();
 
     if (!priority.isUnique()) {
 
@@ -186,87 +216,112 @@ public final class Octahedral<A, B> extends Configuration<A, B> {
       assignPrimeLocants(parts, primes);
     }
 
-    if (!hasConfiguration(parts, primes))
-      return Descriptor.ns; // maybe return unknown?
+    if (hasOctahedralConfig(parts, primes)) {
+      A fstAxisBeg = null;
+      CipRank fstAxisBegRank = null;
+      CipRank fstAxisEndRank = null;
+      CipRank sndAxisBegRank;
+      CipRank sndAxisEndRank;
+      CipRank thdAxisBegRank;
+      CipRank thdAxisEndRank;
 
-    A       fstAxisBeg = null;
-    CipRank fstAxisBegRank = null;
-    CipRank fstAxisEndRank = null;
-    CipRank sndAxisBegRank;
-    CipRank sndAxisEndRank;
-    CipRank thdAxisBegRank;
-    CipRank thdAxisEndRank;
-
-    // the first axis is select by starting from the highest priority ligand,
-    // if there are multiple we choose the axis going towards the lowest
-    // priority
-    for (Edge<A, B> edge : parts.get(0)) {
-      A   beg = edge.getEnd().getAtom();
-      A   end = findTransAtom(beg);
-      CipRank begRank = new CipRank(getPriorityNumber(parts, beg), primes.get(beg));
-      CipRank endRank = new CipRank(getPriorityNumber(parts, end), primes.get(end));
-      if (fstAxisBegRank != null && !begRank.equals(fstAxisBegRank))
-        break;
-      if (fstAxisEndRank == null ||
-          endRank.compareTo(fstAxisEndRank) > 0) {
-        fstAxisBegRank = begRank;
-        fstAxisEndRank = endRank;
-        fstAxisBeg = beg;
+      // the first axis is select by starting from the highest priority ligand,
+      // if there are multiple we choose the axis going towards the lowest
+      // priority
+      for (Edge<A, B> edge : parts.get(0)) {
+        A beg = edge.getEnd().getAtom();
+        A end = findTransAtom(beg);
+        CipRank begRank = new CipRank(getPriorityNumber(parts, beg), primes.get(beg));
+        CipRank endRank = new CipRank(getPriorityNumber(parts, end), primes.get(end));
+        if (fstAxisBegRank != null && !begRank.equals(fstAxisBegRank))
+          break;
+        if (fstAxisEndRank == null ||
+            endRank.compareTo(fstAxisEndRank) > 0) {
+          fstAxisBegRank = begRank;
+          fstAxisEndRank = endRank;
+          fstAxisBeg = beg;
+        }
       }
-    }
 
-    // get the ligands in the plan of the axis rotating counter-clockwise
-    List<CipRank> ccw_plane = new ArrayList<>(4);
-    for (A a : getPlane(fstAxisBeg)) {
-      CipRank r = new CipRank(getPriorityNumber(parts, a), primes.get(a));
-      ccw_plane.add(r);
-    }
-
-    // work out the second axis
-    int low = 0;
-    for (int i = 1; i < 4; i++) {
-      if (ccw_plane.get(i).compareTo(ccw_plane.get(low)) < 0) {
-        low = i;
-      } else if (ccw_plane.get(i).equals(ccw_plane.get(low)) &&
-                 ccw_plane.get((i + 2) % 4).compareTo(ccw_plane.get((low + 2) % 4)) > 0) {
-        low = i;
+      // get the ligands in the plan of the axis rotating counter-clockwise
+      List<CipRank> ccw_plane = new ArrayList<>(4);
+      for (A a : getPlane(fstAxisBeg)) {
+        CipRank r = new CipRank(getPriorityNumber(parts, a), primes.get(a));
+        ccw_plane.add(r);
       }
-    }
 
-    sndAxisBegRank = ccw_plane.get(low);
-    sndAxisEndRank = ccw_plane.get((low + 2) % 4);
-    thdAxisBegRank = ccw_plane.get((low + 1) % 4);
-    thdAxisEndRank = ccw_plane.get((low + 3) % 4);
+      // work out the second axis
+      int low = 0;
+      for (int i = 1; i < 4; i++) {
+        if (ccw_plane.get(i).compareTo(ccw_plane.get(low)) < 0) {
+          low = i;
+        } else if (ccw_plane.get(i).equals(ccw_plane.get(low)) &&
+                   ccw_plane.get((i + 2) % 4).compareTo(ccw_plane.get((low + 2) % 4)) > 0) {
+          low = i;
+        }
+      }
 
-    // suppress warnings
-    if (fstAxisEndRank == null)
-      return Descriptor.ns;
+      sndAxisBegRank = ccw_plane.get(low);
+      sndAxisEndRank = ccw_plane.get((low + 2) % 4);
+      thdAxisBegRank = ccw_plane.get((low + 1) % 4);
+      thdAxisEndRank = ccw_plane.get((low + 3) % 4);
 
-    // check if we need rotation and what is.
-    // If two axis are the same or if there is a symmetric axis we don't need
-    // a rotation
-    int cmp = 0;
-    if (isAsymmetric(fstAxisBegRank, fstAxisEndRank,
-                     sndAxisBegRank, sndAxisEndRank,
-                     thdAxisBegRank, thdAxisEndRank)) {
-      cmp = ccw_plane.get((low + 1) % 4).compareTo(ccw_plane.get((low + 4 - 1) % 4));
-      if (cmp == 0)
+      // suppress warnings
+      if (fstAxisEndRank == null)
+        return Descriptor.ns;
+
+      // check if we need rotation and what is.
+      // If two axis are the same or if there is a symmetric axis we don't need
+      // a rotation
+      int cmp = 0;
+      if (isAsymmetric(fstAxisBegRank, fstAxisEndRank,
+                       sndAxisBegRank, sndAxisEndRank,
+                       thdAxisBegRank, thdAxisEndRank)) {
         cmp = ccw_plane.get((low + 1) % 4).compareTo(ccw_plane.get((low + 4 - 1) % 4));
-      if (cmp == 0)
-        cmp = ccw_plane.get((low + 2) % 4).compareTo(ccw_plane.get((low + 4 - 2) % 4));
-    }
+        if (cmp == 0)
+          cmp = ccw_plane.get((low + 1) % 4).compareTo(ccw_plane.get((low + 4 - 1) % 4));
+        if (cmp == 0)
+          cmp = ccw_plane.get((low + 2) % 4).compareTo(ccw_plane.get((low + 4 - 2) % 4));
+      }
 
-    final String rotate;
-    if (cmp < 0)
-      rotate = "-A";
-    else if (cmp > 0)
-      rotate = "-C";
-    else
-      rotate = "";
+      final String rotate;
+      if (cmp < 0)
+        rotate = "-A";
+      else if (cmp > 0)
+        rotate = "-C";
+      else
+        rotate = "";
 
-    if (sndAxisEndRank != null) {
-      cache.put(getFocus(), "OC-6-" + fstAxisEndRank + sndAxisEndRank + rotate);
-      return Descriptor.OC_6;
+      if (sndAxisEndRank != null) {
+        cache.put(getFocus(), "OC-6-" + fstAxisEndRank + sndAxisEndRank + rotate);
+        return Descriptor.OC_6;
+      }
+    } else if (hasSPY5(parts, primes)) {
+      // double-check the missing ligand is in the first position
+      if (getCarriers()[0].equals(getFocus())) {
+
+        A axis = getCarriers()[5];
+        CipRank axisRank = new CipRank(getPriorityNumber(parts, axis), primes.get(axis));
+
+        // note we are upside down so the plane is clockwise not anti-clockwise
+        CipRank sndAxisBeg = null;
+        CipRank sndAxisEnd = null;
+        for (int i=1; i<5; i++) {
+          A beg = getCarriers()[i];
+          A end = getCarriers()[1+SquarePlanar.TRANS_INDEX[i-1]];
+          CipRank begRank = new CipRank(getPriorityNumber(parts, beg), primes.get(beg));
+          CipRank endRank = new CipRank(getPriorityNumber(parts, end), primes.get(end));
+          if (sndAxisBeg == null ||
+              begRank.compareTo(sndAxisBeg) < 0 ||
+              begRank.equals(sndAxisBeg) && endRank.compareTo(sndAxisEnd) > 0) {
+            sndAxisBeg = begRank;
+            sndAxisEnd = endRank;
+          }
+        }
+
+        // now label like SP-4 (square planar)
+        cache.put(getFocus(), "SPY-5-" + axisRank + sndAxisEnd);
+      }
     }
 
     return Descriptor.ns;

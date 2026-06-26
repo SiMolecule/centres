@@ -70,7 +70,7 @@ public final class SquarePlanar<A,B> extends Configuration<A,B> {
   private final Map<A,String> cache = new HashMap<>();
 
   // the index of the carrier in the trans position
-  private final int[] TRANS_INDEX = new int[]{2,3,0,1};
+  static final int[] TRANS_INDEX = new int[]{2,3,0,1};
 
   public SquarePlanar(A focus, A[] carriers)
   {
