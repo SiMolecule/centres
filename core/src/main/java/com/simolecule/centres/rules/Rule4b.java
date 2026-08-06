@@ -130,14 +130,14 @@ public class Rule4b<A, B>
         tmp.add(getSorter().getGroups(edges));
       }
 
-      // check sizes
+      // check sizes are all the same
       int size = -1;
-      for (int i = 0; i < tmp.size(); ++i) {
-        int localSize = tmp.get(0).size();
-        if (size < 0)
-          size = localSize;
-        else if (size != localSize)
-          throw new IllegalArgumentException("Something unexpected!");
+      for (List<List<Edge<A, B>>> lists : tmp) {
+          int localSize = lists.size();
+          if (size < 0)
+              size = localSize;
+          else if (size != localSize)
+              throw new IllegalArgumentException("Something unexpected!");
       }
 
       for (int i = 0; i < size; i++) {
